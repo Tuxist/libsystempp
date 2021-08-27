@@ -1,17 +1,13 @@
-# Find the kernel release
-execute_process(
-  COMMAND uname -r
-  OUTPUT_VARIABLE LINUX_RELEASE
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
 # Find the headers
+set (LINUXHEADERS_DIR "/usr/src/linux-headers-${CMAKE_HOST_SYSTEM_VERSION}" CACHE STRING "Linux headers path common under debian")
+
 find_path(LINUXHEADERS_DIR
-  include/linux/mutex.h
-  PATHS /usr/src/linux-headers-${LINUX_RELEASE}
+    include/linux/mutex.h
+  PATHS 
+    ${LINUXHEADERS_DIR}
 )
 
-message(STATUS "Linux release: ${LINUX_RELEASE}")
+message(STATUS "Linux release: ${CMAKE_HOST_SYSTEM_VERSION}")
 message(STATUS "Linux headers: ${LINUXHEADERS_DIR}")
 
 if (EXISTS ${LINUXHEADERS_DIR})

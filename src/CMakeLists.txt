@@ -34,7 +34,7 @@ add_library(c SHARED ${libcSrcs})
 generate_export_header(systempp)
 
 target_link_libraries(systempp -e,"_start" -nostdlib)
-target_link_libraries(systempp-static -nostdlib)    
+target_link_libraries(systempp-static -e,"_start" -nostdlib)    
 
 target_link_libraries(c -nostdlib)
 
