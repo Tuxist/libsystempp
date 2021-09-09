@@ -1,1 +1,5 @@
-const void *const __dso_handle __attribute__ ((__visibility__ ("hidden"))) = &__dso_handle;
+#ifdef SHARED
+void *__dso_handle = &__dso_handle;
+#else
+void *__dso_handle = (void *)0;
+#endif

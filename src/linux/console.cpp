@@ -25,51 +25,83 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <unistd.h>
-
+#include "include/file.h"
 #include "include/exception.h"
 #include "include/utils.h"
-#include "../include/console.h"
+#include "include/console.h"
+#include <unistd.h>
 
+template<typename OUT>
+void ConsoleWrite(int type,libsystempp::FileDescriptor *sout,
+                           libsystempp::FileDescriptor *eout, 
+                           OUT out,int size){
+    switch(type){
+        case SOUT:
+            sout->write((void*)out,size);
+            break;
+        case SERR:
+            eout->write((void*)out,size);
+            break;
+        default:
+            break;
+    }
+}
 
-const char* libsystempp::Console::endl="\n";
+libsystempp::_Console::_Console(){
+    _OutFD = new FileDescriptor(STDOUT_FILENO);
+    _ErrFD = new FileDescriptor(STDERR_FILENO);
+}
 
-libsystempp::Console &libsystempp::Console::operator<< (const char* out){
+libsystempp::_Console::~_Console(){
+    delete _OutFD;
+    delete _ErrFD;
+}
+
+libsystempp::_Console &libsystempp::_Console::endl(){
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,"\n",1);
+    return *this;
+}
+
+libsystempp::_Console &libsystempp::_Console::operator<< (const char* out){
     if(!out)
         return *this;
-    write(STDOUT_FILENO,out,getlen(out));
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,out,getlen(out));
     return *this;    
 }
 
-libsystempp::Console &libsystempp::Console::operator<< (int out){
+libsystempp::_Console &libsystempp::_Console::operator<< (int out){
     char buf[255];
     itoa(out,buf);
-    write(STDOUT_FILENO,buf,getlen(buf));
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,buf,getlen(buf));
     return *this;
 }
 
-libsystempp::Console &libsystempp::Console::operator<< (unsigned long out){
+libsystempp::_Console &libsystempp::_Console::operator<< (unsigned long out){
     char buf[255];
     ultoa(out,buf);
-    write(STDOUT_FILENO,buf,getlen(buf));
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,buf,getlen(buf));
     return *this;
 }
 
-libsystempp::Console &libsystempp::Console::operator<< (unsigned int out){
+libsystempp::_Console &libsystempp::_Console::operator<< (unsigned int out){
     char buf[255];
     ultoa(out,buf);
-    write(STDOUT_FILENO,buf,getlen(buf));
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,buf,getlen(buf));
     return *this;
 }
 
-libsystempp::Console &libsystempp::Console::operator<< (char out){
-    write(STDOUT_FILENO,&out,sizeof(char));
+libsystempp::_Console &libsystempp::_Console::operator<< (char out){
+    ConsoleWrite(_OutType,_OutFD,_ErrFD,&out,sizeof(char));
+    return *this;
+}
+
+libsystempp::_Console & libsystempp::_Console::operator[](int out){
+    _OutType=out;
     return *this;
 }
 
 
-libsystempp::Console & libsystempp::Console::operator<<(libsystempp::Console& console){
+libsystempp::_Console & libsystempp::_Console::operator<<(libsystempp::_Console& console){
     return console;
 }
-
 

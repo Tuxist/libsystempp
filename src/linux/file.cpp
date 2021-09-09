@@ -26,3 +26,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "../include/file.h"
+
+libsystempp::FileDescriptor::FileDescriptor(){
+}
+
+libsystempp::FileDescriptor::FileDescriptor(int fd){
+    _FileDescriptor=fd;
+}
+
+libsystempp::FileDescriptor::~FileDescriptor(){
+}
+
+libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
+    return *this;
+}
+
+
+libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(int value){
+    return *this;
+}
+
+void libsystempp::FileDescriptor::open(const char *path, int opt){
+}
+
+int libsystempp::FileDescriptor::read(char ** buf, int blocksize){
+    return 0;
+}
+
+int libsystempp::FileDescriptor::write(void* buf, int bufsize){
+    return 0;
+}
+
+int libsystempp::FileDescriptor::fnctl(int opt){
+    return 0;
+}
+
+void libsystempp::FileDescriptor::close(){
+    
+}

@@ -15,16 +15,16 @@ if(${LINUXHEADERS_FOUND})
     include_directories(
         ${LINUXHEADERS_INCLUDE_DIRS}
     )
-    file(GLOB linuxSrcs "linux/*.cpp" "linux/*.S")
+    file(GLOB linuxSrcs 
+        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
+        "linux/*.cpp"
+    )
     list(APPEND systemppSrcs "linux/wrapper.c")
     list(APPEND systemppSrcs ${linuxSrcs})
 endif()
 
 include_directories(
-  ${OPENSSL_INCLUDE_DIR}
 )
-
-
 
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
@@ -33,8 +33,10 @@ add_library(c SHARED ${libcSrcs})
 
 generate_export_header(systempp)
 
-target_link_libraries(systempp -e,"_start" -nostdlib)
-target_link_libraries(systempp-static -e,"_start" -nostdlib)    
+set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+target_link_libraries(systempp -nostdlib)
+target_link_libraries(systempp-static -nostdlib)    
 
 target_link_libraries(c -nostdlib)
 

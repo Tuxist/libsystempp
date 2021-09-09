@@ -32,12 +32,13 @@ namespace libsystempp{
     class FileDescriptor {
     public:
         FileDescriptor();
+        FileDescriptor(int fd);
         ~FileDescriptor();
-        void open();
+        void open(const char *path, int opt);
         void close();
-        int  write();
-        int  read();
-        int  fnctl();
+        int  write(void *buf,int bufsize);
+        int  read(char **buf,int blocksize);
+        int  fnctl(int opt);
         FileDescriptor &operator=(int value);
         FileDescriptor &operator=(FileDescriptor value);
     protected:

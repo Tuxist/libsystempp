@@ -25,22 +25,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <sys/types.h>
+#define SERR 0
+#define SOUT 1
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 namespace libsystempp {
-    class Console {
+    class FileDescriptor;
+    class _Console {
     public:
-        static const char *endl;
-        Console &operator<<(const char *out);
-        Console &operator<<(int out);
-        Console &operator<<(unsigned int out);
-        Console &operator<<(unsigned long out);
-        Console &operator<<(char out);
-        Console &operator<<(Console &console);
-    };
+        _Console();
+        ~_Console();
+        _Console &endl();
+        _Console &operator<<(const char *out);
+        _Console &operator<<(int out);
+        _Console &operator<<(unsigned int out);
+        _Console &operator<<(unsigned long out);
+        _Console &operator<<(char out);
+        _Console &operator<<(_Console &console);
+        _Console &operator[](int out);
+    private:
+        int             _OutType;
+        FileDescriptor *_ErrFD;
+        FileDescriptor *_OutFD;
+    } static Console;
 };
 
 #endif
