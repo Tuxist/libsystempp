@@ -23,9 +23,6 @@ if(${LINUXHEADERS_FOUND})
     list(APPEND systemppSrcs ${linuxSrcs})
 endif()
 
-include_directories(
-)
-
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
@@ -35,8 +32,12 @@ generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+add_dependencies(systempp absl)
+
 target_link_libraries(systempp -nostdlib)
 target_link_libraries(systempp-static -nostdlib)    
+
+
 
 target_link_libraries(c -nostdlib)
 
