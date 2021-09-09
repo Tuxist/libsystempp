@@ -1,4 +1,4 @@
-find_package(LinuxHeaders)
+find_package(LinuxHeaders REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)

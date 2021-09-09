@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2021, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,64 +25,51 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <errno.h>
+#include <unistd.h>
 
-#include "include/thread.h"
-#include <string.h>
+#include "include/exception.h"
+#include "include/utils.h"
+#include "../include/console.h"
 
-// libsystempp::Thread::Thread(){
-//   _Pid=-1;
-//   _nextThread=NULL;
-// }
-// 
-// libsystempp::Thread::~Thread(){
-//   delete _nextThread;
-// }
-// 
-// void libsystempp::Thread::Create(void *function(void*), void *arguments) {
-//   HTTPException httpexception;
-//   int rth = pthread_create(&_Thread, NULL, function, arguments);
-//   if (rth != 0) {
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Thread Create" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Thread Create" << errbuf;
-// #endif
-//     throw httpexception;
-//   }
-// }
 
-// void libsystempp::Thread::Detach(){
-// //     pthread_detach(_Thread);
-// }
-// 
-// int libsystempp::Thread::getThreadID() {
-// // 	return pthread_self();;
-// }
-// 
-// int libsystempp::Thread::getPid(){
-// //   return _Pid;  
-// }
-// 
-// void libsystempp::Thread::setPid(int pid){
-// //   _Pid=pid;
-// }
-// 
-// void libsystempp::Thread::Join(){
-//   if(pthread_join(_Thread,&_Retval)<=0){
-//     return;  
-//   }else{
-//     HTTPException httpexception;    
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Can't join Thread" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Can't join Thread" << errbuf;
-// #endif  
-//   }
-// }
+const char* libsystempp::Console::endl="\n";
+
+libsystempp::Console &libsystempp::Console::operator<< (const char* out){
+    if(!out)
+        return *this;
+    write(STDOUT_FILENO,out,getlen(out));
+    return *this;    
+}
+
+libsystempp::Console &libsystempp::Console::operator<< (int out){
+    char buf[255];
+    itoa(out,buf);
+    write(STDOUT_FILENO,buf,getlen(buf));
+    return *this;
+}
+
+libsystempp::Console &libsystempp::Console::operator<< (unsigned long out){
+    char buf[255];
+    ultoa(out,buf);
+    write(STDOUT_FILENO,buf,getlen(buf));
+    return *this;
+}
+
+libsystempp::Console &libsystempp::Console::operator<< (unsigned int out){
+    char buf[255];
+    ultoa(out,buf);
+    write(STDOUT_FILENO,buf,getlen(buf));
+    return *this;
+}
+
+libsystempp::Console &libsystempp::Console::operator<< (char out){
+    write(STDOUT_FILENO,&out,sizeof(char));
+    return *this;
+}
+
+
+libsystempp::Console & libsystempp::Console::operator<<(libsystempp::Console& console){
+    return console;
+}
+
+

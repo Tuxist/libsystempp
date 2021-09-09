@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "linux/clone.h"
 
 void wrapper_mutex_init(wrapper_mutex **mymutex){
-    mutex_init((struct **mutex)mymutex)
+    mutex_init((struct **mutex)mymutex);
 }
 
 void wrapper_mutex_destroy(wrapper_mutex *mymutex){

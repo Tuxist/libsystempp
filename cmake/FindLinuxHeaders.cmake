@@ -13,9 +13,9 @@ message(STATUS "Linux headers: ${LINUXHEADERS_DIR}")
 if (EXISTS ${LINUXHEADERS_DIR})
   set(LINUXHEADERS_INCLUDE_DIRS
     ${LINUXHEADERS_DIR}
-    ${LINUXHEADERS_DIR}/include
-    ${LINUXHEADERS_DIR}/arch/x86/include/
-    ${LINUXHEADERS_DIR}/arch/x86/include/generated/
+    ${LINUXHEADERS_DIR}/include/config
+    ${LINUXHEADERS_DIR}/include/generated/
+    /usr/src/linux-headers-${CMAKE_HOST_SYSTEM_VERSION}-common/
   )
   set(LINUXHEADERS_FOUND 1 )
 else()

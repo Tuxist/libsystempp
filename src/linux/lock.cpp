@@ -25,64 +25,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <errno.h>
-
+#include "include/exception.h"
 #include "include/thread.h"
-#include <string.h>
 
-// libsystempp::Thread::Thread(){
-//   _Pid=-1;
-//   _nextThread=NULL;
-// }
-// 
-// libsystempp::Thread::~Thread(){
-//   delete _nextThread;
-// }
-// 
-// void libsystempp::Thread::Create(void *function(void*), void *arguments) {
-//   HTTPException httpexception;
-//   int rth = pthread_create(&_Thread, NULL, function, arguments);
-//   if (rth != 0) {
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Thread Create" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Thread Create" << errbuf;
-// #endif
-//     throw httpexception;
-//   }
-// }
+libsystempp::Mutex::Mutex(){
+    
+}
 
-// void libsystempp::Thread::Detach(){
-// //     pthread_detach(_Thread);
-// }
-// 
-// int libsystempp::Thread::getThreadID() {
-// // 	return pthread_self();;
-// }
-// 
-// int libsystempp::Thread::getPid(){
-// //   return _Pid;  
-// }
-// 
-// void libsystempp::Thread::setPid(int pid){
-// //   _Pid=pid;
-// }
-// 
-// void libsystempp::Thread::Join(){
-//   if(pthread_join(_Thread,&_Retval)<=0){
-//     return;  
-//   }else{
-//     HTTPException httpexception;    
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Can't join Thread" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Can't join Thread" << errbuf;
-// #endif  
-//   }
-// }
+libsystempp::Mutex::~Mutex(){
+    
+}
+
+void libsystempp::Mutex::Lock(){
+    
+}
+
+void libsystempp::Mutex::tryLock(){
+    
+}
+
+void libsystempp::Mutex::unLock(){
+    
+}
+
+bool libsystempp::Mutex::isLocked(){
+    return true;
+}

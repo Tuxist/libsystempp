@@ -25,64 +25,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <errno.h>
+#include "config.h"
 
-#include "include/thread.h"
-#include <string.h>
+#ifndef UTILS_H
+#define UTILS_H
 
-// libsystempp::Thread::Thread(){
-//   _Pid=-1;
-//   _nextThread=NULL;
-// }
-// 
-// libsystempp::Thread::~Thread(){
-//   delete _nextThread;
-// }
-// 
-// void libsystempp::Thread::Create(void *function(void*), void *arguments) {
-//   HTTPException httpexception;
-//   int rth = pthread_create(&_Thread, NULL, function, arguments);
-//   if (rth != 0) {
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Thread Create" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Thread Create" << errbuf;
-// #endif
-//     throw httpexception;
-//   }
-// }
+namespace libsystempp {
+   const char *scopy(const char* first, const char* last, char* des);
+   unsigned int getlen(const char *str);
+   void rscopy(const char* first, const char* last, char** des);
+   void reverse(char s[]);
+   void itoa(int n, char s[]);
+   void ultoa(unsigned long n, char s[]);
+};
 
-// void libsystempp::Thread::Detach(){
-// //     pthread_detach(_Thread);
-// }
-// 
-// int libsystempp::Thread::getThreadID() {
-// // 	return pthread_self();;
-// }
-// 
-// int libsystempp::Thread::getPid(){
-// //   return _Pid;  
-// }
-// 
-// void libsystempp::Thread::setPid(int pid){
-// //   _Pid=pid;
-// }
-// 
-// void libsystempp::Thread::Join(){
-//   if(pthread_join(_Thread,&_Retval)<=0){
-//     return;  
-//   }else{
-//     HTTPException httpexception;    
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Can't join Thread" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Can't join Thread" << errbuf;
-// #endif  
-//   }
-// }
+#endif

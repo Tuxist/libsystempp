@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, Jan Koester jan.koester@gmx.net
+ * Copyright (c) 2014, Jan Koester jan.koester@gmx.net
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef FS_H
-#define FS_H
+#include "config.h"
 
-// namespace libsystempp{
-//     class FsInfo {
-//     public:
-//         FsInfo();
-//         ~FsInfo();
-//         MountPoint *addMountpoint();
-//         MountPoint *getFirstDevice();
-//     private:
-//         MountPoint *_firstMountPoint;
-//         MountPoint *_lastMountPoint;
-//     }; 
-// };
+#ifndef EXCEPTION_H
+#define EXCEPTION_H
+
+#ifdef DEBUG
 
 #endif
+
+namespace libsystempp {
+    
+    class SystemException {
+    public:
+        
+        SystemException();
+        SystemException(const SystemException &exp);
+        virtual ~SystemException();
+        
+        int getErrorType();
+        
+        const char* what();
+        
+        const SystemException& Exception() throw();
+        
+        enum Type {Note,Warning,Error,Critical};
+        
+        SystemException& asign(const char *src);
+        SystemException& operator[](int errtype);
+        SystemException& operator<<(const char *src);
+        SystemException& operator<<(int src);
+    private:
+        struct Message {
+            Message();
+            ~Message();
+            char    *_Buffer;
+            int      _BufferSize;        
+            int      _CType;
+            Message *_nextMessage;
+        };
+        
+        Message *_firstMessage;
+        Message *_lastMessage;
+        
+        char    *_printBuffer;
+        char    *_errnobuf;
+        int      _curCType;
+    };
+}
+#endif
+

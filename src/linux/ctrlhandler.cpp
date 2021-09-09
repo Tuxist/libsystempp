@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2019, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,37 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "include/sysinfo.h"
-#include "include/utils.h"
+#include <signal.h> 
+#include <stddef.h>
 
-#include <fstream>
-#include <unistd.h>
-#include <iostream>
-#include <cstring>
+#include "include/ctrlhandler.h"
 
-// libsystempp::CpuInfo::CpuInfo(){
-// }
-// 
-// libsystempp::CpuInfo::~CpuInfo(){
-// }
-// 
-// 
-// int libsystempp::CpuInfo::getCores(){
-//     return sysconf(_SC_NPROCESSORS_ONLN);
-// }
-// 
-// int libsystempp::CpuInfo::getThreads(){
-//     return 0;
-// }
-// 
-// int libsystempp::CpuInfo::getActualThread(){
-//     return 0;
-// }
-// 
-// 
-// int libsystempp::CpuInfo::getPid(){
-//     return getpid();
-// }
-// 
-// libsystempp::SysInfo::SysInfo(){
-//     sysinfo(&_Sysinfo);
-// }
-// 
-// uint libsystempp::SysInfo::getTotalRam(){
-//     return _Sysinfo.totalram;
-// }
-// 
-// uint libsystempp::SysInfo::getBufferRam(){
-//     return _Sysinfo.bufferram;
-// }
-// 
-// uint libsystempp::SysInfo::getFreeRam(){
-//     return _Sysinfo.freeram;
-// }
+void libsystempp::CtrlHandler::initCtrlHandler(){
+//     signal(SIGINT, CtrlHandler::CtrlEventHandler);
+    signal(SIGQUIT, CtrlHandler::CtrlEventHandler);
+    signal(SIGTERM, CtrlHandler::CtrlEventHandler);
+    signal(SIGPIPE, CtrlHandler::CtrlEventHandler);
+}
 
-
+void libsystempp::CtrlHandler::CtrlEventHandler(int sig) {
+    switch(sig){
+        case SIGINT:{
+                CTRLTermEvent();
+            }
+            break;
+        case SIGQUIT:{
+                CTRLCloseEvent();
+            }
+            break;
+        case SIGTERM:{
+                CTRLTermEvent();
+            }
+            break;
+        case SIGPIPE:{
+                SIGPIPEEvent();
+            }
+            break;
+        default:
+            break;
+    }
+}
