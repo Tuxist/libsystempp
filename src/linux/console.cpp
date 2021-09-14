@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "include/exception.h"
 #include "include/utils.h"
 #include "include/console.h"
-#include <unistd.h>
 
 template<typename OUT>
 void ConsoleWrite(int type,libsystempp::FileDescriptor *sout,
@@ -48,8 +47,8 @@ void ConsoleWrite(int type,libsystempp::FileDescriptor *sout,
 }
 
 libsystempp::_Console::_Console(){
-    _OutFD = new FileDescriptor(STDOUT_FILENO);
-    _ErrFD = new FileDescriptor(STDERR_FILENO);
+    _OutFD = new FileDescriptor(1);
+    _ErrFD = new FileDescriptor(2);
 }
 
 libsystempp::_Console::~_Console(){

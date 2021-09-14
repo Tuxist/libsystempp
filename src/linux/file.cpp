@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "../include/file.h"
+#include "syscall.h"
 
 libsystempp::FileDescriptor::FileDescriptor(){
 }
@@ -38,23 +39,25 @@ libsystempp::FileDescriptor::~FileDescriptor(){
 }
 
 libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
+    _FileDescriptor=value._FileDescriptor;
     return *this;
 }
 
 
 libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(int value){
+    _FileDescriptor=value;
     return *this;
 }
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
 }
 
-int libsystempp::FileDescriptor::read(char ** buf, int blocksize){
-    return 0;
+int libsystempp::FileDescriptor::read(void *buf, int blocksize){
+    return syscall3(__NR_read,_FileDescriptor,(long)buf,(long)blocksize);
 }
 
 int libsystempp::FileDescriptor::write(void* buf, int bufsize){
-    return 0;
+    return syscall3(__NR_write,_FileDescriptor,(long)buf,bufsize);
 }
 
 int libsystempp::FileDescriptor::fnctl(int opt){

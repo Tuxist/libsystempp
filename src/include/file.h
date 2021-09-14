@@ -37,7 +37,7 @@ namespace libsystempp{
         void open(const char *path, int opt);
         void close();
         int  write(void *buf,int bufsize);
-        int  read(char **buf,int blocksize);
+        int  read(void  *buf,int bufsize);
         int  fnctl(int opt);
         FileDescriptor &operator=(int value);
         FileDescriptor &operator=(FileDescriptor value);

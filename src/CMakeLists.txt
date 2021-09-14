@@ -5,9 +5,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
 include(GenerateExportHeader)
 
-file(GLOB systemppSrcs "*.cpp" ".S")
+file(GLOB currentSrcs "*.cpp")
+list(APPEND systemppSrcs ${currentSrcs})
+file(GLOB currentSrcs "std/*.cpp")
+list(APPEND systemppSrcs ${currentSrcs})
+file(GLOB currentSrcs "libc/*.cpp")
+list(APPEND systemppSrcs ${currentSrcs})
 
-file(GLOB libcSrcs "libc/*.cpp")
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+)
 
 #os dependencies
 if(${LINUXHEADERS_FOUND})
@@ -19,6 +26,10 @@ if(${LINUXHEADERS_FOUND})
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
         "linux/*.cpp"
     )
+    configure_file(
+        linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in 
+        ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
+    )
     list(APPEND systemppSrcs "linux/wrapper.c")
     list(APPEND systemppSrcs ${linuxSrcs})
 endif()
@@ -26,20 +37,12 @@ endif()
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
-add_library(c SHARED ${libcSrcs})
-
 generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_dependencies(systempp absl)
-
 target_link_libraries(systempp -nostdlib)
 target_link_libraries(systempp-static -nostdlib)    
-
-
-
-target_link_libraries(c -nostdlib)
 
 SET(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Output directory for libraries")
 
