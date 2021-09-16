@@ -4,7 +4,7 @@ include_directories(
 
 add_executable (main main.cpp)
 
-target_link_libraries(main systempp-static -nostdlib)
+target_link_libraries(main systempp-static)
 
 #add_executable (iostream iostream.cpp)
 

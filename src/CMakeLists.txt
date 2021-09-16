@@ -17,7 +17,7 @@ include_directories(
 )
 
 #os dependencies
-if(${LINUXHEADERS_FOUND})
+if(LINUXHEADERS_FOUND)
     message("Build with Linux Support")
     include_directories(
         ${LINUXHEADERS_INCLUDE_DIRS}
@@ -25,12 +25,11 @@ if(${LINUXHEADERS_FOUND})
     file(GLOB linuxSrcs 
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
         "linux/*.cpp"
+        "linux/*.c"
     )
     configure_file(
-        linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in 
-        ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
+        linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
     )
-    list(APPEND systemppSrcs "linux/wrapper.c")
     list(APPEND systemppSrcs ${linuxSrcs})
 endif()
 
@@ -41,8 +40,8 @@ generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(systempp -nostdlib)
-target_link_libraries(systempp-static -nostdlib)    
+target_link_libraries(systempp)
+target_link_libraries(systempp-static)    
 
 SET(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Output directory for libraries")
 
