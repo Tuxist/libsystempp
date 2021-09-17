@@ -38,11 +38,12 @@ namespace libsystempp{
         void close();
         int  write(void *buf,int bufsize);
         int  read(void  *buf,int bufsize);
-        int  fnctl(int opt);
+        int  setFcntl(int opt);
+        int  getFcntl();
         FileDescriptor &operator=(int value);
         FileDescriptor &operator=(FileDescriptor value);
     protected:
-        int _FileDescriptor;       
+        int _FD;       
     };
 };
 

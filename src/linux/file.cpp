@@ -25,43 +25,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "../include/file.h"
+#include <linux/fcntl.h>
+
+#include "include/file.h"
 #include "syscall.h"
 
 libsystempp::FileDescriptor::FileDescriptor(){
 }
 
 libsystempp::FileDescriptor::FileDescriptor(int fd){
-    _FileDescriptor=fd;
+    _FD=fd;
 }
 
 libsystempp::FileDescriptor::~FileDescriptor(){
 }
 
 libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
-    _FileDescriptor=value._FileDescriptor;
+    _FD=value._FD;
     return *this;
 }
 
 
 libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(int value){
-    _FileDescriptor=value;
+    _FD=value;
     return *this;
 }
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
 }
 
-int libsystempp::FileDescriptor::read(void *buf, int blocksize){
-    return syscall3(__NR_read,_FileDescriptor,(long)buf,(long)blocksize);
+int libsystempp::FileDescriptor::read(void *buf, int bufsize){
+    return syscall3(__NR_read,(unsigned long)_FD,(unsigned long)buf,(long)bufsize);
 }
 
 int libsystempp::FileDescriptor::write(void* buf, int bufsize){
-    return syscall3(__NR_write,_FileDescriptor,(long)buf,bufsize);
+    return syscall3(__NR_write,_FD,(unsigned long)buf,bufsize);
 }
 
-int libsystempp::FileDescriptor::fnctl(int opt){
-    return 0;
+int libsystempp::FileDescriptor::setFcntl(int opt){
+    return (int)syscall3(__NR_fcntl, _FD, F_SETFL, opt);
+}
+
+int libsystempp::FileDescriptor::getFcntl(){
+    return (int)syscall3(__NR_fcntl, _FD, F_GETFL, 0);
 }
 
 void libsystempp::FileDescriptor::close(){

@@ -1,1 +1,1 @@
- 
+#define MAXHEAPSIZE 16384 

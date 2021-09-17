@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main(int argv, char *argc[])
 {
-    libsystempp::Console[SOUT] << "test"  << libsystempp::Console.endl();
+    libsystempp::Console[SYSOUT] << "test"  << libsystempp::Console[SYSOUT].endl;
     for(int i=0; i<argv; ++i){
-        libsystempp::Console[SOUT] << argc[i]  << libsystempp::Console.endl();
+        libsystempp::Console[SYSOUT] << argc[i]  << libsystempp::Console[SYSOUT].endl;
     }
     return 0;
 } 

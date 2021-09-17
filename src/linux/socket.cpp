@@ -31,9 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <config.h>
 #include <errno.h>
+
 #include "include/utils.h"
 #include "include/exception.h"
-#include "../include/socket.h"
+#include "include/socket.h"
+#include "include/file.h"
+
 
 #define O_NONBLOCK    04000
 #define F_SETFL       4
@@ -43,35 +46,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYS_fcntl SYS_fcntl64
 #endif
 
-// libsystempp::ClientSocket::ClientSocket(){
-//   Socket = 0;
-// }
+libsystempp::ClientSocket::ClientSocket(){
+  _Socket = new FileDescriptor();
+}
 // 
-// libsystempp::ClientSocket::~ClientSocket(){
-//     try{
-//         this->close();
-//     }catch(...){};
-// }
-// 
-// void libsystempp::ClientSocket::close(){
-//     SystemException exp;
-//     if(::close(Socket)>0){
-// #ifdef __GLIBCXX__
-//         char errbuf[255];
-//         exp[SystemException::Error] << "Can't close Socket: " << strerror_r(errno, errbuf, 255);
-// #else
-//         char errbuf[255];
-//         strerror_r(errno, errbuf, 255);
-//         exp[SystemException::Error] << "Can't close Socket: " << errbuf;
-// #endif
-//         throw exp;
-//     }
-// }
-// 
-// void libsystempp::ClientSocket::setnonblocking(){
-//     syscall(SYS_fcntl, Socket, F_SETFL, O_NONBLOCK);
-// //     fcntl(Socket, F_SETFL, fcntl(Socket, F_GETFL, 0) | O_NONBLOCK);
-// }
+libsystempp::ClientSocket::~ClientSocket(){
+    try{
+        _Socket->close();
+    }catch(...){};
+}
+
+
+void libsystempp::ClientSocket::setnonblocking(){
+    _Socket->setFcntl(_Socket->getFcntl() | O_NONBLOCK);
+}
 // 
 // libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections){
 //     SystemException exception;
