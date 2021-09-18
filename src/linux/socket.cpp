@@ -78,6 +78,11 @@ void libsystempp::ClientSocket::setnonblocking(){
     }
 }
 
+int libsystempp::ClientSocket::getSocket(){
+    return _Socket;
+}
+
+
 libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
                                         int sockettype,int sockopts){
     SystemException exception;

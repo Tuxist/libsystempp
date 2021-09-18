@@ -34,6 +34,7 @@ namespace libsystempp {
         ClientSocket();
         ~ClientSocket();
         void         setnonblocking();
+        int          getSocket();
     protected:
         int            _Socket;
         void          *_SocketPtr;
