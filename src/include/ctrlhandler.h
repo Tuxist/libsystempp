@@ -32,12 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace libsystempp {
 	class CtrlHandler {
 	public:
-    	static void initCtrlHandler();
-		static void CTRLCloseEvent();
-		static void CTRLBreakEvent();
-        static void CTRLTermEvent();
-        static void SIGPIPEEvent();
-		static void CtrlEventHandler(int sig);
+//     	static void initCtrlHandler();
+// 		static void CTRLCloseEvent();
+// 		static void CTRLBreakEvent();
+//         static void CTRLTermEvent();
+//         static void SIGPIPEEvent();
+// 		static void CtrlEventHandler(int sig);
 	};
 };
 

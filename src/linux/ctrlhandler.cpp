@@ -30,32 +30,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "include/ctrlhandler.h"
 
-void libsystempp::CtrlHandler::initCtrlHandler(){
-//     signal(SIGINT, CtrlHandler::CtrlEventHandler);
-    signal(SIGQUIT, CtrlHandler::CtrlEventHandler);
-    signal(SIGTERM, CtrlHandler::CtrlEventHandler);
-    signal(SIGPIPE, CtrlHandler::CtrlEventHandler);
-}
-
-void libsystempp::CtrlHandler::CtrlEventHandler(int sig) {
-    switch(sig){
-        case SIGINT:{
-                CTRLTermEvent();
-            }
-            break;
-        case SIGQUIT:{
-                CTRLCloseEvent();
-            }
-            break;
-        case SIGTERM:{
-                CTRLTermEvent();
-            }
-            break;
-        case SIGPIPE:{
-                SIGPIPEEvent();
-            }
-            break;
-        default:
-            break;
-    }
-}
+// void libsystempp::CtrlHandler::initCtrlHandler(){
+// //     signal(SIGINT, CtrlHandler::CtrlEventHandler);
+//     signal(SIGQUIT, CtrlHandler::CtrlEventHandler);
+//     signal(SIGTERM, CtrlHandler::CtrlEventHandler);
+//     signal(SIGPIPE, CtrlHandler::CtrlEventHandler);
+// }
+// 
+// void libsystempp::CtrlHandler::CtrlEventHandler(int sig) {
+//     switch(sig){
+//         case SIGINT:{
+//                 CTRLTermEvent();
+//             }
+//             break;
+//         case SIGQUIT:{
+//                 CTRLCloseEvent();
+//             }
+//             break;
+//         case SIGTERM:{
+//                 CTRLTermEvent();
+//             }
+//             break;
+//         case SIGPIPE:{
+//                 SIGPIPEEvent();
+//             }
+//             break;
+//         default:
+//             break;
+//     }
+// }
