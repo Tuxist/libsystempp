@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "include/socket.h"
 #include "include/file.h"
 
-#include "./linux/socket.h"
+#include "linux/include/socket.h"
 
 #include "syscall.h"
 
