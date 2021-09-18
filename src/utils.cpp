@@ -85,3 +85,10 @@ void libsystempp::ultoa(unsigned long n, char s[]){
         s[i] = '\0';
         reverse(s);
 }
+
+void libsystempp::zero(void *s, unsigned n){
+    char *str;       
+    str = (char *)s;
+    while (n--)
+        str[n] = 0;       
+}

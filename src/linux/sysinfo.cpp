@@ -28,11 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "include/sysinfo.h"
 #include "include/utils.h"
 
-#include <fstream>
-#include <unistd.h>
-#include <iostream>
-#include <cstring>
-
 // libsystempp::CpuInfo::CpuInfo(){
 // }
 // 

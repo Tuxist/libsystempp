@@ -1,5 +1,3 @@
-find_package(LinuxHeaders REQUIRED)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
@@ -17,21 +15,20 @@ include_directories(
 )
 
 #os dependencies
-if(LINUXHEADERS_FOUND)
-    message("Build with Linux Support")
-    include_directories(
-        ${LINUXHEADERS_INCLUDE_DIRS}
-    )
-    file(GLOB linuxSrcs 
-        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
-        "linux/*.cpp"
-        "linux/*.c"
-    )
-    configure_file(
-        linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
-    )
-    list(APPEND systemppSrcs ${linuxSrcs})
-endif()
+message("Build with Linux Support")
+include_directories(
+    ${LINUXHEADERS_INCLUDE_DIRS}
+)
+file(GLOB linuxSrcs 
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
+    "linux/*.cpp"
+    "linux/*.c"
+)
+configure_file(
+    linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
+)
+list(APPEND systemppSrcs ${linuxSrcs})
+
 
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )

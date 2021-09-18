@@ -37,6 +37,7 @@ namespace libsystempp {
    void reverse(char s[]);
    void itoa(int n, char s[]);
    void ultoa(unsigned long n, char s[]);
+   void zero(void *s, unsigned n);
 };
 
 #endif

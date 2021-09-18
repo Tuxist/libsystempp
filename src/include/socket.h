@@ -30,6 +30,7 @@
 
 namespace libsystempp {
     class FileDescriptor;
+
     class ClientSocket {
     public:
         ClientSocket();
@@ -42,18 +43,20 @@ namespace libsystempp {
     
     class ServerSocket {
     public:
-        ServerSocket(const char *uxsocket,int maxconnections);
+        ServerSocket(const char *uxsocket,int maxconnections,
+                     int sockettype,int sockopts);
         int           acceptEvent(ClientSocket *clientsocket);
         int           getSocket();
-        ServerSocket(const char *addr,int port,int maxconnections);
+        ServerSocket(const char *addr,int port,int maxconnections,
+                     int sockettype,int sockopts);
         ~ServerSocket();
         
         int           getMaxconnections();
         void          listenSocket();
-        int           sendData(ClientSocket *socket,void *data,size_t size);
-        int           sendData(ClientSocket *socket,void *data,size_t size,int flags);
-        int           recvData(ClientSocket *socket,void *data,size_t size);
-        int           recvData(ClientSocket *socket,void *data,size_t size,int flags);
+        int           sendData(ClientSocket *socket,void *data,unsigned long size);
+        int           sendData(ClientSocket *socket,void *data,unsigned long size,int flags);
+        int           recvData(ClientSocket *socket,void *data,unsigned long size);
+        int           recvData(ClientSocket *socket,void *data,unsigned long size,int flags);
         #ifdef Windows
         /*Needed for iocp in event*/
         ssize_t       recvWSAData(ClientSocket *socket, WSABUF *data, DWORD size, LPDWORD flags,
@@ -63,8 +66,9 @@ namespace libsystempp {
                                   LPDWORD numberofbytessend,LPWSAOVERLAPPED lpOverlapped,
                                   LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine);
         #endif
-        FileDescriptor  *Socket;
+        
     private:
+        int             _Socket;
         int             _Port;
         int             _Maxconnections;
     };
