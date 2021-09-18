@@ -25,10 +25,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <linux/fcntl.h>
+#include <linux/net.h>
+
 #include "include/utils.h"
 #include "include/exception.h"
 #include "include/socket.h"
-#include "include/file.h"
 
 #include "include/linux_socket.h"
 
@@ -36,19 +38,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define O_NONBLOCK  00004000
 
+typedef unsigned short sa_family_t;
+
+struct sockaddr{
+    sa_family_t   sa_family;
+    char          sa_data[];
+};
+
+struct sockaddr_un {
+    sa_family_t sun_family;
+    char        sun_path[108];
+};
+
+struct addrinfo {
+    int               ai_flags;     /* AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST */
+    int               ai_family;    /* PF_xxx */
+    int               ai_socktype;  /* SOCK_xxx */
+    int               ai_protocol;  /* 0 or IPPROTO_xxx for IPv4 and IPv6 */
+    unsigned long     ai_addrlen;   /* length of ai_addr */
+    char             *ai_canonname; /* canonical name for nodename */
+    struct sockaddr  *ai_addr;      /* binary address */
+    struct addrinfo  *ai_next;      /* next structure in linked list */
+};
+
 libsystempp::ClientSocket::ClientSocket(){
-  _Socket = new FileDescriptor();
 }
 
 libsystempp::ClientSocket::~ClientSocket(){
-    try{
-        _Socket->close();
-    }catch(...){};
+    syscall1(__NR_close, _Socket);
 }
 
 
 void libsystempp::ClientSocket::setnonblocking(){
-    _Socket->setFcntl(_Socket->getFcntl() | O_NONBLOCK);
+    int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
+    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)==-1){
+        SystemException exception;
+        exception[SystemException::Error] << "Could not set ClientSocket nonblocking!";
+        throw exception; 
+    }
 }
 
 libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
@@ -101,26 +128,21 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
     sockaddr.ai_addr = nullptr;
     sockaddr.ai_next = nullptr;
     
-    int s = getaddrinfo(addr, port_buffer, &sockaddr, &result);
-    if (s != 0) {
-        exception[SystemException::Critical] << "getaddrinfo failed " << gai_strerror(s);
-        throw exception;
-    }
-    
-    /* getaddrinfo() returns a list of address structures.
-     *  Try each address until we successfully bind(2).
-     *  If socket(2) (or bind(2)) fails, we (close the socket
-     *  and) try the next address. */
-    
+//     int s = getaddrinfo(addr, port_buffer, &sockaddr, &result);
+//     if (s != 0) {
+//         exception[SystemException::Critical] << "getaddrinfo failed ";
+//         throw exception;
+//     }
+       
     for (rp = result; rp != nullptr; rp = rp->ai_next) {
         _Socket = (int)syscall3(__NR_socket,rp->ai_family, rp->ai_socktype,rp->ai_protocol);
         if (_Socket == -1)
             continue;
         
         int optval = 1;
-        syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts, &optval, sizeof(optval));
+        syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts,(unsigned long) &optval,sizeof(optval));
        
-        if (bind(_Socket, rp->ai_addr, rp->ai_addrlen) == 0)
+        if (syscall3(__NR_bind,_Socket, (unsigned long)rp->ai_addr, rp->ai_addrlen) == 0)
             break;                  /* Success */
             
         syscall1(__NR_close,_Socket);
@@ -139,99 +161,79 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
     }
         
 }
-// 
-// libsystempp::ServerSocket::~ServerSocket(){
-// }
-// 
-// void libsystempp::ServerSocket::setnonblocking(){
-//     fcntl(Socket, F_SETFL, fcntl(Socket, F_GETFL, 0) | O_NONBLOCK);
-// }
-// 
-// void libsystempp::ServerSocket::listenSocket(){
-//     SystemException httpexception;
-//     if(listen(Socket, _Maxconnections) < 0){
-//         httpexception[SystemException::Critical] << "Can't listen Server Socket"<< errno;
-//         throw httpexception;
-//     }
-// }
-// 
-// int libsystempp::ServerSocket::getSocket(){
-//     return Socket;
-// }
-// 
-// int libsystempp::ServerSocket::getMaxconnections(){
-//     return _Maxconnections;
-// }
-// 
-// int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
-//     SystemException exception;
-//     clientsocket->_ClientAddrLen=sizeof(clientsocket);
-//     int socket = socketcall_cp(accept,Socket,clientsocket->_ClientAddr, &clientsocket->_ClientAddrLen);
-//     if(socket<0){
-// #ifdef __GLIBCXX__
-//         char errbuf[255];
-//         exception[SystemException::Error] << "Can't accept on  Socket" << strerror_r(errno, errbuf, 255);
-// #else
-//         char errbuf[255];
-//         strerror_r(errno, errbuf, 255);
-//         exception[SystemException::Error] << "Can't accept on  Socket" << errbuf;
-// #endif
-//     }
-//     clientsocket->Socket=socket;
-//     return socket;
-// }
-// 
-// 
-// 
-// int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, size_t size){
-//     return sendData(socket,data,size,0);
-// }
-// 
-// int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, size_t size,int flags){
-//     SystemException exception;
-//     int rval=0;
-//     rval=write(socket->Socket,data,size,flags);
-//     if(rval<0){
-//         char errbuf[255];
-// #ifdef __GLIBCXX__
-//         if(errno==EAGAIN)
-//             exception[SystemException::Warning] << "Socket sendata:" << strerror_r(errno,errbuf,255);   
-//         else
-//             exception[SystemException::Error] << "Socket sendata:" << strerror_r(errno,errbuf,255);
-// #else
-//         strerror_r(errno,errbuf,255);
-//         if(errno == EAGAIN)
-//             exception[SystemException::Warning] << "Socket sendata:" << errbuf;
-//         else 
-//             exception[SystemException::Error] << "Socket sendata:" << errbuf;
-// #endif
-//         throw exception;
-//     }
-//     return rval;
-// }
-// 
-// int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, size_t size){
-//     return recvData(socket,data,size,0);
-// }
-// 
-// int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, size_t size,int flags){
-//     SystemException exception;
-//     int recvsize=read(socket->Socket,data, size,flags);
-//     if(recvsize<0){
-//         char errbuf[255];
-// #ifdef __GLIBCXX__ 
-//         if(errno==EAGAIN)
-//             exception[SystemException::Warning] << "Socket recvdata "  <<  socket->Socket << ": "<< strerror_r(errno,errbuf,255);
-//         else
-//             exception[SystemException::Error] << "Socket recvdata " << socket->Socket << ": " << strerror_r(errno,errbuf,255);
-// #else
-//         strerror_r(errno,errbuf,255);
-//         if(errno == EAGAIN)
-//             exception[SystemException::Warning] << "Socket recvdata:" << socket->Socket << ": " << errbuf;
-//         else
-//             exception[SystemException::Critical] << "Socket recvdata:" << socket->Socket << ":" <<  errbuf;
-// #endif
-//         throw exception;
-//     }
-//     return recvsize;
-// }
+
+libsystempp::ServerSocket::~ServerSocket(){
+    syscall1(__NR_close, _Socket);
+}
+
+void libsystempp::ServerSocket::setnonblocking(){
+    int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
+    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)==-1){
+        SystemException exception;
+        exception[SystemException::Error] << "Could not set ServerSocket nonblocking!";
+        throw exception; 
+    }
+}
+
+void libsystempp::ServerSocket::listenSocket(){
+    SystemException httpexception;
+    if(syscall2(SYS_LISTEN,_Socket,_Maxconnections) < 0){
+        httpexception[SystemException::Critical] << "Can't listen Server Socket";
+        throw httpexception;
+    }
+}
+
+int libsystempp::ServerSocket::getSocket(){
+    return _Socket;
+}
+
+int libsystempp::ServerSocket::getMaxconnections(){
+    return _Maxconnections;
+}
+
+int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
+    SystemException exception;
+    clientsocket->_SocketPtrSize=sizeof(sockaddr);
+    clientsocket->_SocketPtr = new sockaddr();
+    int socket = syscall3(SYS_ACCEPT,_Socket,(unsigned long)clientsocket->_SocketPtr,
+                          (unsigned long)&clientsocket->_SocketPtrSize);
+    if(socket<0){
+        char errbuf[255];
+        exception[SystemException::Error] << "Can't accept on  Socket";
+        throw exception;
+    }
+    clientsocket->_Socket=socket;
+    return socket;
+}
+
+int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size){
+    return sendData(socket,data,size,0);
+}
+
+int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size,int flags){
+    SystemException exception;
+    int rval=0;
+    rval=syscall6(SYS_SENDTO,socket->_Socket,(unsigned long)data,size,flags,
+                  (unsigned long)socket->_SocketPtr,socket->_SocketPtrSize);
+    if(rval<0){
+        exception[SystemException::Error] << "Socket senddata failed on Socket: " << socket->_Socket;
+        throw exception;
+    }
+    return rval;
+}
+
+
+int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size){
+    return recvData(socket,data,size,0);
+}
+
+int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size,int flags){
+    SystemException exception;
+    int recvsize=syscall6(SYS_RECVFROM,socket->_Socket,(unsigned long)data,size,flags,
+                  (unsigned long)socket->_SocketPtr,socket->_SocketPtrSize);
+    if(recvsize<0){
+        exception[SystemException::Error] << "Socket recvdata failed on Socket: " << socket->_Socket;
+        throw exception;
+    }
+    return recvsize;
+}

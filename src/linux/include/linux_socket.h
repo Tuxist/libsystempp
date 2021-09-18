@@ -1,5 +1,5 @@
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef LINUX_SOCKET_H
+#define LINUX_SOCKET_H
 
 /* Supported address families. */
 #define AF_UNSPEC	0
@@ -192,6 +192,16 @@
 
 #define SOL_SOCKET  1
 
+#define SOCK_STREAM     1   /* stream (connection) socket*/
+#define SOCK_DGRAM      2   /* datagram (conn.less) socket*/
+#define SOCK_RAW        3   /* raw socket*/
+#define SOCK_RDM        4   /* reliably-delivered message*/
+#define SOCK_SEQPACKET  5   /* sequential packet socket*/
+#define SOCK_PACKET     10  /* linux specific way of*/
+                            /* getting packets at the dev*/
+                            /* level.  For writing rarp and*/
+                            /* other similar things on the*/
+                            /* user level.*/
 
 #define SO_DEBUG       1
 #define SO_REUSEADDR   2
@@ -209,5 +219,10 @@
 #define SO_PRIORITY    12
 #define SO_LINGER      13
 #define SO_BSDCOMPAT   14
+
+
+#define	AI_PASSIVE      0x00000001
+#define	AI_CANONNAME    0x00000002
+#define AI_NUMERICHOST  0x00000004
 
 #endif

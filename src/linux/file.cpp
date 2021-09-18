@@ -40,15 +40,13 @@ libsystempp::FileDescriptor::FileDescriptor(int fd){
 libsystempp::FileDescriptor::~FileDescriptor(){
 }
 
-libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
+void libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
     _FD=value._FD;
-    return *this;
 }
 
 
-libsystempp::FileDescriptor & libsystempp::FileDescriptor::operator=(int value){
+void libsystempp::FileDescriptor::operator=(int value){
     _FD=value;
-    return *this;
 }
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){

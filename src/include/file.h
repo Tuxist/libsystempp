@@ -40,8 +40,8 @@ namespace libsystempp{
         int  read(void  *buf,int bufsize);
         int  setFcntl(int opt);
         int  getFcntl();
-        FileDescriptor &operator=(int value);
-        FileDescriptor &operator=(FileDescriptor value);
+        void operator=(int value);
+        void operator=(FileDescriptor value);
     protected:
         int _FD;       
     };

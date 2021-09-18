@@ -29,15 +29,15 @@
 #define SOCKET_H
 
 namespace libsystempp {
-    class FileDescriptor;
-
     class ClientSocket {
     public:
         ClientSocket();
         ~ClientSocket();
         void         setnonblocking();
     protected:
-        FileDescriptor *_Socket;
+        int            _Socket;
+        void          *_SocketPtr;
+        unsigned long  _SocketPtrSize;
         friend class ServerSocket;
     };
     
@@ -51,6 +51,7 @@ namespace libsystempp {
                      int sockettype,int sockopts);
         ~ServerSocket();
         
+        void          setnonblocking();
         int           getMaxconnections();
         void          listenSocket();
         int           sendData(ClientSocket *socket,void *data,unsigned long size);
