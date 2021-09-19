@@ -134,7 +134,7 @@ private:
         char *str;       
         str = (char *)s;
         while (n--)
-            str[n] = 0;       
+            str[n] = 0;
     }
     
     void clearHeaps(){
