@@ -28,34 +28,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <signal.h> 
 #include <stddef.h>
 
+#include "syscall.h"
 #include "include/ctrlhandler.h"
 
-// void libsystempp::CtrlHandler::initCtrlHandler(){
-// //     signal(SIGINT, CtrlHandler::CtrlEventHandler);
-//     signal(SIGQUIT, CtrlHandler::CtrlEventHandler);
-//     signal(SIGTERM, CtrlHandler::CtrlEventHandler);
-//     signal(SIGPIPE, CtrlHandler::CtrlEventHandler);
-// }
-// 
-// void libsystempp::CtrlHandler::CtrlEventHandler(int sig) {
-//     switch(sig){
-//         case SIGINT:{
-//                 CTRLTermEvent();
-//             }
-//             break;
-//         case SIGQUIT:{
-//                 CTRLCloseEvent();
-//             }
-//             break;
-//         case SIGTERM:{
-//                 CTRLTermEvent();
-//             }
-//             break;
-//         case SIGPIPE:{
-//                 SIGPIPEEvent();
-//             }
-//             break;
-//         default:
-//             break;
-//     }
-// }
+libsystempp::CtrlHandler::CtrlHandler(){
+    int signalfd;
+    signalfd=syscall0(__NR_signalfd);
+    syscall3(__NR_rt_sigaction,signalfd,(unsigned long)this,sizeof(this));
+}
+
+libsystempp::CtrlHandler::~CtrlHandler(){
+    
+}
+
+void libsystempp::CtrlHandler::CTRLCloseEvent(){
+    return;
+}
+
+void libsystempp::CtrlHandler::CTRLBreakEvent(){
+    return;
+}
+
+void libsystempp::CtrlHandler::CTRLTermEvent(){
+    return;
+}
+
+void libsystempp::CtrlHandler::SIGPIPEEvent(){
+    return;
+}

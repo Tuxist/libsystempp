@@ -33,6 +33,8 @@ list(APPEND systemppSrcs ${linuxSrcs})
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
+target_compile_definitions(systempp PRIVATE -DSHARED)
+
 generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -48,6 +50,13 @@ set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
 install(TARGETS systempp EXPORT systemppTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+install(TARGETS systempp-static EXPORT systempp-staticTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
