@@ -47,11 +47,11 @@ namespace libsystempp {
 
     class ThreadAttribute {
     public:
-        enum Policy {
-            SCHED_FIFO=0, 
-            SCHED_RR=1, 
-            SCHED_OTHER=2
-        };
+//         enum Policy {
+//             SCHED_FIFO=0, 
+//             SCHED_RR=1, 
+//             SCHED_OTHER=2
+//         };
         int    getPolicy();
         void   setPolicy(int policy);
         int    getScope();
@@ -75,26 +75,26 @@ namespace libsystempp {
     
     class Thread {
     public:
-        Thread(void *method,void *args);
-        Thread(void *args);
-        ~Thread();
+        Thread();
+        virtual ~Thread();
         void                  Detach();
         int                   DetachState();
         void                  Join(void *rval=NULL);
         bool                  JoinAble();
         ThreadAttribute      *getinheritsched();
         void                  setinheritsched(ThreadAttribute *attr);
-    protected:
-        virtual void         *Run(void *args);
+        void                  Create(void *function(void*), void *arguments);
     private:
         ThreadAttribute      *_ThreadAttribute;
+        long                  _Thread;
+        Thread               *_nextThread;
     };
     
     class ThreadPool {
     public:
         ThreadPool(size_t size);
         ~ThreadPool();
-        void               addThread(Thread *thread);
+        void               getThread();
     private:
         void              _resize(size_t size);
         Thread          **_ThreadPool;

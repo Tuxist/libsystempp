@@ -27,6 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <linux/fcntl.h>
 #include <linux/net.h>
+#include <linux/in.h>
+#include <linux/in6.h>
+
 
 #include "include/utils.h"
 #include "include/exception.h"
@@ -39,6 +42,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define O_NONBLOCK  00004000
 
 typedef unsigned short sa_family_t;
+typedef unsigned short in_port_t;
+typedef unsigned short u_int16m_t; 
+typedef unsigned int u_int32m_t;
 
 struct sockaddr{
     sa_family_t   sa_family;
@@ -59,6 +65,16 @@ struct addrinfo {
     char             *ai_canonname; /* canonical name for nodename */
     struct sockaddr  *ai_addr;      /* binary address */
     struct addrinfo  *ai_next;      /* next structure in linked list */
+};
+
+struct aibuf {
+    struct addrinfo ai;
+    union sa {
+        struct sockaddr_in sin;
+        struct sockaddr_in6 sin6;
+    } sa;
+    volatile int lock[1];
+    short slot, ref;
 };
 
 libsystempp::ClientSocket::ClientSocket(){
@@ -138,18 +154,106 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
 //         exception[SystemException::Critical] << "getaddrinfo failed ";
 //         throw exception;
 //     }
-       
+    
+    struct service ports[MAXSERVS];
+    struct address addrs[MAXADDRS];
+    char canon[256], *outcanon;
+    int nservs, naddrs, nais, canon_len, i, j, k;
+    int family = AF_UNSPEC, flags = 0, proto = 0, socktype = 0;
+    struct aibuf *out;
+    family = sockaddr.ai_family;
+    flags = sockaddr.ai_flags;
+    proto = sockaddr.ai_protocol;
+    socktype = sockaddr.ai_socktype;
+    
+    const int mask = AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | 
+    AI_V4MAPPED | AI_ALL | AI_ADDRCONFIG | AI_NUMERICSERV;
+    if ((flags & mask) != flags)
+        throw exception[SystemException::Error] << "ServerSocket Badflags !"
+    if (flags & AI_ADDRCONFIG) {
+        /* Define the "an address is configured" condition for address
+         * families via ability to create a socket for the family plus
+         * routability of the loopback address for the family. */
+        static const struct sockaddr_in lo4 = {
+            .sin_family = AF_INET, .sin_port = 65535,
+            .sin_addr.s_addr = __BYTE_ORDER == __BIG_ENDIAN
+            ? 0x7f000001 : 0x0100007f
+        };
+        static const struct sockaddr_in6 lo6 = {
+            .sin6_family = AF_INET6, .sin6_port = 65535,
+            .sin6_addr = IN6ADDR_LOOPBACK_INIT
+        };
+        int tf[2] = { AF_INET, AF_INET6 };
+        const void *ta[2] = { &lo4, &lo6 };
+        socklen_t tl[2] = { sizeof lo4, sizeof lo6 };
+        for (i=0; i<2; i++) {
+            if (family==tf[1-i]) continue;
+            int s = socket(tf[i], SOCK_CLOEXEC|SOCK_DGRAM,
+                           IPPROTO_UDP);
+            if (s>=0) {
+                int cs;
+                pthread_setcancelstate(
+                    PTHREAD_CANCEL_DISABLE, &cs);
+                int r = connect(s, ta[i], tl[i]);
+                pthread_setcancelstate(cs, 0);
+                close(s);
+                if (!r) continue;
+            }
+            if (family == tf[i]) 
+                throw exception[SystemException::Error] << "ServerSocket AI have no name !";
+            family = tf[1-i];
+        }
+    }    
+    nservs = __lookup_serv(ports, port_buffer, proto, socktype, flags);
+    naddrs = __lookup_name(addrs, canon, addr, family, flags);    
+    nais = nservs * naddrs;
+    canon_len = getlen(canon);
+    out = new struct aibuf[(nais * sizeof(*out) + canon_len + 1)];
+    
+    if (canon_len) {
+        outcanon = (char*)&out[nais];
+        scopy(canon,canon+(canon_len+1),outcanon);
+    } else {
+        outcanon = 0;
+    }
+    
+    for (k=i=0; i<naddrs; i++) for (j=0; j<nservs; j++, k++) {
+        out[k].slot = k;
+        out[k].ai = (struct addrinfo){
+            .ai_family = addrs[i].family,
+            .ai_socktype = ports[j].socktype,
+            .ai_protocol = ports[j].proto,
+            .ai_addrlen = addrs[i].family == AF_INET
+            ? sizeof(struct sockaddr_in)
+            : sizeof(struct sockaddr_in6),
+            .ai_addr = (void *)&out[k].sa,
+            .ai_canonname = outcanon };
+            if (k) out[k-1].ai.ai_next = &out[k].ai;
+            switch (addrs[i].family) {
+                case AF_INET:
+                    out[k].sa.sin.sin_family = AF_INET;
+                    out[k].sa.sin.sin_port = htons(ports[j].port);
+                    memcpy(&out[k].sa.sin.sin_addr, &addrs[i].addr, 4);
+                    break;
+                case AF_INET6:
+                    out[k].sa.sin6.sin6_family = AF_INET6;
+                    out[k].sa.sin6.sin6_port = htons(ports[j].port);
+                    out[k].sa.sin6.sin6_scope_id = addrs[i].scopeid;
+                    memcpy(&out[k].sa.sin6.sin6_addr, &addrs[i].addr, 16);
+                    break;			
+            }
+    }
+    out[0].ref = nais;
+    result = &out->ai;
+    
     for (rp = result; rp != nullptr; rp = rp->ai_next) {
         _Socket = (int)syscall3(__NR_socket,rp->ai_family, rp->ai_socktype,rp->ai_protocol);
         if (_Socket == -1)
             continue;
-        
         int optval = 1;
-        syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts,(unsigned long) &optval,sizeof(optval));
-       
+        syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts,(unsigned long) &optval,sizeof(optval));        
         if (syscall3(__NR_bind,_Socket, (unsigned long)rp->ai_addr, rp->ai_addrlen) == 0)
             break;                  /* Success */
-            
         syscall1(__NR_close,_Socket);
     }
     
@@ -164,9 +268,8 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
         exception[SystemException::Critical] << "Could not bind serversocket";
         throw exception;
     }
-        
 }
-
+                                        
 libsystempp::ServerSocket::~ServerSocket(){
     syscall1(__NR_close, _Socket);
 }

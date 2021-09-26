@@ -25,35 +25,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <errno.h>
+#include "syscall.h"
+
+#include <linux/sched.h>
 
 #include "include/thread.h"
-#include <string.h>
+#include "include/exception.h"
 
-// libsystempp::Thread::Thread(){
-//   _Pid=-1;
-//   _nextThread=NULL;
-// }
-// 
-// libsystempp::Thread::~Thread(){
-//   delete _nextThread;
-// }
-// 
-// void libsystempp::Thread::Create(void *function(void*), void *arguments) {
-//   HTTPException httpexception;
-//   int rth = pthread_create(&_Thread, NULL, function, arguments);
-//   if (rth != 0) {
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Thread Create" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Thread Create" << errbuf;
-// #endif
-//     throw httpexception;
-//   }
-// }
+libsystempp::Thread::Thread(){
+  _nextThread=nullptr;
+  _Thread=0;
+}
+
+libsystempp::Thread::~Thread(){
+  delete _nextThread;
+}
+
+void libsystempp::Thread::Create(void *function(void*), void *arguments) {
+  SystemException excep;
+  int rth = syscall4(__NR_clone,_Thread, 
+                        CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SYSVSEM
+                        | CLONE_SIGHAND | CLONE_THREAD
+                        | CLONE_SETTLS | CLONE_PARENT_SETTID
+                        | CLONE_CHILD_CLEARTID | 0 ,
+                     (long)function,(long)arguments);
+  if (rth > 0) {
+    excep[SystemException::Error] << "Can't create thread !";
+    throw excep;
+  }
+}
 
 // void libsystempp::Thread::Detach(){
 // //     pthread_detach(_Thread);
@@ -71,18 +71,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // //   _Pid=pid;
 // }
 // 
-// void libsystempp::Thread::Join(){
-//   if(pthread_join(_Thread,&_Retval)<=0){
-//     return;  
-//   }else{
-//     HTTPException httpexception;    
-// #ifdef __GLIBCXX__
-//     char errbuf[255];
-//     httpexception[HTTPException::Error] << "Can't join Thread" << strerror_r(errno, errbuf, 255);
-// #else
-//     char errbuf[255];
-//     strerror_r(errno, errbuf, 255);
-//     httpexception[HTTPException::Error] << "Can't join Thread" << errbuf;
-// #endif  
-//   }
-// }
+void libsystempp::Thread::Join(){
+  if(pthread_join(_Thread,&_Retval)<=0){
+    return;  
+  }else{
+    SystemException excep;  
+    excep[SystemException::Error] << "Can't join Thread!";
+  }
+}

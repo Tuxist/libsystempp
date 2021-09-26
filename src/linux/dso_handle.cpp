@@ -1,7 +1,7 @@
 #include <unwind.h>
 #include <inttypes.h>
 
-#ifdef SHARED
+#ifdef BUILD_SHARED
 void *__dso_handle = &__dso_handle;
 #else
 void *__dso_handle = (void *)0;
@@ -14,7 +14,7 @@ __attribute__((visibility("hidden"))) int* __errno_location(void) {
 }
 
 extern "C" {
-
+    
     _Unwind_Reason_Code __gxx_personality_v0 (
                      int version, _Unwind_Action actions, uint64_t exceptionClass,
                      _Unwind_Exception* unwind_exception, _Unwind_Context* context){

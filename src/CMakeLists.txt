@@ -33,7 +33,9 @@ list(APPEND systemppSrcs ${linuxSrcs})
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
-target_compile_definitions(systempp PRIVATE -DSHARED)
+IF(BUILD_SHARED_LIBS)
+    add_definitions(-DBUILD_SHARED)
+ENDIF()
 
 generate_export_header(systempp)
 
