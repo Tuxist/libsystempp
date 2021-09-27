@@ -25,12 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <exception.h>
-
-#include "syscall.h"
-
 namespace std {
-    void terminate() noexcept{
-        syscall0(__NR_exit_group);
+    class type_info{
+        
     };
 };
+

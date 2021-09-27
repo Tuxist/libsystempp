@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "include/exception.h"
 #include "include/socket.h"
 
-#include "include/linux_socket.h"
+#include "include/bits_socket.h"
 
 #include "syscall.h"
 

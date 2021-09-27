@@ -25,6 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#define MAXCONN 1024
+
 #include "include/array.h"
 
 #ifndef CONFDB_INTERNAL_H
@@ -65,7 +67,9 @@ namespace libsystempp {
     };
     
     class ConfDbD{
-    
+    public:
+        ConfDbD(const char *conffile,const char *socket);
+    private:
     };
 };
 #endif

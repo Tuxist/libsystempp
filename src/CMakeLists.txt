@@ -5,19 +5,20 @@ include(GenerateExportHeader)
 
 file(GLOB currentSrcs "*.cpp")
 list(APPEND systemppSrcs ${currentSrcs})
+
 file(GLOB currentSrcs "std/*.cpp")
 list(APPEND systemppSrcs ${currentSrcs})
-file(GLOB currentSrcs "confdb/*.cpp")
-list(APPEND systemppSrcs ${currentSrcs})
+
+list(APPEND systemppSrcs "confdb/confdb.cpp")
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/src/include
 )
 
 #os dependencies
 message("Build with Linux Support")
 include_directories(
-    ${LINUXHEADERS_INCLUDE_DIRS}
+    "linux/include"
 )
 file(GLOB linuxSrcs 
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
@@ -33,6 +34,9 @@ list(APPEND systemppSrcs ${linuxSrcs})
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
+add_executable(confdbd "confdb/confdbd.cpp")
+add_executable(confcli "confdb/confcli.cpp")
+
 IF(BUILD_SHARED_LIBS)
     add_definitions(-DBUILD_SHARED)
 ENDIF()
@@ -43,6 +47,9 @@ set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(systempp)
 target_link_libraries(systempp-static)    
+
+target_link_libraries(confdbd systempp-static)
+target_link_libraries(confcli systempp-static)
 
 SET(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Output directory for libraries")
 

@@ -1,6 +1,8 @@
 #include <unwind.h>
 #include <inttypes.h>
 
+#include "exception.h"
+
 #ifdef BUILD_SHARED
 void *__dso_handle = &__dso_handle;
 #else
@@ -13,8 +15,14 @@ __attribute__((visibility("hidden"))) int* __errno_location(void) {
     return &errno; 
 }
 
+namespace __cxxabiv1 {
+    class __class_type_info;
+    class __class_type_info : public std::type_info {
+        
+    };
+};
+
 extern "C" {
-    
     _Unwind_Reason_Code __gxx_personality_v0 (
                      int version, _Unwind_Action actions, uint64_t exceptionClass,
                      _Unwind_Exception* unwind_exception, _Unwind_Context* context){
@@ -34,7 +42,6 @@ extern "C" {
 //   _URC_CONTINUE_UNWIND;
         return _URC_FATAL_PHASE1_ERROR;
     }
-
     
     void _Unwind_Resume(struct _Unwind_Exception * object){
         
@@ -66,4 +73,14 @@ extern "C" {
         
     };
     
+    void *__cxa_allocate_exception(unsigned long thrown_size){
+        return nullptr;
+    };
+    
+    void __cxa_throw (void *thrown_exception,std::type_info *tinfo, void (*dest) (void *) ){
+    };
+    
+    void __cxa_free_exception(void *thrown_exception){
+        
+    };
 };

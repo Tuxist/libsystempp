@@ -169,6 +169,11 @@ void operator delete(void* ptr,unsigned long amount){
     Allocator::getInstance().sysfree(ptr);
 }
 
+void operator delete[](void* ptr){
+    Allocator::getInstance().sysfree(ptr);
+}
+
 void operator delete[](void* ptr,unsigned long amount){
     Allocator::getInstance().sysfree(ptr);
 }
+

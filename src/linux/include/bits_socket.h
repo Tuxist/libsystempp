@@ -1,5 +1,5 @@
-#ifndef LINUX_SOCKET_H
-#define LINUX_SOCKET_H
+#ifndef BITS_SOCKET_H
+#define BITS_SOCKET_H
 
 /* Supported address families. */
 #define AF_UNSPEC	0
