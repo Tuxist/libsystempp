@@ -17,11 +17,72 @@ __attribute__((visibility("hidden"))) int* __errno_location(void) {
     return &errno; 
 }
 
-namespace __cxxabiv1 {
-    class type_info : public __class_type_info {
+bool __cxxabiv1::__si_class_type_info::__do_dyncast(
+    ptrdiff_t __src2dst, __sub_kind __access_path,
+    const __class_type_info* __dst_type, const void* __obj_ptr,
+    const __class_type_info* __src_type, const void* __src_ptr,
+    __dyncast_result& __result) const{
         
-    };
+}
+    
+
+                                                           
+bool __cxxabiv1::__si_class_type_info::__do_upcast(
+    const __class_type_info*__dst, const void*__obj,
+    __upcast_result& __restrict __result) const{
+        
 };
+                                                                                                         
+__cxxabiv1::__si_class_type_info::~__si_class_type_info(){
+        
+}
+
+__cxxabiv1::__class_type_info::~__class_type_info(){
+        
+}
+
+__cxxabiv1::__si_class_type_info::__sub_kind 
+__cxxabiv1::__class_type_info::__do_find_public_src(long, 
+    void const*, 
+    __cxxabiv1::__class_type_info const*, 
+    void const*) const{
+};
+
+__cxxabiv1::__si_class_type_info::__sub_kind
+__cxxabiv1::__si_class_type_info::__do_find_public_src(
+    long, 
+    void const*,
+    __cxxabiv1::__class_type_info const*,
+    void const*) const{
+    
+};
+
+bool __cxxabiv1::__class_type_info::__do_catch(type_info const*, 
+                                               void**, 
+                                               unsigned int) const{
+    
+};
+
+bool __cxxabiv1::__class_type_info::__do_upcast(__cxxabiv1::__class_type_info const*, 
+                                                void**) const{
+    
+};
+
+bool __cxxabiv1::__class_type_info::__do_upcast(__cxxabiv1::__class_type_info const*, 
+                                                void const*, 
+                                                __cxxabiv1::__class_type_info::__upcast_result&) const{
+    
+}
+
+bool __cxxabiv1::__class_type_info::__do_dyncast(long, 
+                                                 __cxxabiv1::__class_type_info::__sub_kind, 
+                                                 __cxxabiv1::__class_type_info const*, void const*, 
+                                                 __cxxabiv1::__class_type_info              const*, 
+                                                 void const*, 
+                                                 __cxxabiv1::__class_type_info::__dyncast_result&) const{
+    
+};
+
 
 extern "C" {
     _Unwind_Reason_Code __gxx_personality_v0 (

@@ -30,10 +30,6 @@
 #ifndef SYSEXCEPTION_H
 #define SYSEXCEPTION_H
 
-#ifdef DEBUG
-
-#endif
-
 namespace libsystempp {
     
     class SystemException {
