@@ -27,6 +27,7 @@ file(GLOB linuxSrcs
 )
 configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
+    linux/arch/${CMAKE_SYSTEM_PROCESSOR}/bits.h.in ${CMAKE_CURRENT_BINARY_DIR}/bits.h
 )
 list(APPEND systemppSrcs ${linuxSrcs})
 
