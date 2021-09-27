@@ -30,6 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "confdb_internal.h"
 
+libsystempp::ConfData::ConfData(){
+    _Parent=nullptr;
+    _prevConfData=nullptr;
+    _nextConfData=nullptr;
+}
+
+libsystempp::ConfData::~ConfData(){
+    delete _prevConfData;
+    delete _nextConfData;
+}
+
+
 void libsystempp::ConfData::setKey(class CharArray *key){
     _Key=*key;
 }

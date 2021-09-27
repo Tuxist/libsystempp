@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace libsystempp {
     class ConfData {
     public:
+        ConfData();
+        ~ConfData();
         enum{
             Folder=0,
             CharArray=1,
@@ -57,6 +59,8 @@ namespace libsystempp {
         int             _ValueType;
         class CharArray _Value;
         ConfData       *_Parent;
+        ConfData       *_prevConfData;
+        ConfData       *_nextConfData;
         friend class ConfDbD;
     };
     
