@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/net.h>
 #include <linux/in.h>
 #include <linux/in6.h>
-
+#include <linux/aio_abi.h>
+#include <netdb.h>
 
 #include "include/utils.h"
 #include "include/exception.h"
