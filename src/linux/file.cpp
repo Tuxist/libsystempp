@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "sysfile.h"
 #include "syscall.h"
+#include "sysbits.h"
 
 libsystempp::FileDescriptor::FileDescriptor(){
 }

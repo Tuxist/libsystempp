@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <exception>
 
+#include "sysbits.h"
 #include "syscall.h"
 
 namespace std {

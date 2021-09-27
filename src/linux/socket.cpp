@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysexception.h"
 #include "syssocket.h"
 #include "bits_socket.h"
-
+#include "sysbits.h"
 #include "syscall.h"
 
 #define O_NONBLOCK  00004000
