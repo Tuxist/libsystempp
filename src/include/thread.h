@@ -44,34 +44,6 @@ namespace libsystempp {
     private:
         MutexData *_MutexData;
     };
-
-    class ThreadAttribute {
-    public:
-//         enum Policy {
-//             SCHED_FIFO=0, 
-//             SCHED_RR=1, 
-//             SCHED_OTHER=2
-//         };
-        int    getPolicy();
-        void   setPolicy(int policy);
-        int    getScope();
-        void   setScope(int scope);
-        void  *getStackAddr();
-        void   setStackAddr(void *stackaddr);
-        size_t getStackSize();
-        void   setStackSize(size_t stacksize);
-        void   setGuardSize(size_t guardsize);
-        size_t getGuardSize();
-    private:
-        ThreadAttribute();
-        ~ThreadAttribute();
-        int    _Policy;
-        int    _Scope;
-        void  *_StackAddr;
-        size_t _StackSize;
-        size_t _GuardSize;
-        friend class Scheduler;
-    };
     
     class Thread {
     public:
@@ -81,11 +53,8 @@ namespace libsystempp {
         int                   DetachState();
         void                  Join(void *rval=NULL);
         bool                  JoinAble();
-        ThreadAttribute      *getinheritsched();
-        void                  setinheritsched(ThreadAttribute *attr);
         void                  Create(void *function(void*), void *arguments);
     private:
-        ThreadAttribute      *_ThreadAttribute;
         long                  _Thread;
         Thread               *_nextThread;
     };

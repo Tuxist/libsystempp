@@ -72,10 +72,10 @@ void libsystempp::Thread::Create(void *function(void*), void *arguments) {
 // }
 // 
 void libsystempp::Thread::Join(){
-  if(pthread_join(_Thread,&_Retval)<=0){
-    return;  
-  }else{
-    SystemException excep;  
-    excep[SystemException::Error] << "Can't join Thread!";
-  }
+//   if(pthread_join(_Thread,&_Retval)<=0){
+//     return;  
+//   }else{
+//     SystemException excep;  
+//     excep[SystemException::Error] << "Can't join Thread!";
+//   }
 }
