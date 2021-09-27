@@ -25,9 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include "include/array.h"
-#include "include/utils.h"
-#include "include/exception.h"
+#include "sysarray.h"
+#include "sysutils.h"
+#include "sysexception.h"
 
 libsystempp::CharArray::CharArray(){
     _InitArray();

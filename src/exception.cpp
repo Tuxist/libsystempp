@@ -27,8 +27,8 @@
 
 #include <stddef.h>
 
-#include "include/utils.h"
-#include "include/exception.h"
+#include "sysutils.h"
+#include "sysexception.h"
 
 libsystempp::SystemException::Message::Message(){
     _Buffer=nullptr;

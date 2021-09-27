@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <linux/sched.h>
 
-#include "include/thread.h"
-#include "include/exception.h"
+#include "include/systhread.h"
+#include "include/sysexception.h"
 
 libsystempp::Thread::Thread(){
   _nextThread=nullptr;

@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MAXCONN 1024
 
-#include "include/array.h"
+#include "include/sysarray.h"
 
 #ifndef CONFDB_INTERNAL_H
 #define CONFDB_INTERNAL_H

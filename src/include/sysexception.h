@@ -27,8 +27,8 @@
 
 #include "config.h"
 
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef SYSEXCEPTION_H
+#define SYSEXCEPTION_H
 
 #ifdef DEBUG
 

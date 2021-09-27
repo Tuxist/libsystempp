@@ -31,11 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/in6.h>
 #include <linux/aio_abi.h>
 
-#include "include/utils.h"
-#include "include/exception.h"
-#include "include/socket.h"
-
-#include "include/bits_socket.h"
+#include "sysutils.h"
+#include "sysexception.h"
+#include "syssocket.h"
+#include "bits_socket.h"
 
 #include "syscall.h"
 

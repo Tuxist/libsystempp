@@ -1,7 +1,9 @@
 #include <unwind.h>
 #include <inttypes.h>
+#include <typeinfo>
+#include <cxxabi.h>
 
-#include "exception.h"
+#include "sysexception.h"
 
 #ifdef BUILD_SHARED
 void *__dso_handle = &__dso_handle;
@@ -16,8 +18,7 @@ __attribute__((visibility("hidden"))) int* __errno_location(void) {
 }
 
 namespace __cxxabiv1 {
-    class __class_type_info;
-    class __class_type_info : public std::type_info {
+    class type_info : public __class_type_info {
         
     };
 };
@@ -47,13 +48,11 @@ extern "C" {
         
     }
     
-    int __cxa_atexit(void (*f)(void *), void *objptr, void *dso)
-    {
+    int __cxa_atexit(void (*f)(void *), void *objptr, void *dso){
         return 0;
     };
     
-    void __cxa_finalize(void *f)
-    {
+    int __cxa_finalize(void *f){
 
     };
     
@@ -61,20 +60,19 @@ extern "C" {
         
     };
     
-    void __cxa_begin_catch(void *c){
+    void *__cxa_begin_catch(void *c) _GLIBCXX_NOTHROW{
     
     };
     
-    int __cxa_guard_acquire(uint64_t* guard_object){
+    int __cxa_guard_acquire(__cxxabiv1::__guard *guard_object){
         return 0;
     };
     
-    void __cxa_guard_release(uint64_t* guard_object){
+    void __cxa_guard_release(__cxxabiv1::__guard *guard_object) _GLIBCXX_NOTHROW{
         
     };
     
     void *__cxa_allocate_exception(unsigned long thrown_size){
-        return nullptr;
     };
     
     void __cxa_throw (void *thrown_exception,std::type_info *tinfo, void (*dest) (void *) ){
