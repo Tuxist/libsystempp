@@ -38,6 +38,8 @@ namespace libsystempp {
    void itoa(int n, char s[]);
    void ultoa(unsigned long n, char s[]);
    void zero(void *s, unsigned n);
+   int atoi(char* str);
+   unsigned long atoul(char* str);
 };
 
 #endif

@@ -51,7 +51,7 @@ namespace libsystempp {
         virtual ~Thread();
         void                  Detach();
         int                   DetachState();
-        void                  Join(void *rval=NULL);
+        void                  Join();
         bool                  JoinAble();
         void                  Create(void *function(void*), void *arguments);
     private:

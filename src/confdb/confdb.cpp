@@ -25,3 +25,61 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include "include/utils.h"
+#include "include/exception.h"
+
+#include "confdb_internal.h"
+
+void libsystempp::ConfData::setKey(class CharArray *key){
+    _Key=*key;
+}
+
+void libsystempp::ConfData::setKey(const char *key){
+    _Key=key;
+}
+
+const char  *libsystempp::ConfData::getKey(){
+    return _Key.c_str();
+}
+        
+void libsystempp::ConfData::setValue(class CharArray *value){
+    _Value=*value;
+}
+
+void libsystempp::ConfData::setValue(const char *value){
+    _Value=value;        
+}
+
+void libsystempp::ConfData::setValue(int value){
+    char buf[255];
+    itoa(value,buf);
+    _Value=buf;
+}
+
+void libsystempp::ConfData::setValue(unsigned int value){
+    char buf[512];
+    ultoa(value,buf);
+    _Value=buf;    
+}
+        
+const char*  libsystempp::ConfData::getValue(){
+    return _Value.c_str();
+}
+        
+int libsystempp::ConfData::getValueInt(){
+    SystemException excep;
+    char buf[255];
+    if(_Value.size()>255)
+        throw excep[SystemException::Error] << "ConfData::getValueInt: cannot convert to int";
+    scopy(_Value.c_str(),_Value.c_str()+_Value.size(),buf);
+    return atoi(buf);
+}
+        
+unsigned int libsystempp::ConfData::getValueUInt(){
+    SystemException excep;
+    char buf[512];
+    if(_Value.size()>512)
+        throw excep[SystemException::Error] << "ConfData::getValueInt: cannot convert to int";
+    scopy(_Value.c_str(),_Value.c_str()+_Value.size(),buf);
+    return atoul(buf);           
+}

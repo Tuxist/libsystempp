@@ -7,7 +7,7 @@ file(GLOB currentSrcs "*.cpp")
 list(APPEND systemppSrcs ${currentSrcs})
 file(GLOB currentSrcs "std/*.cpp")
 list(APPEND systemppSrcs ${currentSrcs})
-file(GLOB currentSrcs "libc/*.cpp")
+file(GLOB currentSrcs "confdb/*.cpp")
 list(APPEND systemppSrcs ${currentSrcs})
 
 include_directories(

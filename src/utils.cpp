@@ -92,3 +92,42 @@ void libsystempp::zero(void *s, unsigned n){
     while (n--)
         str[n] = 0;       
 }
+
+int libsystempp::atoi(char* str){
+    int sign = 1, base = 0, i = 0;
+    while (str[i] == ' '){
+        i++;
+    }
+    if (str[i] == '-' || str[i] == '+'){
+        sign = 1 - 2 * (str[i++] == '-');
+    }
+    while (str[i] >= '0' && str[i] <= '9'){
+        if (base > +2147483647 / 10
+            || (base == +2147483647 / 10
+            && str[i] - '0' > 7)){
+            if (sign == 1)
+                return +2147483647;
+            else
+                return -2147483648;
+        }
+        base = 10 * base + (str[i++] - '0');
+    }
+    return base * sign;
+}
+
+unsigned long libsystempp::atoul(char* str){
+    unsigned long sign = 1, base = 0, i = 0;
+    while (str[i] == ' '){
+        i++;
+    }
+    while (str[i] >= '0' && str[i] <= '9'){
+        if (base > +4294967295 / 10
+            || (base == +4294967295 / 10
+            && str[i] - '0' > 7)){
+            if (sign == 1)
+                return +4294967295;
+        }
+        base = 10 * base + (str[i++] - '0');
+    }
+    return base * sign;
+}
