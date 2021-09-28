@@ -111,4 +111,8 @@ extern "C" {
         
     };
 
+    void __cxa_throw_bad_array_new_length(){
+      
+    };
+    
 };
