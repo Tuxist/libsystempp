@@ -26,10 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include <linux/fcntl.h>
-#include <linux/net.h>
 #include <linux/in.h>
 #include <linux/in6.h>
-#include <linux/aio_abi.h>
 
 #include "sysutils.h"
 #include "sysexception.h"
@@ -305,7 +303,7 @@ int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     clientsocket->_SocketPtr = new sockaddr();
     int socket = syscall3(__NR_accept,_Socket,(unsigned long)clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
-    if(socket>0){
+    if(socket<0){
         char errbuf[255];
         exception[SystemException::Error] << "Can't accept on  Socket";
         throw exception;
@@ -327,7 +325,7 @@ int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsign
                         (unsigned long)socket->_SocketPtr,
                         (unsigned long)&socket->_SocketPtrSize
                      );
-    if(rval>0){
+    if(rval<0){
         exception[SystemException::Error] << "Socket senddata failed on Socket: " << socket->_Socket;
         throw exception;
     }
@@ -348,7 +346,7 @@ int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsign
                             (unsigned long)socket->_SocketPtr,
                             (unsigned long)&socket->_SocketPtrSize
                          );
-    if(recvsize>0){
+    if(recvsize<0){
         exception[SystemException::Error] << "Socket recvdata failed on Socket: " << socket->_Socket;
         throw exception;
     }

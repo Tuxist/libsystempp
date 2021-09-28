@@ -42,14 +42,14 @@ libsystempp::ConfDbD::ConfDbD(const char *conffile,const char *socket){
             char buf[255];
             int recvived=0;
             CharArray data;
-            {
+            do{
                 recvived=srvsock.recvData(&sock,buf,255);
                 data.assign(buf,recvived);
             }while(recvived<0);
-            const char send[9]="recvived";
             if(data.size()>0){
                 Console[SYSOUT]<< data.c_str() << _Console::endl;
-                srvsock.sendData(&sock,(void*)send,9);
+                int send=srvsock.sendData(&sock,(void*)data.c_str(),data.size());
+                Console[SYSOUT] << send;
             }
         }catch(...){
             Console[SYSOUT] << "Something goes wrong!" << _Console::endl;
