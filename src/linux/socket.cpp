@@ -26,8 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include <linux/fcntl.h>
-#include <linux/in.h>
-#include <linux/in6.h>
+#include <linux/aio_abi.h>
 
 #include "sysutils.h"
 #include "sysexception.h"
@@ -46,12 +45,20 @@ typedef unsigned int u_int32m_t;
 
 struct sockaddr{
     sa_family_t   sa_family;
-    char          sa_data[];
+    char          sa_data[14];
 };
 
 struct sockaddr_un {
     sa_family_t sun_family;
     char        sun_path[108];
+};
+
+struct in_addr {
+    unsigned long s_addr;  // load with inet_aton()
+};
+
+struct in6_addr {
+    unsigned char   s6_addr[16];
 };
 
 struct addrinfo {
@@ -63,6 +70,21 @@ struct addrinfo {
     char             *ai_canonname; /* canonical name for nodename */
     struct sockaddr  *ai_addr;      /* binary address */
     struct addrinfo  *ai_next;      /* next structure in linked list */
+};
+
+struct sockaddr_in {
+    short            sin_family;   // e.g. AF_INET
+    unsigned short   sin_port;     // e.g. htons(3490)
+    struct in_addr   sin_addr;     // see struct in_addr, below
+    char             sin_zero[8];  // zero this if you want to
+};
+
+struct sockaddr_in6 {
+    unsigned char           sin6_len;      /* length of this structure */
+    unsigned char           sin6_family;   /* AF_INET6                 */
+    u_int16m_t       sin6_port;     /* Transport layer port #   */
+    u_int32m_t       sin6_flowinfo; /* IPv6 flow information    */
+    struct in6_addr  sin6_addr;     /* IPv6 address             */
 };
 
 struct aibuf {
@@ -99,6 +121,7 @@ int libsystempp::ClientSocket::getSocket(){
 
 libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
                                         int sockettype,int sockopts){
+    _UxSocket=uxsocket;
     SystemException exception;
     int optval = 1;
     if(sockopts == -1)
@@ -106,7 +129,6 @@ libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
     _Maxconnections=maxconnections;
     struct sockaddr_un usock{0};
     usock.sun_family = AF_UNIX;
-
     if(!uxsocket){
         exception[SystemException::Critical] << "Can't copy Server UnixSocket";
         throw exception;
@@ -270,6 +292,8 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
                                         
 libsystempp::ServerSocket::~ServerSocket(){
     syscall1(__NR_close, _Socket);
+    if(_UxSocket.size()!=0)
+        syscall1(__NR_unlink,(unsigned long)_UxSocket.c_str());
 }
 
 void libsystempp::ServerSocket::setnonblocking(){
@@ -299,9 +323,10 @@ int libsystempp::ServerSocket::getMaxconnections(){
 
 int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     SystemException exception;
+    clientsocket->_SocketPtr = new struct sockaddr();
     clientsocket->_SocketPtrSize=sizeof(sockaddr);
-    clientsocket->_SocketPtr = new sockaddr();
-    int socket = syscall3(__NR_accept,_Socket,(unsigned long)clientsocket->_SocketPtr,
+    zero(clientsocket->_SocketPtr,clientsocket->_SocketPtrSize);
+    int socket = syscall3(__NR_accept,_Socket,(unsigned long)&clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
     if(socket<0){
         char errbuf[255];
@@ -320,10 +345,10 @@ int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsign
     SystemException exception;
     int rval=syscall6(__NR_sendto,socket->_Socket,
                         (unsigned long)data,
-                        (unsigned long)&size,
-                        (unsigned long)&flags,
+                        size,
+                        flags,
                         (unsigned long)socket->_SocketPtr,
-                        (unsigned long)&socket->_SocketPtrSize
+                        (unsigned long)socket->_SocketPtrSize
                      );
     if(rval<0){
         exception[SystemException::Error] << "Socket senddata failed on Socket: " << socket->_Socket;
@@ -341,8 +366,8 @@ int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsign
     SystemException exception;
     int recvsize=syscall6(__NR_recvfrom,socket->_Socket,
                             (unsigned long)data,
-                            (unsigned long)&size,
-                            (unsigned long)&flags,
+                            size,
+                            flags,
                             (unsigned long)socket->_SocketPtr,
                             (unsigned long)&socket->_SocketPtrSize
                          );

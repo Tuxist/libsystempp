@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include "sysarray.h"
+
 #ifndef SYSSOCKET_H
 #define SYSSOCKET_H
 
@@ -38,7 +40,7 @@ namespace libsystempp {
     protected:
         int            _Socket;
         void          *_SocketPtr;
-        unsigned long  _SocketPtrSize;
+        int            _SocketPtrSize;
         friend class ServerSocket;
     };
     
@@ -73,6 +75,7 @@ namespace libsystempp {
         int             _Socket;
         int             _Port;
         int             _Maxconnections;
+        CharArray       _UxSocket;
     };
 };
 #endif
