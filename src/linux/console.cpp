@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysutils.h"
 #include "sysconsole.h"
 
-
+libsystempp::FileDescriptor STDOUT(1);
+libsystempp::FileDescriptor STDERR(2);
 
 const char *libsystempp::_Console::endl="\n";
 

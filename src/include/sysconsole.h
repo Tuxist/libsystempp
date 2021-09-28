@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYSERR 1
 
 namespace libsystempp {
-    static FileDescriptor STDOUT(1);
-    static FileDescriptor STDERR(2);
+    static FileDescriptor STDOUT;
+    static FileDescriptor STDERR;
     
     class _Console {
     public:

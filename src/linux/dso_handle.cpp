@@ -2,13 +2,13 @@
 
 #include "sysexception.h"
 
-extern "C" {
 #ifdef BUILD_SHARED
-    __attribute__((weak)) void *__dso_handle = &__dso_handle;
+extern void *__dso_handle __attribute__ ((__visibility__ ("hidden")));
 #else
-    __attribute__((weak)) void *__dso_handle = (void *)0;
+void *__dso_handle = 0;
 #endif
-}
+
+
 
 static int errno;
 
