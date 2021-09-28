@@ -50,8 +50,15 @@ install(FILES
 
 add_library(systempp STATIC ${systemppSrcs} )
 
-add_executable(confdbd "confdb/confdbd.cpp")
-add_executable(confcli "confdb/confcli.cpp")
+add_executable(confdbd 
+    "confdb/confdbd.cpp"
+    "confdb/json_min.cpp"
+)
+
+add_executable(confcli 
+    "confdb/confcli.cpp"
+    "confdb/json_min.cpp"
+)
 
 generate_export_header(systempp)
 

@@ -162,18 +162,22 @@ void *operator new[](unsigned long size){
 }
 
 void operator delete (void* ptr) throw(){
-    Allocator::getInstance().sysfree(ptr);
+    if(ptr)
+        Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete(void* ptr,unsigned long amount){
-    Allocator::getInstance().sysfree(ptr);
+    if(ptr)
+        Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete[](void* ptr){
-    Allocator::getInstance().sysfree(ptr);
+    if(ptr)
+      Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete[](void* ptr,unsigned long amount){
-    Allocator::getInstance().sysfree(ptr);
+    if(ptr)
+        Allocator::getInstance().sysfree(ptr);
 }
 

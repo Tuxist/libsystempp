@@ -73,9 +73,8 @@ namespace libsystempp {
         
     private:
         int             _Socket;
-        int             _Port;
         int             _Maxconnections;
-        CharArray       _UxSocket;
+        CharArray       _UxPath;
     };
 };
 #endif

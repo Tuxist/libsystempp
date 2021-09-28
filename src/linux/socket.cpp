@@ -121,7 +121,6 @@ int libsystempp::ClientSocket::getSocket(){
 
 libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
                                         int sockettype,int sockopts){
-    _UxSocket=uxsocket;
     SystemException exception;
     int optval = 1;
     if(sockopts == -1)
@@ -133,7 +132,7 @@ libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
         exception[SystemException::Critical] << "Can't copy Server UnixSocket";
         throw exception;
     }
-    
+    _UxPath=uxsocket;
     scopy(uxsocket,uxsocket+getlen(uxsocket),usock.sun_path);
     
     if ((_Socket=(int)syscall3(__NR_socket,AF_UNIX,sockettype, 0)) < 0){
@@ -292,8 +291,9 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
                                         
 libsystempp::ServerSocket::~ServerSocket(){
     syscall1(__NR_close, _Socket);
-    if(_UxSocket.size()!=0)
-        syscall1(__NR_unlink,(unsigned long)_UxSocket.c_str());
+    if(_UxPath.size()>0){
+        syscall1(__NR_unlink,(unsigned long)_UxPath.c_str());
+    }
 }
 
 void libsystempp::ServerSocket::setnonblocking(){

@@ -30,11 +30,12 @@
 #include "sysexception.h"
 
 libsystempp::CharArray::CharArray(){
-    _InitArray();
+    _Data=nullptr;
+    _DataSize=0;
 }
 
 libsystempp::CharArray::~CharArray(){
-   clear();
+   delete[]   _Data;
 }
 
 void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
@@ -77,7 +78,8 @@ void libsystempp::CharArray::insert(unsigned long pos, char src){
 
 void libsystempp::CharArray::clear(){
     delete[]   _Data;
-    _InitArray();
+    _Data=nullptr;
+    _DataSize=0;
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator+=(const char *src){
@@ -86,7 +88,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator+=(const char *src){
 }
 
 libsystempp::CharArray & libsystempp::CharArray::operator+=(libsystempp::CharArray arr){
-    this->assign(arr.c_str());
+    this->assign(arr.c_str(),arr.size());
     return *this;
 }
 
@@ -103,12 +105,11 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
 
 libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray arr){
     clear();
-    scopy(arr._Data,arr._Data+arr._DataSize,this->_Data);
-    this->_DataSize=arr._DataSize;
+    assign(arr.c_str(),arr.size());
     return *this;
 }
 
-char &libsystempp::CharArray::operator[](unsigned long pos){
+const char libsystempp::CharArray::operator[](unsigned long pos){
     return _Data[pos];
 }
 
@@ -126,7 +127,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(int src){
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator<<(unsigned long src){
-    char *buf=new char[sizeof(int)+1];
+    char *buf=new char[sizeof(unsigned long)+1];
     ultoa(src,buf);
     assign(buf);
     delete[] buf;
@@ -145,9 +146,3 @@ const char *libsystempp::CharArray::c_str() {
 unsigned long libsystempp::CharArray::size(){
     return _DataSize;
 }
-  
-
-void libsystempp::CharArray::_InitArray(){
-    _Data=nullptr;
-    _DataSize=0;
-} 

@@ -47,7 +47,7 @@ namespace libsystempp {
         CharArray &operator+=(CharArray arr);
         CharArray &operator=(const char *src);
         CharArray &operator=(CharArray arr);
-        char &operator[](unsigned long pos);
+        const char operator[](unsigned long pos);
         
         CharArray &operator<<(const char *src);
         CharArray &operator<<(int src);
@@ -58,7 +58,6 @@ namespace libsystempp {
         unsigned long      size();
         void               clear();
      private:
-        void              _InitArray();
         char             *_Data;
         unsigned long     _DataSize;;
     }; 

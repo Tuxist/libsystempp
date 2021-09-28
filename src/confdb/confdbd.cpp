@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bits_socket.h"
 
 #include "confdb_internal.h"
-
+#include "json_min.h"
 
 libsystempp::ConfDbD::ConfDbD(const char *conffile,const char *socket){
     ServerSocket srvsock(socket,1024,SOCK_STREAM,-1);
@@ -47,9 +47,9 @@ libsystempp::ConfDbD::ConfDbD(const char *conffile,const char *socket){
                 data.assign(buf,recvived);
             }while(recvived<0);
             if(data.size()>0){
-                Console[SYSOUT]<< data.c_str() << _Console::endl;
+                JSON json;
+                json.parse(&data);
                 int send=srvsock.sendData(&sock,(void*)data.c_str(),data.size());
-                Console[SYSOUT] << send;
             }
         }catch(...){
             Console[SYSOUT] << "Something goes wrong!" << _Console::endl;
