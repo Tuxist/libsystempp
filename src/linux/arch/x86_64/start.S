@@ -1,3 +1,4 @@
+#ifndef BUILD_SHARED_LIB
 .global _start             
 _start:                     
     movq 0(%rsp), %rdi        
@@ -8,3 +9,4 @@ _start:
     movq %rax, %rdi 
     movl $231, %eax 
     syscall
+#endif

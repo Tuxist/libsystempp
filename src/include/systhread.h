@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstddef>
 
-#ifndef THREAD_H
-#define THREAD_H
+#ifndef SYSTHREAD_H
+#define SYSTHREAD_H
 
 namespace libsystempp {
     class MutexData;

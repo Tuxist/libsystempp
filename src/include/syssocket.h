@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef SYSSOCKET_H
+#define SYSSOCKET_H
 
 namespace libsystempp {
     class ClientSocket {

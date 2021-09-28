@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.h"
 
-#ifndef ARRAY_H
-#define ARRAY_H
+#ifndef SYSARRAY_H
+#define SYSARRAY_H
 
 namespace libsystempp {
    class CharArray {

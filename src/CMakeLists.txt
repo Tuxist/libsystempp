@@ -2,7 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
 IF(BUILD_SHARED_LIBS)
-    add_definitions(-DBUILD_SHARED)
+    add_definitions(-DBUILD_SHARED_LIB) 
 ENDIF()
 
 include(GenerateExportHeader)
@@ -24,11 +24,12 @@ message("Build with Linux Support")
 include_directories(
     "linux/include"
 )
-file(GLOB linuxSrcs 
+file(GLOB linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
     "linux/*.cpp"
     "linux/*.c"
 )
+
 configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
 )

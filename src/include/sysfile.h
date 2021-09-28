@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef SYSFILE_H
+#define SYSFILE_H
 
 namespace libsystempp{
     class FileDescriptor {

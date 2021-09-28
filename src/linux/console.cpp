@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 libsystempp::FileDescriptor STDOUT(1);
 libsystempp::FileDescriptor STDERR(2);
 
+libsystempp::_Console CONERR(STDERR);
+libsystempp::_Console CONOUT(STDOUT);
+
 const char *libsystempp::_Console::endl="\n";
 
 libsystempp::_Console::_Console(){

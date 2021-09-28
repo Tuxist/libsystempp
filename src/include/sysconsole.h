@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "sysfile.h"
 
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#ifndef SYSCONSOLE_H
+#define SYSCONSOLE_H
 
 #define SYSOUT 0
 #define SYSERR 1
@@ -51,7 +51,7 @@ namespace libsystempp {
         _Console &operator<<(_Console &console);
     private:
         FileDescriptor _FD;
-    }static CONOUT(STDOUT), CONERR(STDERR);
+    }static CONOUT, CONERR;
     
     static _Console Console[2] = {
         CONOUT,

@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.h"
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef SYSUTILS_H
+#define SYSUTILS_H
 
 namespace libsystempp {
    const char *scopy(const char* first, const char* last, char* des);
