@@ -33,18 +33,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 libsystempp::ConfDbD::ConfDbD(const char *conffile,const char *socket){
-    ServerSocket srvsock(socket,1024,SOCK_STREAM,0);
+    ServerSocket srvsock(socket,1024,SOCK_STREAM,-1);
     srvsock.listenSocket();
     for(;;){
-        ClientSocket sock;
-        if(srvsock.acceptEvent(&sock)){
+        try{
+            ClientSocket sock;
+            srvsock.acceptEvent(&sock);
             char buf[255];
             int recvived=0;
             CharArray data;
-            while((recvived=srvsock.recvData(&sock,buf,255))>=0){
+            {
+                recvived=srvsock.recvData(&sock,buf,255);
                 data.assign(buf,recvived);
+            }while(recvived<0);
+            const char send[9]="recvived";
+            if(data.size()>0){
+                Console[SYSOUT]<< data.c_str() << _Console::endl;
+                srvsock.sendData(&sock,(void*)send,9);
             }
-            Console[SYSOUT]<< data.c_str() << _Console::endl;
+        }catch(...){
+            Console[SYSOUT] << "Something goes wrong!" << _Console::endl;
         }
     }
 }

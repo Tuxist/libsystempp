@@ -54,22 +54,9 @@ namespace libsystempp {
         void                  Join();
         bool                  JoinAble();
         void                  Create(void *function(void*), void *arguments);
+        Thread               *nextThread;
     private:
         long                  _Thread;
-        Thread               *_nextThread;
-    };
-    
-    class ThreadPool {
-    public:
-        ThreadPool(size_t size);
-        ~ThreadPool();
-        void               getThread();
-    private:
-        void              _resize(size_t size);
-        Thread          **_ThreadPool;
-        size_t            _ThreadPoolSize;
-        Mutex            *_Mutex;
-        friend class Thread;
     };
 };
 

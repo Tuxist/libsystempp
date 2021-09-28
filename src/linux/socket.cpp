@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysbits.h"
 #include "syscall.h"
 
+#define O_BLOCK     
 #define O_NONBLOCK  00004000
 
 typedef unsigned short sa_family_t;
@@ -284,7 +285,7 @@ void libsystempp::ServerSocket::setnonblocking(){
 
 void libsystempp::ServerSocket::listenSocket(){
     SystemException httpexception;
-    if(syscall2(SYS_LISTEN,_Socket,_Maxconnections) < 0){
+    if(syscall2(__NR_listen,_Socket,_Maxconnections) < 0){
         httpexception[SystemException::Critical] << "Can't listen Server Socket";
         throw httpexception;
     }
@@ -302,9 +303,9 @@ int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     SystemException exception;
     clientsocket->_SocketPtrSize=sizeof(sockaddr);
     clientsocket->_SocketPtr = new sockaddr();
-    int socket = syscall3(SYS_ACCEPT,_Socket,(unsigned long)clientsocket->_SocketPtr,
+    int socket = syscall3(__NR_accept,_Socket,(unsigned long)clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
-    if(socket<0){
+    if(socket>0){
         char errbuf[255];
         exception[SystemException::Error] << "Can't accept on  Socket";
         throw exception;
@@ -319,10 +320,14 @@ int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsign
 
 int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size,int flags){
     SystemException exception;
-    int rval=0;
-    rval=syscall6(SYS_SENDTO,socket->_Socket,(unsigned long)data,size,flags,
-                  (unsigned long)socket->_SocketPtr,socket->_SocketPtrSize);
-    if(rval<0){
+    int rval=syscall6(__NR_sendto,socket->_Socket,
+                        (unsigned long)data,
+                        (unsigned long)&size,
+                        (unsigned long)&flags,
+                        (unsigned long)socket->_SocketPtr,
+                        (unsigned long)&socket->_SocketPtrSize
+                     );
+    if(rval>0){
         exception[SystemException::Error] << "Socket senddata failed on Socket: " << socket->_Socket;
         throw exception;
     }
@@ -336,9 +341,14 @@ int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsign
 
 int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size,int flags){
     SystemException exception;
-    int recvsize=syscall6(SYS_RECVFROM,socket->_Socket,(unsigned long)data,size,flags,
-                  (unsigned long)socket->_SocketPtr,socket->_SocketPtrSize);
-    if(recvsize<0){
+    int recvsize=syscall6(__NR_recvfrom,socket->_Socket,
+                            (unsigned long)data,
+                            (unsigned long)&size,
+                            (unsigned long)&flags,
+                            (unsigned long)socket->_SocketPtr,
+                            (unsigned long)&socket->_SocketPtrSize
+                         );
+    if(recvsize>0){
         exception[SystemException::Error] << "Socket recvdata failed on Socket: " << socket->_Socket;
         throw exception;
     }

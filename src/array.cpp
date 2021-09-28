@@ -40,7 +40,6 @@ libsystempp::CharArray::~CharArray(){
 void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
     unsigned long nsize=_DataSize+srcsize;
     char *buf=new char [nsize+1];
-    unsigned long i=0;
     scopy(_Data,_Data+_DataSize,buf);
     scopy(src,src+srcsize,buf+_DataSize);
     _DataSize=nsize;

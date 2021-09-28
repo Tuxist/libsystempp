@@ -34,12 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysbits.h"
 
 libsystempp::Thread::Thread(){
-  _nextThread=nullptr;
+  nextThread=nullptr;
   _Thread=0;
 }
 
 libsystempp::Thread::~Thread(){
-  delete _nextThread;
+  delete nextThread;
 }
 
 void libsystempp::Thread::Create(void *function(void*), void *arguments) {

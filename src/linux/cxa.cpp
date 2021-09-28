@@ -87,6 +87,11 @@ extern "C" {
     
     };
     
+    void __cxa_end_catch(){
+    
+        
+    }
+    
     int __cxa_guard_acquire(__cxxabiv1::__guard *guard_object){
         return 0;
     };
