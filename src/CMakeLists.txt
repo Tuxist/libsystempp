@@ -48,8 +48,7 @@ install(FILES
 )
 
 
-add_library(systempp        SHARED ${systemppSrcs} )
-add_library(systempp-static STATIC ${systemppSrcs} )
+add_library(systempp STATIC ${systemppSrcs} )
 
 add_executable(confdbd "confdb/confdbd.cpp")
 add_executable(confcli "confdb/confcli.cpp")
@@ -59,10 +58,9 @@ generate_export_header(systempp)
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(systempp)
-target_link_libraries(systempp-static)    
 
-target_link_libraries(confdbd systempp-static)
-target_link_libraries(confcli systempp-static)
+target_link_libraries(confdbd systempp)
+target_link_libraries(confcli systempp)
 
 SET(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Output directory for libraries")
 
@@ -72,13 +70,6 @@ set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
 install(TARGETS systempp EXPORT systemppTargets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
-
-install(TARGETS systempp-static EXPORT systempp-staticTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
