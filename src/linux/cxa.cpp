@@ -2,6 +2,7 @@
 #include <typeinfo>
 
 namespace __cxxabiv1 {
+    
     bool __si_class_type_info::__do_dyncast(
         ptrdiff_t __src2dst, __sub_kind __access_path,
         const __class_type_info* __dst_type, const void* __obj_ptr,

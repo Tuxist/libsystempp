@@ -26,7 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include <linux/fcntl.h>
+#include <linux/types.h>
 
+#include "sysexception.h"
 #include "sysfile.h"
 #include "syscall.h"
 #include "sysbits.h"
@@ -51,6 +53,10 @@ void libsystempp::FileDescriptor::operator=(int value){
 }
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
+    SystemException excep;
+    unsigned short mode = O_RDWR;
+    if(syscall4(__NR_open,(unsigned long)_FD,(unsigned long)path,0,mode)>0)
+        throw excep[SystemException::Error] << "Can't open file: " << path;
 }
 
 int libsystempp::FileDescriptor::read(void *buf, int bufsize){
@@ -70,5 +76,7 @@ int libsystempp::FileDescriptor::getFcntl(){
 }
 
 void libsystempp::FileDescriptor::close(){
-    
+    SystemException excep;
+    if(syscall1(__NR_open,(unsigned long)_FD)>0)
+        throw excep[SystemException::Error] << "Can't close file socket: " << _FD;
 }

@@ -1,6 +1,10 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
+IF(BUILD_SHARED_LIBS)
+    add_definitions(-DBUILD_SHARED)
+ENDIF()
+
 include(GenerateExportHeader)
 
 file(GLOB currentSrcs "*.cpp")
@@ -35,16 +39,19 @@ configure_file(
 
 list(APPEND systemppSrcs ${linuxSrcs})
 
+install(FILES
+        ${CMAKE_BINARY_DIR}/src/syscall.h
+        ${CMAKE_BINARY_DIR}/src/sysbits.h
+        DESTINATION include/systempp
+        COMPONENT Devel
+)
+
 
 add_library(systempp        SHARED ${systemppSrcs} )
 add_library(systempp-static STATIC ${systemppSrcs} )
 
 add_executable(confdbd "confdb/confdbd.cpp")
 add_executable(confcli "confdb/confcli.cpp")
-
-IF(BUILD_SHARED_LIBS)
-    add_definitions(-DBUILD_SHARED)
-ENDIF()
 
 generate_export_header(systempp)
 
