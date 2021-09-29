@@ -52,7 +52,7 @@ void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
 }
 
 void libsystempp::CharArray::push_back(const char src){
-    unsigned long nsize=_DataSize+1;
+    unsigned long nsize=_DataSize+2;
     if(nsize>_ArraySize)
         resize(nsize);
     _Data[_DataSize++]=src;
@@ -96,13 +96,18 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray arr){
-    delete[] _Data;
-    _DataSize= arr.to_cbuffer(&_Data);
-    _ArraySize=_DataSize;
+    clear();
+    _Data = new char[arr.size()];
+    _ArraySize=arr.size();
+    _DataSize=arr.length();
+    scopy(arr.c_str(),arr.c_str()+_DataSize,_Data);
     return *this;
 }
 
 const char libsystempp::CharArray::operator[](unsigned long pos){
+    SystemException excep;
+    if(pos>_DataSize)
+        throw excep[SystemException::Error] << "position out of bound!";
     return _Data[pos];
 }
 
@@ -134,7 +139,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(char src){
 
 /*new better behavior*/
 unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
-    if(_DataSize<0)
+    if(_DataSize<=0)
         return 0;
     char *temp=new char[_DataSize+1];
     scopy(_Data,_Data+(_DataSize-1),temp);
@@ -173,7 +178,7 @@ void libsystempp::CharArray::shrink(){
 
 void libsystempp::CharArray::resize(unsigned long size){
     SystemException excep;
-    if(size<=_DataSize)
+    if(size<_DataSize)
         throw excep[SystemException::Error] << "CharArray to small not resizing: " 
                                             << _DataSize << " to: " << size;
     char *newdata= new char[size];    
