@@ -32,6 +32,7 @@
 libsystempp::CharArray::CharArray(){
     _Data=nullptr;
     _DataSize=0;
+    _ArraySize=0;
     _c_str=nullptr;
 }
 
