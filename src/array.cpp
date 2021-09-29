@@ -161,7 +161,7 @@ void libsystempp::CharArray::shrink(){
 
 void libsystempp::CharArray::resize(unsigned long size){
     SystemException excep;
-    if(size>_DataSize)
+    if(size<_DataSize)
         throw excep[SystemException::Error] << "CharArray to small not resizing!";
     char *newdata= new char[size];
     scopy(_Data,_Data+_DataSize,newdata);
