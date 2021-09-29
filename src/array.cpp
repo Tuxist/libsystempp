@@ -131,10 +131,11 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(char src){
 
 /*new better behavior*/
 unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
-    *buf=new char[_DataSize+1];
-    scopy(_Data,_Data+_DataSize,(*buf));
-    *buf[_DataSize]='\0';
-    return _DataSize+1;
+    char *temp=new char[_DataSize+1];
+    scopy(_Data,_Data+_DataSize,temp);
+    temp[_DataSize]='\0';
+    *buf=temp;
+    return _DataSize;
 }
 
 /*old behavior*/
