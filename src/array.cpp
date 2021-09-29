@@ -42,11 +42,13 @@ libsystempp::CharArray::~CharArray(){
 }
 
 void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
+    if(srcsize==0)
+        return;
     unsigned long nsize=_DataSize+srcsize;
     if(nsize>_ArraySize)
         resize(nsize);
-    scopy(src,src+srcsize,_Data+_DataSize);
-    _DataSize+=nsize;
+    scopy(src,src+(srcsize-1),_Data+_DataSize);
+    _DataSize=nsize;
 }
 
 void libsystempp::CharArray::push_back(const char src){
@@ -94,8 +96,9 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray arr){
-    clear();
-    assign(arr.c_str(),arr.length());
+    delete[] _Data;
+    _DataSize= arr.to_cbuffer(&_Data);
+    _ArraySize=_DataSize;
     return *this;
 }
 
@@ -131,8 +134,10 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(char src){
 
 /*new better behavior*/
 unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
+    if(_DataSize<0)
+        return 0;
     char *temp=new char[_DataSize+1];
-    scopy(_Data,_Data+_DataSize,temp);
+    scopy(_Data,_Data+(_DataSize-1),temp);
     temp[_DataSize]='\0';
     *buf=temp;
     return _DataSize;
@@ -141,7 +146,8 @@ unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
 /*old behavior*/
 const char *libsystempp::CharArray::c_str() {
     delete[] _c_str;
-    to_cbuffer(&_c_str);
+    if(to_cbuffer(&_c_str)==0)
+        _c_str=nullptr;
     return _c_str;
 }
 
@@ -154,19 +160,26 @@ unsigned long libsystempp::CharArray::length(){
 }
 
 void libsystempp::CharArray::shrink(){
+    if(_DataSize<0)
+        return;
     char *newdata= new char[_DataSize];
-    scopy(_Data,_Data+_DataSize,newdata);
+    scopy(_Data,_Data+(_DataSize-1),newdata);
     delete[] _Data;
     _Data=newdata;
     _ArraySize=_DataSize;
 }
 
+#include <sysconsole.h>
+
 void libsystempp::CharArray::resize(unsigned long size){
     SystemException excep;
-    if(size<_DataSize)
-        throw excep[SystemException::Error] << "CharArray to small not resizing!";
-    char *newdata= new char[size];
-    scopy(_Data,_Data+_DataSize,newdata);
+    if(size<=_DataSize)
+        throw excep[SystemException::Error] << "CharArray to small not resizing: " 
+                                            << _DataSize << " to: " << size;
+    char *newdata= new char[size];    
+    if(_DataSize!=0){
+        scopy(_Data,_Data+(_DataSize-1),newdata);
+    }
     delete[] _Data;
     _Data=newdata;
     _ArraySize=size;

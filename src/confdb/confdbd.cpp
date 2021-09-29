@@ -42,10 +42,12 @@ libsystempp::ConfDbD::ConfDbD(const char *conffile,const char *socket){
             char buf[255];
             int recvived=0;
             CharArray data;
-            do{
-                recvived=srvsock.recvData(&sock,buf,255);
+RECVIVED:
+            recvived=srvsock.recvData(&sock,buf,255);
+            if(recvived>0){
                 data.assign(buf,recvived);
-            }while(recvived<0);
+                goto RECVIVED;
+            }
             if(data.size()>0){
                 JSON json;
                 json.parse(&data);

@@ -82,7 +82,9 @@ void libsystempp::JSON::cleanlines(class CharArray& data){
                 break;
         }
     }
-    cleared.shrink();
+    try{
+        cleared.shrink();
+    }catch(...){};
     data=cleared;
 }
 

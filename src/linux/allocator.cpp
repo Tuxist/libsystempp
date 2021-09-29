@@ -131,7 +131,7 @@ private:
     ~Allocator(){};
     
     void zero(void *s, unsigned n){
-        char *str;       
+        char *str;
         str = (char *)s;
         while (n--)
             str[n] = 0;
@@ -162,22 +162,18 @@ void *operator new[](unsigned long size){
 }
 
 void operator delete (void* ptr) throw(){
-    if(ptr)
-        Allocator::getInstance().sysfree(ptr);
+     Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete(void* ptr,unsigned long amount){
-    if(ptr)
-        Allocator::getInstance().sysfree(ptr);
+    Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete[](void* ptr){
-    if(ptr)
-      Allocator::getInstance().sysfree(ptr);
+    Allocator::getInstance().sysfree(ptr);
 }
 
 void operator delete[](void* ptr,unsigned long amount){
-    if(ptr)
-        Allocator::getInstance().sysfree(ptr);
+    Allocator::getInstance().sysfree(ptr);
 }
 
