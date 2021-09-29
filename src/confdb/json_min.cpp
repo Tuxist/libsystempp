@@ -77,6 +77,8 @@ void libsystempp::JSON::cleanlines(class CharArray& data){
                 break;
             case '\n':                
                 break;
+            case ' ':
+                break;
             default:
                 cleared.push_back(data[i]);
                 break;

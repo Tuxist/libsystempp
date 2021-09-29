@@ -172,8 +172,6 @@ void libsystempp::CharArray::shrink(){
     _ArraySize=_DataSize;
 }
 
-#include <sysconsole.h>
-
 void libsystempp::CharArray::resize(unsigned long size){
     SystemException excep;
     if(size<_DataSize)
