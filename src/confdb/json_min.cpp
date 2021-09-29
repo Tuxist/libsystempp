@@ -39,7 +39,7 @@ void libsystempp::JSON::parse(class CharArray* data){
     CharArray cleardat=*data;
     cleanlines(cleardat);
     Console[SYSOUT] << cleardat.c_str();
-    for(unsigned long i=0; i<cleardat.size(); ++i){
+    for(unsigned long i=0; i<cleardat.length(); ++i){
         switch(cleardat[i]){
             case '{':
                 
@@ -70,7 +70,7 @@ void libsystempp::JSON::parse(class CharArray* data){
 
 void libsystempp::JSON::cleanlines(class CharArray& data){
    CharArray cleared;
-   cleared.resize(data.size());
+   cleared.resize(data.length());
    for(unsigned long i=0; i<data.size(); ++i){
         switch(data[i]){
             case '\r':
