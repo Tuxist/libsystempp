@@ -54,12 +54,20 @@ namespace libsystempp {
         CharArray &operator<<(char src);
         CharArray &operator<<(unsigned long src);
 
+        /*C functions*/
         const char        *c_str();
+        unsigned long      to_cbuffer(char **buf);
+        
+        unsigned long      length();
         unsigned long      size();
         void               clear();
+        void               shrink();
+        void               resize(unsigned long size);
      private:
+        char             *_c_str;
         char             *_Data;
-        unsigned long     _DataSize;;
+        unsigned long     _DataSize;
+        unsigned long     _ArraySize;
     }; 
 };
 

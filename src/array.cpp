@@ -32,35 +32,27 @@
 libsystempp::CharArray::CharArray(){
     _Data=nullptr;
     _DataSize=0;
+    _c_str=nullptr;
 }
 
 libsystempp::CharArray::~CharArray(){
    delete[]   _Data;
+   delete[]   _c_str;
 }
 
 void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
     unsigned long nsize=_DataSize+srcsize;
-    char *buf=new char [nsize+1];
-    scopy(_Data,_Data+_DataSize,buf);
-    scopy(src,src+srcsize,buf+_DataSize);
-    _DataSize=nsize;
-    delete[] _Data;
-    buf[nsize]='\0';
-    _Data=buf;
+    if(nsize>_ArraySize)
+        resize(nsize);
+    scopy(src,src+srcsize,_Data+_DataSize);
+    _DataSize+=nsize;
 }
 
 void libsystempp::CharArray::push_back(const char src){
     unsigned long nsize=_DataSize+1;
-    char *buf=new char [nsize+2];
-    unsigned long i;
-    for(i = 0; i<_DataSize; ++i){
-        buf[i]=_Data[i];
-    }
-    buf[i]=src;
-    buf[nsize]='\0';
-    _DataSize=nsize;
-    delete[] _Data;
-    _Data=buf;
+    if(nsize>_ArraySize)
+        resize(nsize);
+    _Data[_DataSize++]=src;
 }
 
 void libsystempp::CharArray::assign(const char* src) {
@@ -80,6 +72,7 @@ void libsystempp::CharArray::clear(){
     delete[]   _Data;
     _Data=nullptr;
     _DataSize=0;
+    _ArraySize=0;
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator+=(const char *src){
@@ -95,11 +88,7 @@ libsystempp::CharArray & libsystempp::CharArray::operator+=(libsystempp::CharArr
 
 libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
     clear();
-    _DataSize=getlen(src);
-    _Data = new char[_DataSize];
-    for(unsigned long i = 0; i<_DataSize; ++i){
-        _Data[i]=src[i];
-    } 
+    assign(src,getlen(src));
     return *this;
 }
 
@@ -119,7 +108,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(const char* src){
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator<<(int src){
-    char *buf=new char[sizeof(int)+1];
+    char *buf=new char[255];
     itoa(src,buf);
     assign(buf);
     delete[] buf;
@@ -127,7 +116,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(int src){
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator<<(unsigned long src){
-    char *buf=new char[sizeof(unsigned long)+1];
+    char *buf=new char[512];
     ultoa(src,buf);
     assign(buf);
     delete[] buf;
@@ -139,10 +128,44 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(char src){
     return *this;
 }
 
+/*new better behavior*/
+unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
+    *buf=new char[_DataSize+1];
+    scopy(_Data,_Data+_DataSize,(*buf));
+    *buf[_DataSize]='\0';
+    return _DataSize+1;
+}
+
+/*old behavior*/
 const char *libsystempp::CharArray::c_str() {
-    return _Data;
+    delete[] _c_str;
+    to_cbuffer(&_c_str);
+    return _c_str;
 }
 
 unsigned long libsystempp::CharArray::size(){
+    return _ArraySize;
+}
+
+unsigned long libsystempp::CharArray::length(){
     return _DataSize;
+}
+
+void libsystempp::CharArray::shrink(){
+    char *newdata= new char[_DataSize];
+    scopy(_Data,_Data+_DataSize,newdata);
+    delete[] _Data;
+    _Data=newdata;
+    _ArraySize=_DataSize;
+}
+
+void libsystempp::CharArray::resize(unsigned long size){
+    SystemException excep;
+    if(size>_DataSize)
+        throw excep[SystemException::Error] << "CharArray to small not resizing!";
+    char *newdata= new char[size];
+    scopy(_Data,_Data+_DataSize,newdata);
+    delete[] _Data;
+    _Data=newdata;
+    _ArraySize=size;
 }

@@ -70,6 +70,7 @@ void libsystempp::JSON::parse(class CharArray* data){
 
 void libsystempp::JSON::cleanlines(class CharArray& data){
    CharArray cleared;
+   cleared.resize(data.size());
    for(unsigned long i=0; i<data.size(); ++i){
         switch(data[i]){
             case '\r':
@@ -81,6 +82,7 @@ void libsystempp::JSON::cleanlines(class CharArray& data){
                 break;
         }
     }
+    cleared.shrink();
     data=cleared;
 }
 
