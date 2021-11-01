@@ -40,7 +40,7 @@ void libsystempp::Lock::lock(){
     
 }
 
-void libsystempp::Lock::trylock(){
+bool libsystempp::Lock::trylock(){
     
 }
 

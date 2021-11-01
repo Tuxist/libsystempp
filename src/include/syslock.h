@@ -34,7 +34,7 @@ namespace libsystempp {
         Lock();
         ~Lock();
         void lock();
-        void trylock();
+        bool trylock();
         void unlock();
         bool islocked();
     };
