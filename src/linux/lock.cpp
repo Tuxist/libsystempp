@@ -28,26 +28,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "include/sysexception.h"
 #include "include/syslock.h"
 
-libsystempp::Mutex::Mutex(){
+libsystempp::Lock::Lock(){
     
 }
 
-libsystempp::Mutex::~Mutex(){
+libsystempp::Lock::~Lock(){
     
 }
 
-void libsystempp::Mutex::Lock(){
+void libsystempp::Lock::lock(){
     
 }
 
-void libsystempp::Mutex::tryLock(){
+void libsystempp::Lock::tryLock(){
     
 }
 
-void libsystempp::Mutex::unLock(){
+void libsystempp::Lock::unLock(){
     
 }
 
-bool libsystempp::Mutex::isLocked(){
+bool libsystempp::Lock::isLocked(){
     return true;
 }

@@ -29,10 +29,10 @@
 #define SYSLOCK_H
 
 namespace libsystempp {
-    class Mutex {
-        Mutex();
-        ~Mutex();
-        void Lock();
+    class Lock {
+        Lock();
+        ~Lock();
+        void lock();
         void tryLock();
         void unLock();
         bool isLocked();
