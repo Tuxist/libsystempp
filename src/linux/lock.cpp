@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "include/sysexception.h"
-#include "include/systhread.h"
+#include "include/syslock.h"
 
 libsystempp::Mutex::Mutex(){
     

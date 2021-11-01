@@ -31,20 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYSTHREAD_H
 
 namespace libsystempp {
-    class MutexData;
-    
-    class Mutex {
-    public:
-        Mutex();
-        ~Mutex();
-        void Lock();
-        void tryLock();
-        void unLock();
-        bool isLocked();
-    private:
-        MutexData *_MutexData;
-    };
-    
     class Thread {
     public:
         Thread();
