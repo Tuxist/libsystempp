@@ -25,6 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#ifndef SYSLOCK_H
+#define SYSLOCK_H
+
 namespace libsystempp {
     class Mutex {
         Mutex();
@@ -35,3 +38,5 @@ namespace libsystempp {
         bool isLocked();
     };
 };
+
+#endif
