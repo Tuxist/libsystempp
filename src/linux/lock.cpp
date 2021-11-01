@@ -40,14 +40,14 @@ void libsystempp::Lock::lock(){
     
 }
 
-void libsystempp::Lock::tryLock(){
+void libsystempp::Lock::trylock(){
     
 }
 
-void libsystempp::Lock::unLock(){
+void libsystempp::Lock::unlock(){
     
 }
 
-bool libsystempp::Lock::isLocked(){
+bool libsystempp::Lock::islocked(){
     return true;
 }

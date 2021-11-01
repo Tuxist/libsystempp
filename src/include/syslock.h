@@ -30,12 +30,13 @@
 
 namespace libsystempp {
     class Lock {
+    public:
         Lock();
         ~Lock();
         void lock();
-        void tryLock();
-        void unLock();
-        bool isLocked();
+        void trylock();
+        void unlock();
+        bool islocked();
     };
 };
 
