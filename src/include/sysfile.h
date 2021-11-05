@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <sysarray.h>
+
 #ifndef SYSFILE_H
 #define SYSFILE_H
 
@@ -43,8 +45,49 @@ namespace libsystempp{
         void operator=(int value);
         void operator=(FileDescriptor value);
     protected:
-        int _FD;       
+        int _FD;
     };
+    
+    class File {
+    public:
+        File(const char *path);
+        ~File();
+        FileDescriptor *open(int opt);
+        void            close();
+        void            chmod(long perm);
+        void            chown(const char *,const char *grp);
+        void            rmfile();
+        void            touch(long perm);
+    private:
+        CharArray      _Name;
+        CharArray      _Path;
+        FileDescriptor _Fd;
+        File          *_nextFile;
+        friend class Directory;
+    };
+    
+    class Directory {
+    public:
+        Directory();
+        ~Directory();
+        Directory      *mkdir(const char *name);
+        void            rmdir(const char *name);
+        Directory      *chdir(const char *name);
+        void            chmod(long perm);
+        void            chown(const char *user,const char *grp);
+        File           *getFiles();
+        Directory      *getFolders();
+    private:
+        File            *_firstFileDescriptor;
+        File            *_lastFileDescriptor;
+        File            *_currentFileDescriptor;
+        
+        Directory      *_firstFolder;
+        Directory      *_lastFolder;
+        Directory      *_currentFolder;
+        Directory      *_nextFolder;
+    };
+    
 };
 
 #endif

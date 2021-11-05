@@ -28,20 +28,25 @@
 #include <sys/sysinfo.h>
 #include <sys/mount.h>
 
+#include "sysarray.h"
+
 #define FSINFOMAXLEN 255
 
 #ifndef SYSINFO_H
 #define SYSINFO_H
 
-namespace libsystempp {
+namespace libsystempp {   
     class CpuInfo {
     public:
         CpuInfo();
         ~CpuInfo();
-        int getCores();
-        int getThreads();
-        int getActualThread();
-        int getPid();
+        const char *getVendor();
+        int         getCores();
+        int         getThreads();
+        int         getActualThread();
+    private:
+        CharArray  *_Vendor;
+        void       *_cpuinfo;
     };
     
     class SysInfo {

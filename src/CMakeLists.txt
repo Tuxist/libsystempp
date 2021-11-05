@@ -25,6 +25,7 @@ include_directories(
     "linux/include"
 )
 file(GLOB linuxSrcs
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.cpp"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
     "linux/*.cpp"
     "linux/*.c"
