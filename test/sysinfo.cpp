@@ -31,7 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main(int argv, char *argc[])
 {
     libsystempp::CpuInfo cpuinfo;
-    libsystempp::Console[SYSOUT] << cpuinfo.getVendor()  << libsystempp::Console[SYSOUT].endl;
+    libsystempp::Console[SYSOUT] << "Vendor: " << cpuinfo.getVendor() << libsystempp::Console[SYSOUT].endl
+                                 << "Cores: "    << cpuinfo.getCores()  << libsystempp::Console[SYSOUT].endl
+                                 << "Threads: " << cpuinfo.getThreads() << libsystempp::Console[SYSOUT].endl
+                                 << "Running Thread: " << cpuinfo.getActualThread() << libsystempp::Console[SYSOUT].endl;
     return 0;
 } 
 

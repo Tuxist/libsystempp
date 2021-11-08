@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <sysarray.h>
+#include "sysarray.h"
 
 #ifndef SYSFILE_H
 #define SYSFILE_H

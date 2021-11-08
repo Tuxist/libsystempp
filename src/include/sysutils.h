@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "config.h"
+#include <stddef.h>
 
 #ifndef SYSUTILS_H
 #define SYSUTILS_H
@@ -40,6 +41,7 @@ namespace libsystempp {
    void zero(void *s, unsigned n);
    int atoi(char* str);
    unsigned long atoul(char* str);
+   int ncompare(const char *src,size_t ssize,const char *comp,size_t csize);
 };
 
 #endif

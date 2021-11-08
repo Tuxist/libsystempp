@@ -45,7 +45,7 @@ namespace libsystempp {
         int         getThreads();
         int         getActualThread();
     private:
-        CharArray  *_Vendor;
+        CharArray   _Vendor;
         void       *_cpuinfo;
     };
     
