@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <sys/sysinfo.h>
-#include <sys/mount.h>
+// #include <sys/sysinfo.h>
+// #include <sys/mount.h>
 
 #include "sysarray.h"
 
@@ -49,20 +49,34 @@ namespace libsystempp {
         void       *_cpuinfo;
     };
     
-    class SysInfo {
-    public:
-        SysInfo();
-        unsigned int getFreeRam();
-        unsigned int getTotalRam();
-        unsigned int getBufferRam();
-    private:
-        #ifdef Windows
-        MEMORYSTATUSEX statex;
-        #else
-        struct sysinfo _Sysinfo;
-        #endif
-        
-    };
+//     class SysInfo {
+//     public:
+//         SysInfo();
+//         unsigned int getFreeRam();
+//         unsigned int getTotalRam();
+//         unsigned int getBufferRam();
+//     private:
+//         #ifdef Windows
+//         MEMORYSTATUSEX statex;
+//         #else
+//         struct sysinfo _Sysinfo;
+//         #endif
+//         
+//     };
 };
-
+    class MountPoint {
+    public:
+        enum Datatype{DEVICE=0,PATH=1,FSTYPE=2,OPTIONS=3};
+        MountPoint *nextMountPoint();
+        const char *getDevice();
+    private:
+        MountPoint();
+        ~MountPoint();
+        char _Device[FSINFOMAXLEN];
+        char _Path[FSINFOMAXLEN];
+        char _FSType[FSINFOMAXLEN];
+        char _Options[FSINFOMAXLEN];
+        MountPoint *_nextMountPoint;
+        friend class FsInfo;
+    };
 #endif
