@@ -29,9 +29,7 @@
 #include <config.h>
 
 #include "syscall.h"
-
-#define SYS_mmap 9
-#define SYS_munmap 11
+#include "sysbits.h"
 
 class Allocator {
 private:
@@ -83,7 +81,7 @@ public:
         unsigned long fsize=sizeof(Heap)+sizeof(BlockStore)+size;
         Heap *heap=findunsedHeap(size);
         if(!heap)
-            heap=(Heap*)syscall6(SYS_mmap, 0,sizeof(Heap)+size+sizeof(BlockStore), 
+            heap=(Heap*)syscall6(__NR_mmap, 0,sizeof(Heap)+size+sizeof(BlockStore), 
                                 PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
         zero(heap,sizeof(Heap));
         size+=sizeof(BlockStore);
@@ -142,7 +140,7 @@ private:
             if(curheap->_Block->_Freed==true){
                 curheap->_prevHeap->_nextHeap=curheap->_nextHeap;
                 curheap->_nextHeap->_prevHeap=curheap->_prevHeap;
-                syscall2(SYS_munmap,(unsigned long)curheap,curheap->_Total);
+                syscall2(__NR_munmap,(unsigned long)curheap,curheap->_Total);
             }
         }
     };

@@ -40,8 +40,10 @@ namespace libsystempp {
         void                  Join();
         bool                  JoinAble();
         void                  Create(void *function(void*), void *arguments);
+        int                   getPid();
         Thread               *nextThread;
     private:
+        int                   _Pid;
         long                  _Thread;
     };
 };
