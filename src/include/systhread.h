@@ -31,20 +31,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYSTHREAD_H
 
 namespace libsystempp {
+    class ThInfo;
     class Thread {
     public:
         Thread();
         virtual ~Thread();
-        void                  Detach();
-        int                   DetachState();
         void                  Join();
-        bool                  JoinAble();
         void                  Create(void *function(void*), void *arguments);
-        int                   getPid();
         Thread               *nextThread;
     private:
-        int                   _Pid;
-        long                  _Thread;
+        ThInfo               *_ThInfo;
+        char                 *_Stack;
     };
 };
 

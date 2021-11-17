@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2021, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,68 +31,66 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/sched.h>
 #include <linux/wait.h>
 #include <linux/resource.h>
+#include <linux/mman.h>
 
 #include "systhread.h"
 #include "sysexception.h"
 #include "sysbits.h"
 
-union sigval {
-    int sival_int;
-    void *sival_ptr;
+#define STACKSIZE 4096
+
+class libsystempp::ThInfo {
+private:
+    int *_Ptid;
+    int *_Ctid;
+    friend class libsystempp::Thread;
 };
 
-typedef struct {
-    int si_signo;
-    int si_code;
-    union sigval si_value;
-    int si_errno;
-    int si_pid;
-    int si_uid;
-    void *si_addr;
-    int si_status;
-    int si_band;
-} siginfo_t;
-
-
 libsystempp::Thread::Thread(){
+  _ThInfo = new ThInfo();
+  _Stack=nullptr;
   nextThread=nullptr;
-  _Thread=0;
 }
 
 libsystempp::Thread::~Thread(){
-    ::operator delete((void*)_Thread);
+    delete _ThInfo;
     delete nextThread;
 }
 
 void libsystempp::Thread::Create(void *function(void*), void *arguments) {
-  SystemException excep;
-  Console[SYSOUT] << sizeof(function) << Console[SYSOUT].endl;
-  _Thread = (long)new void*[65536];
-  _Pid = syscall5(__NR_clone,CLONE_SIGHAND|CLONE_FS|CLONE_VM|CLONE_FILES|CLONE_THREAD,
-                  _Thread,(long)function,(long)arguments,0);
-  if (_Pid > 0) {
-    excep[SystemException::Error] << "Can't create thread !";
-    throw excep;
-  }
-}
-
-int libsystempp::Thread::getPid(){
-    return _Pid;
-}
-
-
-// void libsystempp::Thread::Detach(){
-// //     pthread_detach(_Thread);
-// }
-//
- 
-void libsystempp::Thread::Join(){
-    siginfo_t pinf;
-    struct rusage rusa;
-    int ret=syscall5(__NR_waitid,P_PID,_Pid,(long)&pinf,WEXITED|WSTOPPED,(long)&rusa);
-    Console[SYSOUT] << _Pid << Console[SYSOUT].endl;
-    if(ret > 0){
-       SystemException excep;
-       excep[SystemException::Error] << "Can't join Thread!";
+    SystemException excep;
+    
+    _Stack =  (char*)syscall6(__NR_mmap,0,STACKSIZE, PROT_READ | PROT_WRITE,
+                 MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN, -1, 0);
+    
+    if ((unsigned long)_Stack == -1){
+        excep[SystemException::Error] << "Can't create thread !";
+        throw excep;
     }
+  
+    int pid = syscall5(__NR_clone,CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND |
+                    CLONE_PARENT | CLONE_THREAD | CLONE_IO | 0 ,(unsigned long)&_Stack+STACKSIZE,
+                     (unsigned long)_ThInfo->_Ptid,(unsigned long)_ThInfo->_Ctid,0);
+
+    if(pid == -1){
+       SystemException excep;
+       excep[SystemException::Error] << "Can't create Thread!";
+    }
+    
+    if (pid == 0) {
+        function(arguments);
+        return;
+    }
+}
+
+
+void libsystempp::Thread::Join(){
+    struct rusage rusa;
+    int state=0;
+//     int ret=syscall4(__NR_wait4,_ThInfo->_Ctid,(long)&state,0,(long)&rusa);
+//     if(ret < 0){
+//        SystemException excep;
+//        excep[SystemException::Error] << "Can't join Thread!";
+//     }
+    for(;;);
 }
