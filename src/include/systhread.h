@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYSTHREAD_H
 
 namespace libsystempp {
-    class ThInfo;
+    class ThStack;
     class Thread {
     public:
         Thread();
@@ -40,8 +40,7 @@ namespace libsystempp {
         void                  Create(void *function(void*), void *arguments);
         Thread               *nextThread;
     private:
-        ThInfo               *_ThInfo;
-        char                 *_Stack;
+        ThStack               *_ThStack;
     };
 };
 

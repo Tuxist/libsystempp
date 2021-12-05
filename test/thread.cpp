@@ -25,39 +25,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "syscall.h"
 #include "sysconsole.h"
-
-#include <linux/resource.h>
-
 #include "systhread.h"
-#include "sysexception.h"
-#include "sysbits.h"
-#include "clone.h"
 
-libsystempp::Thread::Thread(){
-  _ThStack = nullptr;
-  nextThread=nullptr;
+void *childfunc(void *test){
+    libsystempp::Console[SYSOUT] << (char*)test 
+        << libsystempp::Console[SYSOUT].endl;
+    return nullptr;
 }
 
-libsystempp::Thread::~Thread(){
-    delete _ThStack;
-    delete nextThread;
-}
+int main(int argv, char *argc[])
+{
+    libsystempp::Thread th;
+    th.Create(childfunc,(void*)"Thread Startet");
+    th.Join();
+    return 0;
+} 
 
-void libsystempp::Thread::Create(void *function(void*), void *arguments){
-    _clone(&_ThStack,function,arguments);
-}
-
-
-void libsystempp::Thread::Join(){
-    struct rusage rusa;
-WAITJOIN:
-    int state=0;
-//     int ret=syscall4(__NR_wait4,(unsigned long)_ThStack->_Ctid,(unsigned long)&state,0,(unsigned long)&rusa);
-//     if(ret < 0){
-//        SystemException excep;
-//        excep[SystemException::Error] << "Can't join Thread!";
-//     }
-    for(;;){};
-}

@@ -3,7 +3,6 @@
 
 #include <bits/stdint-uintn.h>
 
-
 class _cpuIDinfo {
 public:
     uint32_t EAX;
