@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systhread.h"
 
 void *childfunc(void *test){
-    libsystempp::Console[SYSOUT] << (char*)test 
+    libsystempp::Console[SYSOUT] << (const char*)test 
         << libsystempp::Console[SYSOUT].endl;
     return nullptr;
 }

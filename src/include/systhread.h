@@ -40,7 +40,8 @@ namespace libsystempp {
         void                  Create(void *function(void*), void *arguments);
         Thread               *nextThread;
     private:
-        ThStack               *_ThStack;
+        int                   _ThreadPid;
+        char                 *_Stack;
     };
 };
 

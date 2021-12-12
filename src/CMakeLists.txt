@@ -39,10 +39,6 @@ configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/sysbits.h.in ${CMAKE_CURRENT_BINARY_DIR}/sysbits.h
 )
 
-configure_file(
-    linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.h.in ${CMAKE_CURRENT_BINARY_DIR}/clone.h
-)
-
 list(APPEND systemppSrcs ${linuxSrcs})
 
 install(FILES
