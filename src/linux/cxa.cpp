@@ -119,4 +119,7 @@ extern "C" {
         while (1);
     }
     
+    void __cxa_guard_abort(__cxxabiv1::__guard* guard_object){
+    };
+    
 };

@@ -51,6 +51,11 @@ install(FILES
 
 add_library(systempp STATIC ${systemppSrcs} )
 
+add_library(
+    cmd SHARED libcmd/cmd.cpp
+)
+
+
 add_executable(confdbd 
     "confdb/confdbd.cpp"
     "confdb/json_min.cpp"
@@ -67,6 +72,8 @@ set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(systempp)
 
+target_link_libraries(cmd systempp)
+
 target_link_libraries(confdbd systempp)
 target_link_libraries(confcli systempp)
 
@@ -77,7 +84,7 @@ set_property(TARGET systempp PROPERTY SOVERSION ${LIBV})
 set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
-install(TARGETS systempp EXPORT systemppTargets
+install(TARGETS systempp cmd EXPORT systemppTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
@@ -86,6 +93,11 @@ install(TARGETS systempp EXPORT systemppTargets
 
 install(DIRECTORY include/
         DESTINATION include/systempp
+        COMPONENT Devel
+)
+
+install(FILES libcmd/cmd.h
+        DESTINATION include/libcmd
         COMPONENT Devel
 )
 
