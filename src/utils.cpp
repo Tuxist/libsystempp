@@ -37,6 +37,8 @@ const  char *libsystempp::scopy(const char* first, const char* last, char* des){
 }
 
 unsigned int libsystempp::getlen(const char *str) {
+    if(!str)
+        return 0;
     unsigned int len = 0;
     while ((*str++) != '\0') {
         ++len;
@@ -133,11 +135,28 @@ unsigned long libsystempp::atoul(char* str){
 }
 
 int libsystempp::ncompare(const char *src,size_t ssize,const char *comp,size_t csize){
-    if(ssize>csize)
+    if(ssize<csize)
         return -1;
     for(int i=0; i<csize; ++i){
         if(src[i]!=comp[i])
             return i+1;
     }
     return 0;
+}
+
+
+unsigned long libsystempp::append(char** src, const char* append){
+    if(!append)
+        return 0;
+    char *srcptr=*src;
+    unsigned long srcsize=getlen((*src));
+    unsigned long asize=getlen(append);
+    unsigned long nsize=srcsize+asize;    
+    char *buf=new char [nsize+1];
+    scopy(srcptr,srcptr+srcsize,buf);
+    scopy(append,append+asize,buf+srcsize);
+    delete[] srcptr;
+    buf[nsize]='\0';
+    *src=buf;
+    return nsize;
 }
