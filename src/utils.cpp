@@ -135,7 +135,7 @@ unsigned long libsystempp::atoul(char* str){
 }
 
 int libsystempp::ncompare(const char *src,size_t ssize,const char *comp,size_t csize){
-    if(ssize<csize)
+    if(ssize>csize)
         return -1;
     for(int i=0; i<csize; ++i){
         if(src[i]!=comp[i])
