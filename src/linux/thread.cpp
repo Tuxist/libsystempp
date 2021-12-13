@@ -57,7 +57,7 @@ void libsystempp::Thread::Create(void *function(void*), void *arguments){
     
     if ((unsigned long)_Stack == -1){
         SystemException excep;
-        excep[SystemException::Error] << "Can't allocate Memory for the thread!";
+        throw excep[SystemException::Error] << "Can't allocate Memory for the thread!";
     }
     
     const unsigned long clone_flags = CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND
@@ -65,6 +65,12 @@ void libsystempp::Thread::Create(void *function(void*), void *arguments){
                                         | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID | CLONE_DETACHED;
     
     int pid = __clone(function,_Stack+STACKSIZE,clone_flags,arguments,&_ThreadPid,this,&_ThreadPid);
+    
+    if(pid < 0){
+        SystemException excep;
+        throw excep[SystemException::Error] << "Can't start thread clone failed!";
+    }
+    
 }
 
 

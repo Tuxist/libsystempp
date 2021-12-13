@@ -27,6 +27,18 @@
 
 #include "sysarray.h"
 
+#ifndef O_RDONLY
+#define O_RDONLY 0x00000000
+#endif
+
+#ifndef O_WRONLY
+#define O_WRONLY 0x00000001
+#endif
+
+#ifndef O_RDWR
+#define O_RDWR 0x00000002
+#endif
+
 #ifndef SYSFILE_H
 #define SYSFILE_H
 

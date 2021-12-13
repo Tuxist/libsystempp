@@ -43,6 +43,8 @@ namespace libsystempp {
    unsigned long atoul(char* str);
    int ncompare(const char *src,size_t ssize,const char *comp,size_t csize);
    unsigned long append(char** src, const char* append);
+   size_t cleannewline(const char *src,size_t srcsize,char **dest);
+   int substr(const char *src,char **dest,size_t spos,size_t endpos);
 };
 
 #endif

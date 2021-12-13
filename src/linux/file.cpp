@@ -54,8 +54,7 @@ void libsystempp::FileDescriptor::operator=(int value){
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
     SystemException excep;
-    unsigned short mode = O_RDWR;
-    if(syscall4(__NR_open,(unsigned long)_FD,(unsigned long)path,0,mode)>0)
+    if(syscall4(__NR_open,(unsigned long)_FD,(unsigned long)path,0,opt)>0)
         throw excep[SystemException::Error] << "Can't open file: " << path;
 }
 

@@ -160,3 +160,62 @@ unsigned long libsystempp::append(char** src, const char* append){
     *src=buf;
     return nsize;
 }
+
+size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
+    struct buffer {
+        buffer(){
+            nextbuffer=nullptr;
+        }
+        ~buffer(){
+            delete[] text;
+            delete nextbuffer;
+        }
+        char   *text;
+        size_t  tsize;
+        buffer *nextbuffer;
+    }*ftbuf=nullptr,*ltbuf=nullptr;
+    
+    size_t spos=0;
+    
+    for(size_t i=0; i<srcsize; ++i){
+        if(src[i] == '\n' || src[i] == '\r'){
+            if(ftbuf){
+                ltbuf->nextbuffer= new buffer;
+                ltbuf=ltbuf->nextbuffer;
+            }else{
+                ftbuf=new buffer;
+                ltbuf=ftbuf;
+            }
+            ltbuf->tsize=substr(src,&ltbuf->text,spos,i);
+            if((i+1)<srcsize && (i+1)=='\n')
+                spos=(i+=2);
+            else
+                spos=(++i);
+        }
+    }
+    size_t ssize=0,written=0;
+    for(buffer *cbuf=ftbuf; cbuf; cbuf=cbuf->nextbuffer)
+        ssize+=cbuf->tsize;
+    
+    *dest=new char[ssize+1];
+    
+    for(buffer *cbuf=ftbuf; cbuf; cbuf=cbuf->nextbuffer){
+        scopy(cbuf->text,cbuf->text+cbuf->tsize,*dest+written);
+        written+=cbuf->tsize;
+    }
+    
+    delete ftbuf;
+    
+    return ssize;
+}
+
+int libsystempp::substr(const char *src,char **dest,size_t spos,size_t endpos){
+    size_t srcsize=endpos-spos;
+    char *buf = new char[srcsize+1];
+    for(int i=spos,j=0; j<srcsize; ++i,++j){
+        buf[j]=src[i];
+    }
+    buf[srcsize]='\0';
+    *dest=buf;
+    return srcsize;
+}
