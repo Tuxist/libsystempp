@@ -39,8 +39,7 @@
 #define O_RDWR 0x00000002
 #endif
 
-#ifndef SYSFILE_H
-#define SYSFILE_H
+#pragma once
 
 namespace libsystempp{
     class FileDescriptor {
@@ -101,5 +100,3 @@ namespace libsystempp{
     };
     
 };
-
-#endif

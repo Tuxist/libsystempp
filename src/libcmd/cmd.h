@@ -27,8 +27,7 @@
 
 #include <systempp/sysexception.h>
 
-#ifndef CMD_H
-#define CMD_H
+#pragma once
 
 namespace libsystempp {
     class Cmd {
@@ -77,4 +76,3 @@ namespace libsystempp {
         Cmd              *_lastCmd;
     };
 };
-#endif

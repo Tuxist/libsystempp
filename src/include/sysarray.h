@@ -25,8 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef SYSARRAY_H
-#define SYSARRAY_H
+#pragma once
 
 namespace libsystempp {
    class CharArray {
@@ -68,5 +67,3 @@ namespace libsystempp {
         unsigned long     _ArraySize;
     }; 
 };
-
-#endif

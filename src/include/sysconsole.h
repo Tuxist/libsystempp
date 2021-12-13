@@ -27,8 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "sysfile.h"
 
-#ifndef SYSCONSOLE_H
-#define SYSCONSOLE_H
+#pragma once
 
 #define SYSOUT 0
 #define SYSERR 1
@@ -59,6 +58,3 @@ namespace libsystempp {
     };
     
 };
-
-#endif
-

@@ -25,8 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef SYSLOCK_H
-#define SYSLOCK_H
+#pragma once
 
 namespace libsystempp {
     class Lock {
@@ -39,5 +38,3 @@ namespace libsystempp {
         bool islocked();
     };
 };
-
-#endif

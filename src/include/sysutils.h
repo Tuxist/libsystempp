@@ -27,8 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stddef.h>
 
-#ifndef SYSUTILS_H
-#define SYSUTILS_H
+#pragma once
 
 namespace libsystempp {
    const char *scopy(const char* first, const char* last, char* des);
@@ -45,5 +44,3 @@ namespace libsystempp {
    size_t cleannewline(const char *src,size_t srcsize,char **dest);
    int substr(const char *src,char **dest,size_t spos,size_t endpos);
 };
-
-#endif

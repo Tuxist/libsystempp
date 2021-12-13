@@ -32,8 +32,7 @@
 
 #define FSINFOMAXLEN 255
 
-#ifndef SYSINFO_H
-#define SYSINFO_H
+#pragma once
 
 namespace libsystempp {   
     class CpuInfo {
@@ -79,4 +78,3 @@ namespace libsystempp {
         MountPoint *_nextMountPoint;
         friend class FsInfo;
     };
-#endif

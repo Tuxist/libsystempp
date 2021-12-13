@@ -27,8 +27,7 @@
 
 #include "sysarray.h"
 
-#ifndef SYSSOCKET_H
-#define SYSSOCKET_H
+#pragma once
 
 namespace libsystempp {
     class ClientSocket {
@@ -77,4 +76,3 @@ namespace libsystempp {
         CharArray       _UxPath;
     };
 };
-#endif

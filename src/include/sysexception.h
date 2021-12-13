@@ -27,8 +27,7 @@
 
 #include "config.h"
 
-#ifndef SYSEXCEPTION_H
-#define SYSEXCEPTION_H
+#pragma once
 
 namespace libsystempp {
     
@@ -69,5 +68,3 @@ namespace libsystempp {
         int      _curCType;
     };
 }
-#endif
-
