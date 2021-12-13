@@ -38,6 +38,7 @@ namespace libsystempp {
         Thread               *nextThread;
     private:
         int                   _ThreadPid;
+        int                   _ParentPid;
         char                 *_Stack;
     };
 };
