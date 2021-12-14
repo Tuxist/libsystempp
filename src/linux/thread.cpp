@@ -45,7 +45,7 @@ extern "C" {
 }
 
 libsystempp::Thread::Thread(){
-  nextThread=nullptr;
+    nextThread=nullptr;
 }
 
 libsystempp::Thread::~Thread(){
@@ -77,8 +77,9 @@ void libsystempp::Thread::Create(void *function(void*), void *arguments){
 void libsystempp::Thread::Join(){
     struct timespec cur,wait;
     syscall2(__NR_gettimeofday,(unsigned long)&cur,0);
-    wait.tv_nsec=1000;
+    wait.tv_sec=0;
+    wait.tv_nsec=10000;
     while(_ParentPid==_ThreadPid){
-        syscall2(__NR_nanosleep,(unsigned long)&cur,(unsigned long)&wait);
+         syscall2(__NR_nanosleep,(unsigned long)&wait,(unsigned long)&cur);
     };
 }
