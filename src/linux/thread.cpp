@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/resource.h>
 #include <linux/mman.h>
 #include <linux/sched.h>
-#include <linux/futex.h>
 #include <linux/time.h>
 
 #include "systhread.h"
