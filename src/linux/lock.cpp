@@ -65,7 +65,6 @@ void libsystempp::Lock::lock(){
     long res;
     while(1){
         if (_LockData->futex.exchange(0)){
-            _LockData->futex.store(1);
             break; 
         }
         res=syscall6(__NR_futex,(unsigned long)_LockData->futex.load(), FUTEX_WAIT, 0,0,0,0);
