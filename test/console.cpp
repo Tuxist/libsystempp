@@ -31,10 +31,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main(int argv, char *argc[])
 {
     libsystempp::CharArray arr;
-    libsystempp::Console[SYSOUT] << "input:"  << libsystempp::Console[SYSOUT].endl;
+    libsystempp::Console[SYSOUT] << "CharArray input:"  << libsystempp::Console[SYSOUT].endl;
     libsystempp::Console[SYSIN] >> arr;
     for(int i=0; i<argv; ++i){
         libsystempp::Console[SYSOUT] << arr.c_str()  << libsystempp::Console[SYSOUT].endl;
     }
+    
+    char *cstring=nullptr;
+    libsystempp::Console[SYSOUT] << "CString input:"  << libsystempp::Console[SYSOUT].endl;
+    libsystempp::Console[SYSIN] >>&cstring;
+    for(int i=0; i<argv; ++i){
+        libsystempp::Console[SYSOUT] << cstring  << libsystempp::Console[SYSOUT].endl;
+    }
+    
     return 0;
 } 

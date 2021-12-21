@@ -92,7 +92,7 @@ libsystempp::_Console & libsystempp::_Console::operator>>(char ** in){
     while(_FD.read(&input, 1) > 0){
         if(input=='\n')
             break;
-        append(in,&input);
+        append(in,input);
     }
     return *this;
 }

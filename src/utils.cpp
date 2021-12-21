@@ -161,6 +161,23 @@ unsigned long libsystempp::append(char** src, const char* append){
     return nsize;
 }
 
+unsigned long libsystempp::append(char** src, const char append){
+    if(!append)
+        return 0;
+    unsigned long srcsize=0;
+    if(src && *src)
+        srcsize=getlen(*src);
+    unsigned long nsize=srcsize+1;    
+    char *buf=new char [srcsize+2];
+    if(src && *src)
+        scopy(*src,*src+srcsize,buf);
+    buf[srcsize]=append;
+    delete[] *src;
+    buf[nsize]='\0';
+    *src=buf;
+    return nsize;
+}
+
 size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
     struct buffer {
         buffer(){
