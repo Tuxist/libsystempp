@@ -84,7 +84,7 @@ bool libsystempp::Lock::trylock(){
     
     if(res==-1){
         SystemException excep;
-        throw excep[SystemException::Error] << "Futex syscall for the lock failed!"; 
+        throw excep[SystemException::Error] << "Futex syscall for the trylock failed!"; 
     }
     
     return true;

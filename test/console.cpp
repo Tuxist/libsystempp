@@ -25,41 +25,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "sysfile.h"
+#include "sysconsole.h"
 
-#pragma once
 
-#define SYSOUT 0
-#define SYSERR 1
-#define SYSIN  2
-
-namespace libsystempp {
-    static FileDescriptor STDIN;
-    static FileDescriptor STDOUT;
-    static FileDescriptor STDERR;
-    
-    class _Console {
-    public:
-        _Console();
-        _Console(FileDescriptor &fd);
-        ~_Console();
-        static const char *endl;
-        _Console &operator<<(const char *out);
-        _Console &operator<<(int out);
-        _Console &operator<<(unsigned int out);
-        _Console &operator<<(unsigned long out);
-        _Console &operator<<(char out);
-        _Console &operator<<(_Console &console);
-        _Console &operator>>(char **in);
-        _Console &operator>>(CharArray &in);
-    private:
-        FileDescriptor _FD;
-    }static CONOUT, CONERR, CONNIN;
-    
-    static _Console Console[3] = {
-        CONOUT,
-        CONERR,
-        CONNIN
-    };
-    
-};
+int main(int argv, char *argc[])
+{
+    libsystempp::CharArray arr;
+    libsystempp::Console[SYSOUT] << "input:"  << libsystempp::Console[SYSOUT].endl;
+    libsystempp::Console[SYSIN] >> arr;
+    for(int i=0; i<argv; ++i){
+        libsystempp::Console[SYSOUT] << arr.c_str()  << libsystempp::Console[SYSOUT].endl;
+    }
+    return 0;
+} 

@@ -29,11 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysutils.h"
 #include "sysconsole.h"
 
+libsystempp::FileDescriptor STDIN(0);
 libsystempp::FileDescriptor STDOUT(1);
 libsystempp::FileDescriptor STDERR(2);
 
+
 libsystempp::_Console CONERR(STDERR);
 libsystempp::_Console CONOUT(STDOUT);
+libsystempp::_Console CONIN(STDIN);
 
 const char *libsystempp::_Console::endl="\n";
 
@@ -84,3 +87,22 @@ libsystempp::_Console & libsystempp::_Console::operator<<(libsystempp::_Console&
     return console;
 }
 
+libsystempp::_Console & libsystempp::_Console::operator>>(char ** in){
+    char input;
+    while(_FD.read(&input, 1) > 0){
+        if(input=='\n')
+            break;
+        append(in,&input);
+    }
+    return *this;
+}
+
+libsystempp::_Console & libsystempp::_Console::operator>>(libsystempp::CharArray& in){
+    char input;
+    while(_FD.read(&input, 1) > 0){
+        if(input=='\n')
+            break;
+        in.push_back(input);
+    }
+    return *this;
+}
