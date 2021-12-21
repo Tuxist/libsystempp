@@ -66,14 +66,13 @@ namespace libsystempp{
         FileDescriptor *open(int opt);
         void            close();
         void            chmod(long perm);
-        void            chown(const char *,const char *grp);
+        void            chown(const char *user,const char *grp);
         void            rmfile();
         void            touch(long perm);
     private:
         CharArray      _Name;
         CharArray      _Path;
         FileDescriptor _Fd;
-        File          *_nextFile;
         friend class Directory;
     };
     
@@ -89,14 +88,8 @@ namespace libsystempp{
         File           *getFiles();
         Directory      *getFolders();
     private:
-        File            *_firstFileDescriptor;
-        File            *_lastFileDescriptor;
-        File            *_currentFileDescriptor;
-        
-        Directory      *_firstFolder;
-        Directory      *_lastFolder;
-        Directory      *_currentFolder;
-        Directory      *_nextFolder;
+        File            *_currentFile;
+        Directory       *_currentFolder;
     };
     
 };

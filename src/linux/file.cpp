@@ -79,3 +79,39 @@ void libsystempp::FileDescriptor::close(){
     if(syscall1(__NR_open,(unsigned long)_FD)>0)
         throw excep[SystemException::Error] << "Can't close file socket: " << _FD;
 }
+
+libsystempp::File::File(const char* path){
+}
+
+libsystempp::File::~File(){
+}
+
+void libsystempp::File::chown(const char *user, const char* grp){
+}
+
+void libsystempp::File::chmod(long perm){
+}
+
+void libsystempp::File::touch(long perm){
+}
+
+void libsystempp::File::rmfile(){
+}
+
+void libsystempp::File::close(){
+}
+
+libsystempp::Directory::Directory(){
+}
+
+libsystempp::Directory::~Directory(){
+}
+
+void libsystempp::Directory::chmod(long perm){
+}
+
+void libsystempp::Directory::chown(const char* user, const char* grp){
+}
+
+void libsystempp::Directory::rmdir(const char* name){
+}
