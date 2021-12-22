@@ -33,6 +33,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 
+enum DT{
+        UNKNOWN  = 0,
+        FIFO     = 1,
+        CHR      = 2,
+        DIR      = 4,
+        BLK      = 6,
+        REG      = 8,
+        LNK      = 10,
+        SOCK     = 12,
+        WHT      = 14
+};
+
+struct linux_dirent {
+    unsigned long  d_ino;     /* Inode number */
+    unsigned long  d_off;     /* Offset to next linux_dirent */
+    unsigned short d_reclen;  /* Length of this linux_dirent */
+    char          *d_name;  /* Filename (null-terminated) */
+    /* length is actually (d_reclen - 2 -
+     *                                    offsetof(struct linux_dirent, d_name)) */
+    char           pad;       // Zero padding byte
+    char           d_type;    // File type (only since Linux
+    // 2.6.4); offset is (d_reclen - 1)
+};
+
 libsystempp::FileDescriptor::FileDescriptor(){
 }
 
@@ -80,7 +104,8 @@ void libsystempp::FileDescriptor::close(){
         throw excep[SystemException::Error] << "Can't close file socket: " << _FD;
 }
 
-libsystempp::File::File(const char* path){
+libsystempp::File::File(const char* path) {
+    open(path,O_RDWR);
 }
 
 libsystempp::File::~File(){
@@ -89,29 +114,113 @@ libsystempp::File::~File(){
 void libsystempp::File::chown(const char *user, const char* grp){
 }
 
-void libsystempp::File::chmod(long perm){
+void libsystempp::File::chmod(unsigned short perm){
+    SystemException excep;
+    if(syscall1(__NR_chmod,perm)<0)
+        throw excep[SystemException::Error] << "chmod can't change file permission !";
 }
 
-void libsystempp::File::touch(long perm){
+void libsystempp::File::touch(unsigned short perm){
 }
 
 void libsystempp::File::rmfile(){
+    SystemException excep;
+    if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())<0)
+        throw excep[SystemException::Error] << "rmdir can't delete file!";    
 }
 
-void libsystempp::File::close(){
+
+libsystempp::Directory::Directory(const char *path){
+    _Path=path;
+    if(_Path[_Path.size()-1]!='/')
+        _Path+="/";
+    _Dirent = new linux_dirent;
 }
 
-libsystempp::Directory::Directory(){
+void libsystempp::Directory::list(){
+    FileDescriptor fd;
+    fd.open(_Path.c_str(),O_RDONLY | O_DIRECTORY);
+    char buf[1024];
+    SystemException excep;
+    long nread = syscall3(__NR_getdents,fd._FD,(long)&buf, 1024);
+    if (nread == -1)
+       excep[SystemException::Error] << "Directory getdents failed!";
+    else if(nread==0)
+        return;  
+    for (long bpos = 0; bpos < nread;) {
+        struct linux_dirent *d = (struct linux_dirent *) (buf + bpos);
+            char d_type = *(buf + bpos + d->d_reclen - 1);
+
+            CharArray cpth= _Path;
+            cpth+=d->d_name;
+            
+            switch(d_type){
+                case DT::REG:
+                    if(_lastFile){
+                        _lastFile->_nextFile= new File(cpth.c_str());
+                    }else{
+                        _firstFile=new File(cpth.c_str());
+                        _lastFile=_firstFile;
+                    }
+                    break;
+                case DT::DIR:
+                    if(_lastDirectory){
+                        _lastDirectory->_nextDirectory= new Directory(cpth.c_str());
+                        _lastDirectory=_lastDirectory->_nextDirectory;
+                    }else{
+                        _firstDirectory=new Directory(cpth.c_str());
+                        _lastDirectory=_firstDirectory;
+                    }
+                    break;
+            };
+            bpos += d->d_reclen;
+    }
 }
+
 
 libsystempp::Directory::~Directory(){
+    delete (linux_dirent*)_Dirent;
 }
 
-void libsystempp::Directory::chmod(long perm){
+void libsystempp::Directory::chmod(unsigned short perm){
+    SystemException excep;
+    if(syscall1(__NR_chmod,perm)<0)
+        throw excep[SystemException::Error] << "chmod can't change directory permission !";
 }
 
 void libsystempp::Directory::chown(const char* user, const char* grp){
 }
 
-void libsystempp::Directory::rmdir(const char* name){
+void libsystempp::Directory::rmdir(){
+    SystemException excep;
+    if(syscall1(__NR_rmdir,(unsigned long)_Path.c_str())<0)
+        throw excep[SystemException::Error] << "rmdir can't delete directory !";
 }
+
+libsystempp::Directory * libsystempp::Directory::nextDirectory(){
+    return _nextDirectory;
+}
+
+libsystempp::Directory * libsystempp::Directory::chdir(const char* name){
+    return this;
+}
+
+libsystempp::Directory * libsystempp::Directory::mkdir(const char* name,unsigned short perm){
+    SystemException excep;
+    CharArray newpth=_Path;
+    newpth+=name;
+    if(syscall2(__NR_mkdir,(unsigned long)newpth.c_str(),perm)<0)
+        throw excep[SystemException::Error] << "mkdir can't create directory !";
+    if(_lastDirectory){
+        _lastDirectory->_nextDirectory= new Directory(newpth.c_str());
+        _lastDirectory=_lastDirectory->_nextDirectory;
+    }else{
+        _firstDirectory=new Directory(newpth.c_str());
+        _lastDirectory=_firstDirectory;
+    }
+    return _lastDirectory;
+}
+
+
+
+

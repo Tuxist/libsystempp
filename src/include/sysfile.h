@@ -39,6 +39,10 @@
 #define O_RDWR 0x00000002
 #endif
 
+#ifndef O_DIRECTORY
+#define O_DIRECTORY 0x00200000
+#endif
+
 #pragma once
 
 namespace libsystempp{
@@ -47,49 +51,57 @@ namespace libsystempp{
         FileDescriptor();
         FileDescriptor(int fd);
         ~FileDescriptor();
-        void open(const char *path, int opt);
-        void close();
         int  write(void *buf,int bufsize);
         int  read(void  *buf,int bufsize);
+        void open(const char *path, int opt);
+        void close();
+        void operator=(int value);
+        void operator=(FileDescriptor value);        
+    protected:
         int  setFcntl(int opt);
         int  getFcntl();
-        void operator=(int value);
-        void operator=(FileDescriptor value);
-    protected:
         int _FD;
+        friend class Directory;
     };
     
-    class File {
+    class File : FileDescriptor{
     public:
         File(const char *path);
         ~File();
-        FileDescriptor *open(int opt);
-        void            close();
-        void            chmod(long perm);
+        void            chmod(unsigned short perm);
         void            chown(const char *user,const char *grp);
         void            rmfile();
-        void            touch(long perm);
+        void            touch(unsigned short perm);
     private:
         CharArray      _Name;
         CharArray      _Path;
-        FileDescriptor _Fd;
+        File          *_nextFile;
         friend class Directory;
     };
     
     class Directory {
     public:
-        Directory();
+        Directory(const char *path);
         ~Directory();
-        Directory      *mkdir(const char *name);
-        void            rmdir(const char *name);
+        void            list();
+        Directory      *mkdir(const char *name,unsigned short perm);
+        void            rmdir();
         Directory      *chdir(const char *name);
-        void            chmod(long perm);
+        void            chmod(unsigned short perm);
         void            chown(const char *user,const char *grp);
-        File           *getFiles();
-        Directory      *getFolders();
+        Directory      *nextDirectory();
     private:
-        File            *_currentFile;
-        Directory       *_currentFolder;
+        CharArray        _Name;
+        CharArray        _Path;
+        void            *_Dirent;
+        
+        File            *_firstFile;
+        File            *_lastFile;
+        
+        Directory       *_firstDirectory;
+        Directory       *_lastDirectory;
+        
+        Directory       *_nextDirectory;
     };
     
 };
