@@ -25,9 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <systempp/syssocket.h>
-#include <systempp/sysconsole.h>
-#include <systempp/sysutils.h>
+#include "syssocket.h"
+#include "sysconsole.h"
+#include "sysutils.h"
+#include "sysexception.h"
 
 #include "cmd.h"
 
