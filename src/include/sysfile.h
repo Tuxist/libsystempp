@@ -78,7 +78,11 @@ namespace libsystempp{
         File          *_nextFile;
         friend class Directory;
     };
-    
+
+    class Symbolic {
+        friend class Directory;
+    };
+
     class Directory {
     public:
         Directory(const char *path);
@@ -93,7 +97,6 @@ namespace libsystempp{
     private:
         CharArray        _Name;
         CharArray        _Path;
-        void            *_Dirent;
         
         File            *_firstFile;
         File            *_lastFile;
@@ -103,5 +106,4 @@ namespace libsystempp{
         
         Directory       *_nextDirectory;
     };
-    
 };

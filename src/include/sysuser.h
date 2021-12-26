@@ -25,55 +25,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#define MAXCONN 1024
-
-#include "include/sysarray.h"
-#include "include/sysuuid.h"
+#include "sysuuid.h"
 
 #pragma once
 
 namespace libsystempp {
-    class ConfData {
+    class SID {
     public:
-        ConfData();
-        ~ConfData();
-
-        enum{
-            Folder=0,
-            CharArray=1,
-            INT=2,
-            UINT=3,
-            UUID=4
-        };
-        
-        void         setKey(class CharArray *key);
-        void         setKey(const char *key);
-        const char  *getKey();
-        
-        void         setValue(class CharArray *value);
-        void         setValue(const char *value);
-        void         setValue(int value);
-        void         setValue(unsigned int value);
-        void         setValue(class UUID uuid);
-        
-        const char*  getValue();
-        int          getValueInt();
-        unsigned int getValueUInt();
-        class UUID   getValueUUID();
-
+        SID();
+        ~SID();
+        int   getRevesion();
+        int   getIdentifierAuthority();
+        UUID *getDomain();
+        int   getUserID();
     private:
-        class CharArray _Key;
-        int             _ValueType;
-        class CharArray _Value;
-        ConfData       *_Parent;
-        ConfData       *_prevConfData;
-        ConfData       *_nextConfData;
-        friend class ConfDbD;
+        int   _Revesion;
+        int   _IdentifierAuthority;
+        UUID  _Domain;
+        int   _UserID;
     };
     
-    class ConfDbD{
+    class UserData{
     public:
-        ConfDbD(const char *conffile,const char *socket);
+        UserData();
+        ~UserData();
     private:
+        SID _MySID;
+    };
+    
+    class GroupData{
+        
+    };
+    
+    class User {
+        
+    };
+    
+    class Group {
+        
     };
 };

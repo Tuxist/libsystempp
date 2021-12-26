@@ -134,7 +134,6 @@ libsystempp::Directory::Directory(const char *path){
     _Path=path;
     if(_Path[_Path.size()-1]!='/')
         _Path+="/";
-    _Dirent = new linux_dirent;
 }
 
 void libsystempp::Directory::list(){
@@ -179,7 +178,6 @@ void libsystempp::Directory::list(){
 
 
 libsystempp::Directory::~Directory(){
-    delete (linux_dirent*)_Dirent;
 }
 
 void libsystempp::Directory::chmod(unsigned short perm){
