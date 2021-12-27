@@ -53,7 +53,6 @@ int libsystempp::CpuInfo::getActualThread(){
     if (ncompare(vendor,getlen(vendor),"GenuineIntel",12)==0) {
         _cpuid(0x0001,0x0000, (_cpuIDinfo*)_cpuinfo);
         return (((_cpuIDinfo*)_cpuinfo)->EBX >> 24 ) & 0xff;
-        
     }
     return 0;
 }

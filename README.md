@@ -7,19 +7,19 @@
 - Filedestribtor class
 - Exception Class
 - Syscalls (x86_64)
-
-## On Work
-- Socket class
-- confdb
-- json class
-- Syscalls (Arm)
-- Syscalls (x86)
-
-## Todo:
-- unwind lib
-- cxa implementation
 - thread class
 - mutex class
+- Socket class
+
+## On Work
+- confdb
+- json class
+
+## Todo:
+- Syscalls (Arm)
+- Syscalls (x86)
+- unwind lib
+- cxa implementation
 - sysinfo class
 - signal class
 - dir class
