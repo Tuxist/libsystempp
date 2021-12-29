@@ -149,6 +149,11 @@ libsystempp::File *libsystempp::File::nextFile(){
 
 libsystempp::Directory::Directory(const char *path){
     _Path=path;
+    _firstFile=nullptr;
+    _lastFile=nullptr;
+    _firstDirectory=nullptr;
+    _lastDirectory=nullptr;
+    _nextDirectory=nullptr;
     if(_Path[_Path.size()-1]!='/')
         _Path+="/";
 }
