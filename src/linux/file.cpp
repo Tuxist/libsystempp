@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysfile.h"
 #include "syscall.h"
 #include "sysbits.h"
+#include "sysutils.h"
 
 enum DT{
         UNKNOWN  = 0,
@@ -105,8 +106,10 @@ void libsystempp::FileDescriptor::close(){
 }
 
 libsystempp::File::File(const char* path) {
-    _nextFile=nullptr;
+    _Path=path;
     open(path,O_RDWR);
+    _Name=libsystempp::substr();
+    _nextFile=nullptr;
 }
 
 libsystempp::File::~File(){

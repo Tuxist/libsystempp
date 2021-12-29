@@ -236,3 +236,11 @@ int libsystempp::substr(const char *src,char **dest,size_t spos,size_t endpos){
     *dest=buf;
     return srcsize;
 }
+
+int libsystempp::rfind(const char* src,size_t len,const char find){
+    for(int i=len; i<=0; --i){
+        if(src[i]==find)
+            return i;
+    }
+    return -1;
+}
