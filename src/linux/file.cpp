@@ -112,6 +112,10 @@ libsystempp::File::File(const char* path) {
 libsystempp::File::~File(){
 }
 
+const char * libsystempp::File::getName(){
+    return _Name.c_str();
+}
+
 void libsystempp::File::chown(const char *user, const char* grp){
 }
 
