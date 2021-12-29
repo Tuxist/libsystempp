@@ -105,6 +105,7 @@ void libsystempp::FileDescriptor::close(){
 }
 
 libsystempp::File::File(const char* path) {
+    _nextFile=nullptr;
     open(path,O_RDWR);
 }
 
@@ -127,6 +128,10 @@ void libsystempp::File::rmfile(){
     SystemException excep;
     if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())<0)
         throw excep[SystemException::Error] << "rmdir can't delete file!";    
+}
+
+libsystempp::File * libsystempp::File::nextFile(){
+    return _nextFile;
 }
 
 
@@ -219,6 +224,8 @@ libsystempp::Directory * libsystempp::Directory::mkdir(const char* name,unsigned
     return _lastDirectory;
 }
 
-
+libsystempp::File * libsystempp::Directory::getFile(){
+    return _firstFile;
+}
 
 

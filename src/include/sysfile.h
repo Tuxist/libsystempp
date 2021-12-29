@@ -72,6 +72,7 @@ namespace libsystempp{
         void            chown(const char *user,const char *grp);
         void            rmfile();
         void            touch(unsigned short perm);
+        File           *nextFile();
     private:
         CharArray      _Name;
         CharArray      _Path;
@@ -94,6 +95,7 @@ namespace libsystempp{
         void            chmod(unsigned short perm);
         void            chown(const char *user,const char *grp);
         Directory      *nextDirectory();
+        File           *getFile();
     private:
         CharArray        _Name;
         CharArray        _Path;
