@@ -106,9 +106,14 @@ void libsystempp::FileDescriptor::close(){
 }
 
 libsystempp::File::File(const char* path) {
+    SystemException excep;
     _Path=path;
     open(path,O_RDWR);
-    _Name=libsystempp::substr();
+    int ppos=rfind(path,getlen(path),'/')-1;
+    char *tname=new char[getlen(path)-ppos];
+    libsystempp::substr(path,&tname,ppos,getlen(path));
+    _Name=tname;
+    delete[] tname;
     _nextFile=nullptr;
 }
 
