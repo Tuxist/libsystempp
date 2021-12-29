@@ -190,3 +190,14 @@ void libsystempp::CharArray::resize(unsigned long size){
     _Data=newdata;
     _ArraySize=size;
 }
+
+bool libsystempp::CharArray::operator==(const char* src){
+    if (getlen(src) != _ArraySize)
+        return false;
+    for(int i=0; i<_ArraySize; ++i){
+        if(_Data[i]!=src[i])
+            return false;
+    }
+    return true;
+}
+

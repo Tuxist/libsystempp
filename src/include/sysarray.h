@@ -51,6 +51,7 @@ namespace libsystempp {
         CharArray &operator<<(char src);
         CharArray &operator<<(unsigned long src);
 
+        bool       operator==(const char *src);
         /*C functions*/
         const char        *c_str();
         unsigned long      to_cbuffer(char **buf);
