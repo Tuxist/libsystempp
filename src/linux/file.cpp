@@ -165,7 +165,7 @@ void libsystempp::Directory::list(){
     SystemException excep;
     long nread = syscall3(__NR_getdents,fd._FD,(long)&buf, 1024);
     if (nread == -1)
-       excep[SystemException::Error] << "Directory getdents failed!";
+       throw excep[SystemException::Error] << "Directory getdents failed!";
     else if(nread==0)
         return;  
     for (long bpos = 0; bpos < nread;) {
