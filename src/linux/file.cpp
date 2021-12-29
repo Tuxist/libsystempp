@@ -107,14 +107,14 @@ void libsystempp::FileDescriptor::close(){
 
 libsystempp::File::File(const char* path) {
     SystemException excep;
+    _nextFile=nullptr;
     _Path=path;
     open(path,O_RDWR);
     int ppos=rfind(path,getlen(path),'/')-1;
-    char *tname=new char[getlen(path)-ppos];
+    char *tname=nullptr;
     libsystempp::substr(path,&tname,ppos,getlen(path));
     _Name=tname;
-    delete[] tname;
-    _nextFile=nullptr;
+    delete[] tname;   
 }
 
 libsystempp::File::~File(){
@@ -142,7 +142,7 @@ void libsystempp::File::rmfile(){
         throw excep[SystemException::Error] << "rmdir can't delete file!";    
 }
 
-libsystempp::File * libsystempp::File::nextFile(){
+libsystempp::File *libsystempp::File::nextFile(){
     return _nextFile;
 }
 
@@ -174,6 +174,7 @@ void libsystempp::Directory::list(){
                 case DT::REG:
                     if(_lastFile){
                         _lastFile->_nextFile= new File(cpth.c_str());
+                        _lastFile=_lastFile->_nextFile;
                     }else{
                         _firstFile=new File(cpth.c_str());
                         _lastFile=_firstFile;
@@ -239,5 +240,3 @@ libsystempp::Directory * libsystempp::Directory::mkdir(const char* name,unsigned
 libsystempp::File * libsystempp::Directory::getFile(){
     return _firstFile;
 }
-
-

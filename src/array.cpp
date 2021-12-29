@@ -149,6 +149,7 @@ unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
 /*old behavior*/
 const char *libsystempp::CharArray::c_str() {
     delete[] _c_str;
+    _c_str=nullptr;
     if(to_cbuffer(&_c_str)==0)
         _c_str=nullptr;
     return _c_str;
