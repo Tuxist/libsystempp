@@ -45,6 +45,7 @@ namespace libsystempp {
         ~_Console();
         static const char *endl;
         _Console &operator<<(const char *out);
+        _Console &operator<<(CharArray out);
         _Console &operator<<(int out);
         _Console &operator<<(unsigned int out);
         _Console &operator<<(unsigned long out);

@@ -57,6 +57,11 @@ libsystempp::_Console &libsystempp::_Console::operator<< (const char* out){
     return *this;    
 }
 
+libsystempp::_Console & libsystempp::_Console::operator<<(libsystempp::CharArray out){
+    operator<<(out.c_str()); 
+    return *this;
+}
+
 libsystempp::_Console &libsystempp::_Console::operator<< (int out){
     char buf[255];
     itoa(out,buf);

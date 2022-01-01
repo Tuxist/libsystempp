@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 #include "sysutils.h"
+#include "sysconsole.h"
 
 enum DT{
         UNKNOWN  = 0,
@@ -79,7 +80,8 @@ void libsystempp::FileDescriptor::operator=(int value){
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
     SystemException excep;
-    if(syscall4(__NR_open,(unsigned long)_FD,(unsigned long)path,0,opt)>0)
+    unsigned short umod=0;
+    if((_FD=syscall3(__NR_open,(unsigned long)path,opt,umod))>0)
         throw excep[SystemException::Error] << "Can't open file: " << path;
 }
 
@@ -163,7 +165,7 @@ void libsystempp::Directory::list(){
     fd.open(_Path.c_str(),O_RDONLY | O_DIRECTORY);
     char buf[1024];
     SystemException excep;
-    long nread = syscall3(__NR_getdents,fd._FD,(long)&buf, 1024);
+    long nread = syscall3(__NR_getdents,(unsigned long)&fd._FD,(unsigned long)&buf, 1024);
     if (nread == -1)
        throw excep[SystemException::Error] << "Directory getdents failed!";
     else if(nread==0)
