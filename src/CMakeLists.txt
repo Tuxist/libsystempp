@@ -52,7 +52,7 @@ install(FILES
 add_library(systempp STATIC ${systemppSrcs} )
 
 add_library(
-    cmd SHARED libcmd/cmd.cpp
+    cmd STATIC libcmd/cmd.cpp
 )
 
 
