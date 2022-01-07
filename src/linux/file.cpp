@@ -144,6 +144,11 @@ const char * libsystempp::File::getName(){
     return _Name.c_str();
 }
 
+const char * libsystempp::File::getPath(){
+    return _Path.c_str();
+}
+
+
 void libsystempp::File::chown(const char *user, const char* grp){
 }
 

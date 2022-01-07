@@ -70,6 +70,7 @@ namespace libsystempp{
         File(const char *path,const char *name);
         ~File();
         const char     *getName();
+        const char     *getPath();
         void            chmod(unsigned short perm);
         void            chown(const char *user,const char *grp);
         void            rmfile();
