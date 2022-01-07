@@ -49,5 +49,5 @@ libsystempp::Exec::~Exec(){
 int libsystempp::Exec::join(){
     struct siginfo sinfo;
     struct rusage rusage;
-    return syscall5(__NR_waitid,0,_Pid,(unsigned long)&sinfo,WEXITED,(unsigned long) &rusage);
+    return syscall5(__NR_waitid,P_PID,_Pid,(unsigned long)&sinfo,WEXITED,(unsigned long) &rusage);
 }
