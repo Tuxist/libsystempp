@@ -30,12 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/types.h>
 #include <linux/signal.h>
 #include <linux/resource.h>
+#include <linux/wait.h>
 
 #include "sysexec.h"
 #include "syscall.h"
 #include "sysbits.h"
 
 libsystempp::Exec::Exec(const char *wrkdir,const char *filename,const char *argv){
+    int _Pid=syscall0(__NR_fork);
     if(_Pid==0){
         syscall3(__NR_execve,(unsigned long)filename,(unsigned long)argv,(unsigned long)wrkdir);
     }
@@ -47,5 +49,5 @@ libsystempp::Exec::~Exec(){
 int libsystempp::Exec::join(){
     struct siginfo sinfo;
     struct rusage rusage;
-    return syscall5(__NR_waitid,0,_Pid,(unsigned long)&sinfo,0,(unsigned long) &rusage);
+    return syscall5(__NR_waitid,0,_Pid,(unsigned long)&sinfo,WEXITED,(unsigned long) &rusage);
 }
