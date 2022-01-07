@@ -30,12 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace libsystempp {
     class Exec {
     public:
-        Exec(const char *wrkdir,const char *filename,const char *argv,const char *envp);
+        Exec(const char *wrkdir,const char *filename,const char *argv);
         ~Exec();
-        int  rstate();
-        void join();
+        int join();
     private:
-        int       _Rstate;
         int       _Pid;
     };
 };
