@@ -59,7 +59,8 @@ void libsystempp::CharArray::push_back(const char src){
 }
 
 void libsystempp::CharArray::assign(const char* src) {
-    assign(src,getlen(src));
+    if(src)
+        assign(src,getlen(src));
 }
 
 void libsystempp::CharArray::insert(unsigned long pos, char src){
@@ -93,7 +94,8 @@ libsystempp::CharArray & libsystempp::CharArray::operator+=(libsystempp::CharArr
 
 libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
     clear();
-    assign(src,getlen(src));
+    if(src)
+        assign(src,getlen(src));
     return *this;
 }
 

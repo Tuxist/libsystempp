@@ -67,6 +67,7 @@ namespace libsystempp{
     class File : FileDescriptor{
     public:
         File(const char *path);
+        File(const char *path,const char *name);
         ~File();
         const char     *getName();
         void            chmod(unsigned short perm);
@@ -88,6 +89,7 @@ namespace libsystempp{
     class Directory {
     public:
         Directory(const char *path);
+        Directory(const char *path,const char *name);
         ~Directory();
         void            list();
         Directory      *mkdir(const char *name,unsigned short perm);

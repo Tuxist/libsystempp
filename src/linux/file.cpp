@@ -51,15 +51,11 @@ struct linux_dirent {
     unsigned long  d_ino;     /* Inode number */
     unsigned long  d_off;     /* Offset to next linux_dirent */
     unsigned short d_reclen;  /* Length of this linux_dirent */
-    char          *d_name;  /* Filename (null-terminated) */
-    /* length is actually (d_reclen - 2 -
-     *                                    offsetof(struct linux_dirent, d_name)) */
-    char           pad;       // Zero padding byte
-    char           d_type;    // File type (only since Linux
-    // 2.6.4); offset is (d_reclen - 1)
+    char           d_name[];  /* Filename (null-terminated) */
 };
 
 libsystempp::FileDescriptor::FileDescriptor(){
+    _FD=-1;
 }
 
 libsystempp::FileDescriptor::FileDescriptor(int fd){
@@ -81,24 +77,40 @@ void libsystempp::FileDescriptor::operator=(int value){
 void libsystempp::FileDescriptor::open(const char *path, int opt){
     SystemException excep;
     unsigned short umod=0;
-    if((_FD=syscall3(__NR_open,(unsigned long)path,opt,umod))>0)
+    if((_FD=syscall3(__NR_open,(unsigned long)path,opt,umod))<0)
         throw excep[SystemException::Error] << "Can't open file: " << path;
 }
 
 int libsystempp::FileDescriptor::read(void *buf, int bufsize){
-    return syscall3(__NR_read,(unsigned long)_FD,(unsigned long)buf,(long)bufsize);
+    SystemException excep;
+    unsigned long ret=-1;
+    if((ret=syscall3(__NR_read,(unsigned long)_FD,(unsigned long)buf,(long)bufsize))<0)
+        throw excep[SystemException::Error] << "Can't read file from filedescriptor: " << _FD;
+    return ret;
 }
 
 int libsystempp::FileDescriptor::write(void* buf, int bufsize){
-    return syscall3(__NR_write,_FD,(unsigned long)buf,bufsize);
+    SystemException excep;
+    unsigned long ret=-1;
+    if((ret=syscall3(__NR_write,_FD,(unsigned long)buf,bufsize))<0)
+        throw excep[SystemException::Error] << "Can't write file from filedescriptor: " << _FD;
+    return ret;
 }
 
 int libsystempp::FileDescriptor::setFcntl(int opt){
-    return (int)syscall3(__NR_fcntl, _FD, F_SETFL, opt);
+    SystemException excep;
+    unsigned long ret=-1;
+    if((ret=(int)syscall3(__NR_fcntl, _FD, F_SETFL, opt))<0)
+        throw excep[SystemException::Error] << "Can't setfnctl file from filedescriptor: " << _FD;
+    return ret;
 }
 
 int libsystempp::FileDescriptor::getFcntl(){
-    return (int)syscall3(__NR_fcntl, _FD, F_GETFL, 0);
+    SystemException excep;
+    unsigned long ret=-1;
+    if((ret=(int)syscall3(__NR_fcntl, _FD, F_GETFL, 0))<0)
+        throw excep[SystemException::Error] << "Can't write getfnctl from filedescriptor: " << _FD;
+    return ret;
 }
 
 void libsystempp::FileDescriptor::close(){
@@ -111,12 +123,18 @@ libsystempp::File::File(const char* path) {
     SystemException excep;
     _nextFile=nullptr;
     _Path=path;
-    open(path,O_RDWR);
     int ppos=rfind(path,getlen(path),'/')-1;
     char *tname=nullptr;
     libsystempp::substr(path,&tname,ppos,getlen(path));
     _Name=tname;
     delete[] tname;   
+}
+
+libsystempp::File::File(const char* path,const char *name) {
+    SystemException excep;
+    _nextFile=nullptr;
+    _Path=path;
+    _Name=name;
 }
 
 libsystempp::File::~File(){
@@ -140,7 +158,7 @@ void libsystempp::File::touch(unsigned short perm){
 
 void libsystempp::File::rmfile(){
     SystemException excep;
-    if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())<0)
+    if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())>0)
         throw excep[SystemException::Error] << "rmdir can't delete file!";    
 }
 
@@ -150,7 +168,16 @@ libsystempp::File *libsystempp::File::nextFile(){
 
 
 libsystempp::Directory::Directory(const char *path){
+    SystemException excep;
+    int ppos=rfind(path,getlen(path),'/')-1;
+    if(!path || ppos>0)
+        throw excep[SystemException::Error] << "Directory Path wrong !"; 
     _Path=path;
+    
+    char *tname=nullptr;
+    libsystempp::substr(path,&tname,ppos,getlen(path));
+    _Name=tname;
+    delete[] tname;
     _firstFile=nullptr;
     _lastFile=nullptr;
     _firstDirectory=nullptr;
@@ -160,49 +187,65 @@ libsystempp::Directory::Directory(const char *path){
         _Path+="/";
 }
 
+libsystempp::Directory::Directory(const char* path, const char* name){
+    SystemException excep;
+    if(!path || !name)
+        throw excep[SystemException::Error] << "Directory path or name can't be null!"; 
+    _Path=path;
+    _Name=name;
+    _firstFile=nullptr;
+    _lastFile=nullptr;
+    _firstDirectory=nullptr;
+    _lastDirectory=nullptr;
+    _nextDirectory=nullptr;
+}
+
 void libsystempp::Directory::list(){
     FileDescriptor fd;
     fd.open(_Path.c_str(),O_RDONLY | O_DIRECTORY);
     char buf[1024];
     SystemException excep;
-    long nread = syscall3(__NR_getdents,(unsigned long)&fd._FD,(unsigned long)&buf, 1024);
-    if (nread == -1)
-       throw excep[SystemException::Error] << "Directory getdents failed!";
-    else if(nread==0)
-        return;  
-    for (long bpos = 0; bpos < nread;) {
-        struct linux_dirent *d = (struct linux_dirent *) (buf + bpos);
+    struct linux_dirent *d;
+    long nread =0;
+    for (;;) {
+        nread = syscall3(__NR_getdents,(unsigned long)fd._FD,(unsigned long)buf, 1024);
+        if (nread < 0)
+            throw excep[SystemException::Error] << "Directory getdents failed!";
+        else if(nread==0)
+            break;
+        for (long bpos = 0; bpos < nread;) {
+            d = (struct linux_dirent *) (buf + bpos);
             char d_type = *(buf + bpos + d->d_reclen - 1);
-
-            CharArray cpth= _Path;
-            cpth+=d->d_name;
-            
+            CharArray cpath=_Path;
+            cpath+=d->d_name;
             switch(d_type){
                 case DT::REG:
                     if(_lastFile){
-                        _lastFile->_nextFile= new File(cpth.c_str());
+                        _lastFile->_nextFile= new File(cpath.c_str(),d->d_name);
                         _lastFile=_lastFile->_nextFile;
                     }else{
-                        _firstFile=new File(cpth.c_str());
+                        _firstFile=new File(cpath.c_str(),d->d_name);
                         _lastFile=_firstFile;
                     }
                     break;
                 case DT::DIR:
                     if(_lastDirectory){
-                        _lastDirectory->_nextDirectory= new Directory(cpth.c_str());
+                        _lastDirectory->_nextDirectory= new Directory(cpath.c_str(),d->d_name);
                         _lastDirectory=_lastDirectory->_nextDirectory;
                     }else{
-                        _firstDirectory=new Directory(cpth.c_str());
+                        _firstDirectory=new Directory(cpath.c_str(),d->d_name);
                         _lastDirectory=_firstDirectory;
                     }
                     break;
             };
             bpos += d->d_reclen;
+        }
     }
 }
 
 
 libsystempp::Directory::~Directory(){
+    
 }
 
 void libsystempp::Directory::chmod(unsigned short perm){
