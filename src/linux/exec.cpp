@@ -35,9 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysexec.h"
 #include "syscall.h"
 #include "sysbits.h"
+#include "sysexception.h"
 
 libsystempp::Exec::Exec(const char *wrkdir,const char *filename,const char *argv){
-    int _Pid=syscall0(__NR_fork);
+    SystemException exception;
+    _Pid=syscall0(__NR_fork);
+    if(_Pid <0)
+        exception[SystemException::Error] << "Exec fork failed !";
     if(_Pid==0){
         syscall3(__NR_execve,(unsigned long)filename,(unsigned long)argv,(unsigned long)wrkdir);
     }
