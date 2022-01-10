@@ -171,7 +171,6 @@ libsystempp::File *libsystempp::File::nextFile(){
     return _nextFile;
 }
 
-
 libsystempp::Directory::Directory(const char *path){
     SystemException excep;
     int ppos=rfind(path,getlen(path),'/')-1;
@@ -203,6 +202,14 @@ libsystempp::Directory::Directory(const char* path, const char* name){
     _firstDirectory=nullptr;
     _lastDirectory=nullptr;
     _nextDirectory=nullptr;
+}
+
+libsystempp::Directory::Directory(){
+    SystemException excep;
+    char dir[1024];
+    if(syscall2(__NR_getcwd,(unsigned long)&dir,1024)>0)
+        throw excep[SystemException::Error] << "getcwd can't change into workdir";
+    Directory((const char*)&dir);
 }
 
 void libsystempp::Directory::list(){
@@ -252,6 +259,15 @@ void libsystempp::Directory::list(){
 libsystempp::Directory::~Directory(){
     
 }
+
+const char * libsystempp::Directory::getName(){
+    return _Name.c_str();
+}
+
+const char * libsystempp::Directory::getPath(){
+    return _Path.c_str();
+}
+
 
 void libsystempp::Directory::chmod(unsigned short perm){
     SystemException excep;

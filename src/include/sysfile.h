@@ -91,7 +91,10 @@ namespace libsystempp{
     public:
         Directory(const char *path);
         Directory(const char *path,const char *name);
+        Directory();
         ~Directory();
+        const char     *getName();
+        const char     *getPath();
         void            list();
         Directory      *mkdir(const char *name,unsigned short perm);
         void            rmdir();
