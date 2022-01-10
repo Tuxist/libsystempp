@@ -171,17 +171,12 @@ libsystempp::File *libsystempp::File::nextFile(){
     return _nextFile;
 }
 
-libsystempp::Directory::Directory(const char *path){
+libsystempp::Directory::Directory(const char* path, const char* name){
     SystemException excep;
-    int ppos=rfind(path,getlen(path),'/')-1;
-    if(!path || ppos<0)
-        throw excep[SystemException::Error] << "Directory Path wrong !"; 
+    if(!path || !name)
+        throw excep[SystemException::Error] << "Directory path or name can't be null!";
     _Path=path;
-    
-    char *tname=nullptr;
-    libsystempp::substr(path,&tname,ppos,getlen(path));
-    _Name=tname;
-    delete[] tname;
+    _Name=name;
     _firstFile=nullptr;
     _lastFile=nullptr;
     _firstDirectory=nullptr;
@@ -191,25 +186,82 @@ libsystempp::Directory::Directory(const char *path){
         _Path+="/";
 }
 
-libsystempp::Directory::Directory(const char* path, const char* name){
+libsystempp::Directory::Directory(const char *path){
     SystemException excep;
-    if(!path || !name)
-        throw excep[SystemException::Error] << "Directory path or name can't be null!"; 
+    unsigned long ppos=0;
+    bool start=true;
+    
+    for(unsigned long i=0; i<getlen(path); ++i){
+        switch(path[i]){
+            case '/':
+                start=true;
+                break;
+            default:
+                if(start)
+                    ppos=i;
+                start=false;
+                break;
+        }
+    }
+    
+    if(!path)
+        throw excep[SystemException::Error] << "Directory Path wrong !"; 
+    char *tname=nullptr;
+    libsystempp::substr(path,&tname,ppos,getlen(path));
+    if(!path || !tname)
+        throw excep[SystemException::Error] << "Directory path or name can't be null!";
     _Path=path;
-    _Name=name;
+    _Name=tname;
     _firstFile=nullptr;
     _lastFile=nullptr;
     _firstDirectory=nullptr;
     _lastDirectory=nullptr;
     _nextDirectory=nullptr;
+    if(_Path[_Path.size()-1]!='/')
+        _Path+="/";
+    delete[] tname;
 }
 
 libsystempp::Directory::Directory(){
     SystemException excep;
-    char dir[1024];
-    if(syscall2(__NR_getcwd,(unsigned long)&dir,1024)<0)
+    char *dir = new char[1024];
+    unsigned long ppos=0;
+    bool start=true;
+    
+    if(syscall2(__NR_getcwd,(unsigned long)dir,1024)<0)
         throw excep[SystemException::Error] << "getcwd can't change into workdir";
-    Directory((const char*)&dir);
+    
+    for(unsigned long i=0; i<getlen(dir); ++i){
+        switch(dir[i]){
+            case '/':
+                start=true;
+                break;
+            default:
+                if(start)
+                    ppos=i;
+                start=false;
+                break;
+        }
+    }
+    
+
+    if(!dir)
+        throw excep[SystemException::Error] << "Directory Path wrong !"; 
+    char *tname=nullptr;
+    libsystempp::substr(dir,&tname,ppos,getlen(dir));
+    
+    if(!dir || !tname)
+        throw excep[SystemException::Error] << "Directory path or name can't be null!";
+    _Path=dir;
+    _Name=tname;
+    _firstFile=nullptr;
+    _lastFile=nullptr;
+    _firstDirectory=nullptr;
+    _lastDirectory=nullptr;
+    _nextDirectory=nullptr;
+    if(_Path[_Path.size()-1]!='/')
+        _Path+="/";
+    delete[] dir;
 }
 
 void libsystempp::Directory::list(){

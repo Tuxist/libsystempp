@@ -102,7 +102,6 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(const char *src){
 libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray arr){
     clear();
     assign(arr.c_str(),arr.length());
-    resize(arr.size());
     return *this;
 }
 
