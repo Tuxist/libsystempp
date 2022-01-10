@@ -115,7 +115,7 @@ int libsystempp::FileDescriptor::getFcntl(){
 
 void libsystempp::FileDescriptor::close(){
     SystemException excep;
-    if(syscall1(__NR_open,(unsigned long)_FD)>0)
+    if(syscall1(__NR_open,(unsigned long)_FD)<0)
         throw excep[SystemException::Error] << "Can't close file socket: " << _FD;
 }
 
@@ -163,7 +163,7 @@ void libsystempp::File::touch(unsigned short perm){
 
 void libsystempp::File::rmfile(){
     SystemException excep;
-    if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())>0)
+    if(syscall1(__NR_unlink,(unsigned long)_Path.c_str())<0)
         throw excep[SystemException::Error] << "rmdir can't delete file!";    
 }
 
@@ -174,7 +174,7 @@ libsystempp::File *libsystempp::File::nextFile(){
 libsystempp::Directory::Directory(const char *path){
     SystemException excep;
     int ppos=rfind(path,getlen(path),'/')-1;
-    if(!path || ppos>0)
+    if(!path || ppos<0)
         throw excep[SystemException::Error] << "Directory Path wrong !"; 
     _Path=path;
     
@@ -207,7 +207,7 @@ libsystempp::Directory::Directory(const char* path, const char* name){
 libsystempp::Directory::Directory(){
     SystemException excep;
     char dir[1024];
-    if(syscall2(__NR_getcwd,(unsigned long)&dir,1024)>0)
+    if(syscall2(__NR_getcwd,(unsigned long)&dir,1024)<0)
         throw excep[SystemException::Error] << "getcwd can't change into workdir";
     Directory((const char*)&dir);
 }
