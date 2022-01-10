@@ -203,9 +203,9 @@ bool libsystempp::CharArray::operator==(const char* src){
     return true;
 }
 
-void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long pos){
+void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long spos,unsigned long epos){
     substring.clear();
-    substring._DataSize=length()-pos;
+    substring._DataSize=epos-spos;
     substring._Data=new char[substring._DataSize];
-    scopy(substring._Data,substring._Data+substring._DataSize,_Data);
+    scopy(substring._Data+spos,substring._Data+substring._DataSize,_Data);
 }
