@@ -207,5 +207,5 @@ void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned 
     substring.clear();
     substring._DataSize=epos-spos;
     substring._Data=new char[substring._DataSize];
-    scopy(substring._Data+spos,substring._Data+epos,_Data);
+    scopy(_Data+spos,_Data+epos,substring._Data);
 }
