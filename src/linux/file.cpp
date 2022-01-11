@@ -312,6 +312,7 @@ void libsystempp::Directory::list(){
 
 libsystempp::Directory::~Directory(){
     delete _firstFile;
+    delete _firstDirectory;
 }
 
 const char * libsystempp::Directory::getName(){
