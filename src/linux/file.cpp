@@ -138,6 +138,7 @@ libsystempp::File::File(const char* path,const char *name) {
 }
 
 libsystempp::File::~File(){
+    delete _nextFile;
 }
 
 const char * libsystempp::File::getName(){
@@ -310,7 +311,7 @@ void libsystempp::Directory::list(){
 
 
 libsystempp::Directory::~Directory(){
-    
+    delete _firstFile;
 }
 
 const char * libsystempp::Directory::getName(){
