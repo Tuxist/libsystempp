@@ -45,7 +45,7 @@ void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
     if(srcsize==0)
         return;
     unsigned long nsize=_DataSize+srcsize;
-    if(nsize>_ArraySize)
+    if(_ArraySize<nsize)
         resize(nsize);
     scopy(src,src+srcsize,_Data+_DataSize);
     _DataSize=nsize;
@@ -184,8 +184,8 @@ void libsystempp::CharArray::resize(unsigned long size){
         clear();
         return;
     }
-    char *newdata= new char[size];    
-    if(_DataSize!=0){
+    char *newdata = new char[size];
+    if(_DataSize>0){
         scopy(_Data,_Data+_DataSize,newdata);
     }
     delete[] _Data;
@@ -203,9 +203,11 @@ bool libsystempp::CharArray::operator==(const char* src){
     return true;
 }
 
-void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long spos,unsigned long epos){
+void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long spos,unsigned long size){
     substring.clear();
-    substring._DataSize=epos-spos;
+    if(_DataSize<=0)
+        return;
+    substring._DataSize=size;
     substring._Data=new char[substring._DataSize];
-    scopy(_Data+spos,_Data+epos,substring._Data);
+    scopy(_Data+spos,_Data+size,substring._Data);
 }

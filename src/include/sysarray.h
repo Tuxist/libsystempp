@@ -61,7 +61,7 @@ namespace libsystempp {
         void               clear();
         void               shrink();
         void               resize(unsigned long size);
-        void               substr(CharArray &substring,unsigned long spos,unsigned long epos);
+        void               substr(CharArray &substring,unsigned long spos,unsigned long size);
      private:
         char             *_c_str;
         char             *_Data;

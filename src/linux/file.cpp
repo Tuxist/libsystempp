@@ -262,6 +262,7 @@ libsystempp::Directory::Directory(){
     if(_Path[_Path.size()-1]!='/')
         _Path+="/";
     delete[] dir;
+    delete[] tname;
 }
 
 void libsystempp::Directory::list(){
