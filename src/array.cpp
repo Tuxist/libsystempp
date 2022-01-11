@@ -209,5 +209,5 @@ void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned 
         return;
     substring._DataSize=size;
     substring._Data=new char[substring._DataSize];
-    scopy(_Data+spos,_Data+size,substring._Data);
+    scopy(_Data+spos,_Data+(spos+size),substring._Data);
 }
