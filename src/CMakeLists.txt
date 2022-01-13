@@ -55,6 +55,9 @@ add_library(
     cmd STATIC libcmd/cmd.cpp
 )
 
+add_library(
+    term SHARED terminfo/term.cpp
+)
 
 add_executable(confdbd 
     "confdb/confdbd.cpp"
@@ -84,7 +87,7 @@ set_property(TARGET systempp PROPERTY SOVERSION ${LIBV})
 set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
-install(TARGETS systempp cmd EXPORT systemppTargets
+install(TARGETS systempp cmd term EXPORT systemppTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
@@ -98,6 +101,11 @@ install(DIRECTORY include/
 
 install(FILES libcmd/cmd.h
         DESTINATION include/libcmd
+        COMPONENT Devel
+)
+
+install(FILES libcmd/term.h
+        DESTINATION include/
         COMPONENT Devel
 )
 
