@@ -24,12 +24,30 @@ message("Build with Linux Support")
 include_directories(
     "linux/include"
 )
-file(GLOB linuxSrcs
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.cpp"
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/*.S"
-    "linux/*.cpp"
-    "linux/*.c"
+  
+if(NOT GLIB_SUPPORT)
+    list(linuxSrcs
+        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
+        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
+        "linux/cxa.cpp"
+        "linux/unwind.cpp"
+    )
+endif()
+
+list(APPEND linuxSrcs
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
+    "linux/allocator.cpp"
+    "linux/console.cpp"
+    "linux/ctrlhandler.cpp"    
+    "linux/errno.cpp"
+    "linux/exec.cpp"
+    "linux/file.cpp"
+    "linux/lock.cpp"
+    "linux/socket.cpp"
+    "linux/sysinfo.cpp"
+    "linux/thread.cpp"
 )
+
 
 configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
@@ -87,12 +105,23 @@ set_property(TARGET systempp PROPERTY SOVERSION ${LIBV})
 set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
-install(TARGETS systempp cmd term EXPORT systemppTargets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
+
+
+if(NOT GLIB_SUPPORT)
+    install(TARGETS systempp cmd term EXPORT systemppTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+    )
+else()
+    install(TARGETS systempp cmd EXPORT systemppTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+    )
+endif()
 
 install(DIRECTORY include/
         DESTINATION include/systempp
@@ -104,10 +133,12 @@ install(FILES libcmd/cmd.h
         COMPONENT Devel
 )
 
-install(FILES libcmd/term.h
+if(NOT GLIB_SUPPORT)
+    install(FILES libcmd/term.h
         DESTINATION include/
         COMPONENT Devel
-)
+    )
+endif()
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
