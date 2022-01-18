@@ -7,11 +7,12 @@ ENDIF()
 
 include(GenerateExportHeader)
 
-file(GLOB currentSrcs "*.cpp")
-list(APPEND systemppSrcs ${currentSrcs})
-
-file(GLOB currentSrcs "std/*.cpp")
-list(APPEND systemppSrcs ${currentSrcs})
+set(systemppSrcs
+    "array.cpp"
+    "exception.cpp"
+    "utils.cpp"
+    "uuid.cpp"
+)
 
 list(APPEND systemppSrcs "confdb/confdb.cpp")
 
@@ -26,6 +27,10 @@ include_directories(
 )
   
 if(NOT GLIB_SUPPORT)
+    list(APPEND systemppSrcs 
+        "std/exception.cpp"
+        "std/typeinfo.cpp"
+    )
     list(APPEND linuxSrcs
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
@@ -35,6 +40,7 @@ if(NOT GLIB_SUPPORT)
 endif()
 
 list(APPEND linuxSrcs
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/allocator.cpp"
     "linux/console.cpp"
@@ -134,7 +140,7 @@ install(FILES libcmd/cmd.h
 )
 
 if(NOT GLIB_SUPPORT)
-    install(FILES libcmd/term.h
+    install(FILES terminfo/term.h
         DESTINATION include/
         COMPONENT Devel
     )

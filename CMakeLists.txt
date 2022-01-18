@@ -12,7 +12,7 @@ if(NOT GLIB_SUPPORT)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nodefaultlibs -nostdlib")
 endif()
 
-list(APPEND CMAKE_CXX_FLAGS "-fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)
 
