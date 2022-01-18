@@ -77,7 +77,7 @@ void libsystempp::Thread::Join(){
     struct timespec cur,wait;
     syscall2(__NR_gettimeofday,(unsigned long)&cur,0);
     wait.tv_sec=0;
-    wait.tv_nsec=10000;
+    wait.tv_nsec=100000;
     while(_ParentPid==_ThreadPid){
          syscall2(__NR_nanosleep,(unsigned long)&wait,(unsigned long)&cur);
     };

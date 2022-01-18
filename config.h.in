@@ -1,3 +1,4 @@
 #define MAXHEAPSIZE 16384 
 #define CONFDBPATH  "/var/lib/confdb.db"
 #define CONFSOCKET  "/var/run/confdb.sock"
+#define GLIBSUPPORT ${GLIB_SUPPORT}

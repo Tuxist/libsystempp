@@ -80,7 +80,7 @@ bool libsystempp::Lock::trylock(){
     if (_LockData->futex.exchange(0)){
         return false; 
     }
-    long res=syscall6(__NR_futex,(unsigned long)_LockData->futex, FUTEX_WAIT, 0,0,0,0);
+    long res=syscall6(__NR_futex,(unsigned long)_LockData->futex.load(), FUTEX_WAIT, 0,0,0,0);
     
     if(res==-1){
         SystemException excep;
