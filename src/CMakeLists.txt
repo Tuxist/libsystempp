@@ -26,7 +26,7 @@ include_directories(
 )
   
 if(NOT GLIB_SUPPORT)
-    list(linuxSrcs
+    list(APPEND linuxSrcs
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
         "linux/cxa.cpp"
