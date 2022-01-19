@@ -41,6 +41,14 @@ libsystempp::CharArray::~CharArray(){
    delete[]   _c_str;
 }
 
+const char libsystempp::CharArray::at(unsigned long pos){
+    SystemException excep;
+    if(pos>_DataSize)
+        throw excep[SystemException::Error] << "position out of bound!";
+    return _Data[pos];
+}
+
+
 void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
     if(srcsize==0)
         return;
@@ -106,10 +114,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray
 }
 
 const char libsystempp::CharArray::operator[](unsigned long pos){
-    SystemException excep;
-    if(pos>_DataSize)
-        throw excep[SystemException::Error] << "position out of bound!";
-    return _Data[pos];
+    return at(pos);
 }
 
 libsystempp::CharArray &libsystempp::CharArray::operator<<(const char* src){

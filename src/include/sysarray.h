@@ -33,6 +33,8 @@ namespace libsystempp {
         CharArray();
         ~CharArray();
 
+        const char at(unsigned long pos);
+        
         void assign(const char *src,unsigned long srcsize);
         void assign(const char *src);
         
