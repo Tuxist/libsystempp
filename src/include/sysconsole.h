@@ -40,7 +40,7 @@ namespace libsystempp {
     
     class _Console {
     public:
-        _Console(FileDescriptor &fd);
+        _Console(FileDescriptor fd);
         ~_Console();
         static const char *endl;
         _Console &operator<<(const char *out);
