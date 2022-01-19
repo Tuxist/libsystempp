@@ -55,68 +55,68 @@ struct linux_dirent {
 };
 
 libsystempp::FileDescriptor::FileDescriptor(){
-    _FD=-1;
+    FD=-1;
 }
 
 libsystempp::FileDescriptor::FileDescriptor(int fd){
-    _FD=fd;
+    FD=fd;
 }
 
 libsystempp::FileDescriptor::~FileDescriptor(){
 }
 
 void libsystempp::FileDescriptor::operator=(libsystempp::FileDescriptor value){
-    _FD=value._FD;
+    FD=value.FD;
 }
 
 
 void libsystempp::FileDescriptor::operator=(int value){
-    _FD=value;
+    FD=value;
 }
 
 void libsystempp::FileDescriptor::open(const char *path, int opt){
     SystemException excep;
     unsigned short umod=0;
-    if((_FD=syscall3(__NR_open,(unsigned long)path,opt,umod))<0)
+    if((FD=syscall3(__NR_open,(unsigned long)path,opt,umod))<0)
         throw excep[SystemException::Error] << "Can't open file: " << path;
 }
 
 int libsystempp::FileDescriptor::read(void *buf, int bufsize){
     SystemException excep;
     unsigned long ret=-1;
-    if((ret=syscall3(__NR_read,(unsigned long)_FD,(unsigned long)buf,(long)bufsize))<0)
-        throw excep[SystemException::Error] << "Can't read file from filedescriptor: " << _FD;
+    if((ret=syscall3(__NR_read,(unsigned long)FD,(unsigned long)buf,(long)bufsize))<0)
+        throw excep[SystemException::Error] << "Can't read file from filedescriptor: " << FD;
     return ret;
 }
 
 int libsystempp::FileDescriptor::write(void* buf, int bufsize){
     SystemException excep;
     unsigned long ret=-1;
-    if((ret=syscall3(__NR_write,_FD,(unsigned long)buf,bufsize))<0)
-        throw excep[SystemException::Error] << "Can't write file from filedescriptor: " << _FD;
+    if((ret=syscall3(__NR_write,FD,(unsigned long)buf,bufsize))<0)
+        throw excep[SystemException::Error] << "Can't write file from filedescriptor: " << FD;
     return ret;
 }
 
 int libsystempp::FileDescriptor::setFcntl(int opt){
     SystemException excep;
     unsigned long ret=-1;
-    if((ret=(int)syscall3(__NR_fcntl, _FD, F_SETFL, opt))<0)
-        throw excep[SystemException::Error] << "Can't setfnctl file from filedescriptor: " << _FD;
+    if((ret=(int)syscall3(__NR_fcntl, FD, F_SETFL, opt))<0)
+        throw excep[SystemException::Error] << "Can't setfnctl file from filedescriptor: " << FD;
     return ret;
 }
 
 int libsystempp::FileDescriptor::getFcntl(){
     SystemException excep;
     unsigned long ret=-1;
-    if((ret=(int)syscall3(__NR_fcntl, _FD, F_GETFL, 0))<0)
-        throw excep[SystemException::Error] << "Can't write getfnctl from filedescriptor: " << _FD;
+    if((ret=(int)syscall3(__NR_fcntl, FD, F_GETFL, 0))<0)
+        throw excep[SystemException::Error] << "Can't write getfnctl from filedescriptor: " << FD;
     return ret;
 }
 
 void libsystempp::FileDescriptor::close(){
     SystemException excep;
-    if(syscall1(__NR_open,(unsigned long)_FD)<0)
-        throw excep[SystemException::Error] << "Can't close file socket: " << _FD;
+    if(syscall1(__NR_open,(unsigned long)FD)<0)
+        throw excep[SystemException::Error] << "Can't close file socket: " << FD;
 }
 
 libsystempp::File::File(const char* path) {
@@ -274,7 +274,7 @@ void libsystempp::Directory::list(){
     struct linux_dirent *d;
     long nread =0;
     for (;;) {
-        nread = syscall3(__NR_getdents,(unsigned long)fd._FD,(unsigned long)buf, 1024);
+        nread = syscall3(__NR_getdents,(unsigned long)fd.FD,(unsigned long)buf, 1024);
         if (nread < 0)
             throw excep[SystemException::Error] << "Directory getdents failed!";
         else if(nread==0)

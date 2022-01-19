@@ -34,13 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYSERR 2
 
 namespace libsystempp {
-    static FileDescriptor STDIN;
-    static FileDescriptor STDOUT;
-    static FileDescriptor STDERR;
+    static FileDescriptor STDIN(SYSIN);
+    static FileDescriptor STDOUT(SYSOUT);
+    static FileDescriptor STDERR(SYSERR);
     
     class _Console {
     public:
-        _Console(FileDescriptor fd);
+        _Console(FileDescriptor &fd);
         ~_Console();
         static const char *endl;
         _Console &operator<<(const char *out);

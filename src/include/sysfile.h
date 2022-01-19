@@ -60,7 +60,7 @@ namespace libsystempp{
     protected:
         int  setFcntl(int opt);
         int  getFcntl();
-        int _FD;
+        int  FD;
         friend class Directory;
     };
     
