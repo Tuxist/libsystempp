@@ -37,66 +37,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysbits.h"
 #include "syscall.h"
 
-class libsystempp::LockData {
-private:
-    std::atomic<uint32_t> addr;
-    std::atomic<uint32_t> futex;
-    friend class Lock;
-};
-
 libsystempp::Lock::Lock(){
-    _LockData= new LockData;
-    _LockData->addr.store(syscall6(__NR_mmap,0,sizeof(_LockData->addr) * 2, PROT_READ | PROT_WRITE,
-                       MAP_ANONYMOUS | MAP_SHARED, -1, 0));
-    
-    if(_LockData->addr.load()==-1){
-        SystemException excep;
-        throw excep[SystemException::Error] << "Can't allocate Memory for the lock"; 
-    }
-    
-    _LockData->futex.store(_LockData->addr.load());
+    _LockData= new std::atomic<uint32_t>;   
+    ((std::atomic<uint32_t>*)_LockData)->store(1);
 }
 
 libsystempp::Lock::~Lock(){
-    delete _LockData;
+     delete ((std::atomic<uint32_t>*)_LockData);
 }
 
 void libsystempp::Lock::lock(){
     long res;
     while(1){
-        if (_LockData->futex.exchange(0)){
-            break; 
-        }
-        res=syscall6(__NR_futex,(unsigned long)_LockData->futex.load(), FUTEX_WAIT, 0,0,0,0);
+        uint32_t ldat = 1;
+        if (std::atomic_compare_exchange_strong((std::atomic<uint32_t>*)_LockData,&ldat,0))
+            break;
         
-        if(res==-1){
+        res=syscall6(__NR_futex,(unsigned long)_LockData, FUTEX_WAIT, 0,0,0,0);
+        
+        if(res<0){
             SystemException excep;
             throw excep[SystemException::Error] << "Futex syscall for the lock failed!"; 
-        }  
+        }
     }
 }
 
 bool libsystempp::Lock::trylock(){
-    if (_LockData->futex.exchange(0)){
-        return false; 
-    }
-    long res=syscall6(__NR_futex,(unsigned long)_LockData->futex.load(), FUTEX_WAIT, 0,0,0,0);
-    
-    if(res==-1){
-        SystemException excep;
-        throw excep[SystemException::Error] << "Futex syscall for the trylock failed!"; 
-    }
-    
-    return true;
+    uint32_t ldat = 1;
+
+    if (std::atomic_compare_exchange_strong((std::atomic<uint32_t>*)_LockData,&ldat,0))
+        return true;
+
+    return false;
 }
 
 void libsystempp::Lock::unlock(){
-    long res=0;
-    if (_LockData->futex.exchange(1)){
-        res=syscall6(__NR_futex,(unsigned long)_LockData->futex.load(), FUTEX_WAKE, 0,0,0,0);
-    }
-    if(res==-1){
-        SystemException excep;
-        throw excep[SystemException::Error] << "Futex syscall for the unlock failed!"; 
+    uint32_t ldat=0;
+    if (std::atomic_compare_exchange_strong((std::atomic<uint32_t>*)_LockData,&ldat,1)){
+        long res=syscall6(__NR_futex,(unsigned long)_LockData, FUTEX_WAKE, 1,0,0,0);
+
+        if(res<0){
+            SystemException excep;
+            throw excep[SystemException::Error] << "Futex syscall for the unlock failed!"; 
+        }
     }
 }

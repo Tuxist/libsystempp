@@ -28,7 +28,6 @@
 #pragma once
 
 namespace libsystempp {
-    class LockData;
     class Lock {
     public:
         Lock();
@@ -37,6 +36,6 @@ namespace libsystempp {
         bool trylock();
         void unlock();
     private:
-        LockData *_LockData;
+        void *_LockData;
     };
 };
