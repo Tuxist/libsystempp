@@ -208,6 +208,17 @@ bool libsystempp::CharArray::operator==(const char* src){
     return true;
 }
 
+size_t libsystempp::CharArray::substr(const char **substring, unsigned long spos, unsigned long size){
+    substring=nullptr;
+    if(_DataSize<=0)
+        return 0;
+    char *ndata=new char[size];
+    scopy(_Data+spos,_Data+(spos+size),ndata);
+    *substring=ndata;
+    return size;
+}
+
+
 void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long spos,unsigned long size){
     substring.clear();
     if(_DataSize<=0)

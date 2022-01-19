@@ -41,7 +41,7 @@ libsystempp::_Console CONIN(STDIN);
 const char *libsystempp::_Console::endl="\n";
 
 libsystempp::_Console::_Console(FileDescriptor &fd){
-    _FD=fd;
+    _FD=FileDescriptor(fd);
 }
 
 libsystempp::_Console::~_Console(){
