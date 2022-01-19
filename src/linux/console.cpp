@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysutils.h"
 #include "sysconsole.h"
 
-libsystempp::FileDescriptor STDIN(0);
-libsystempp::FileDescriptor STDOUT(1);
-libsystempp::FileDescriptor STDERR(2);
+libsystempp::FileDescriptor STDIN(SYSIN);
+libsystempp::FileDescriptor STDOUT(SYSOUT);
+libsystempp::FileDescriptor STDERR(SYSERR);
 
 
 libsystempp::_Console CONERR(STDERR);

@@ -72,7 +72,7 @@ struct address {
 
 struct sockaddr{
     sa_family_t   sa_family;
-    char          sa_data[14];
+    char          sa_data[];
 };
 
 struct sockaddr_un {
@@ -125,6 +125,9 @@ struct aibuf {
 };
 
 libsystempp::ClientSocket::ClientSocket(){
+    _Socket=-1;
+    _SocketPtr=nullptr;
+    _SocketPtrSize=0;
 }
 
 libsystempp::ClientSocket::~ClientSocket(){
@@ -134,7 +137,7 @@ libsystempp::ClientSocket::~ClientSocket(){
 
 void libsystempp::ClientSocket::setnonblocking(){
     int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
-    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)==-1){
+    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)<0){
         SystemException exception;
         exception[SystemException::Error] << "Could not set ClientSocket nonblocking!";
         throw exception; 
@@ -240,7 +243,7 @@ libsystempp::ServerSocket::~ServerSocket(){
 
 void libsystempp::ServerSocket::setnonblocking(){
     int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
-    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)==-1){
+    if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)<0){
         SystemException exception;
         exception[SystemException::Error] << "Could not set ServerSocket nonblocking!";
         throw exception; 
@@ -271,7 +274,6 @@ int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     int socket = syscall3(__NR_accept,_Socket,(unsigned long)&clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
     if(socket<0){
-        char errbuf[255];
         exception[SystemException::Error] << "Can't accept on  Socket";
         throw exception;
     }

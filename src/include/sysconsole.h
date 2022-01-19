@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#define SYSOUT 0
-#define SYSERR 1
-#define SYSIN  2
+#define SYSIN  0
+#define SYSOUT 1
+#define SYSERR 2
 
 namespace libsystempp {
     static FileDescriptor STDIN;
@@ -40,7 +40,6 @@ namespace libsystempp {
     
     class _Console {
     public:
-        _Console();
         _Console(FileDescriptor &fd);
         ~_Console();
         static const char *endl;
@@ -55,12 +54,12 @@ namespace libsystempp {
         _Console &operator>>(CharArray &in);
     private:
         FileDescriptor _FD;
-    }static CONOUT, CONERR, CONNIN;
+    }static CONNIN(STDIN),CONOUT(STDOUT), CONERR(STDERR);
     
     static _Console Console[3] = {
+        CONNIN,
         CONOUT,
-        CONERR,
-        CONNIN
+        CONERR
     };
     
 };
