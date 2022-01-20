@@ -42,14 +42,14 @@ libsystempp::SystemException::Message::~Message(){
 }
 
 libsystempp::SystemException::SystemException(){
-    _curCType=Note;
+    curCType=Note;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     _printBuffer=nullptr;
 };
 
 libsystempp::SystemException::SystemException(const SystemException &exp){
-    _curCType=exp._curCType;
+    curCType=exp.curCType;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     _printBuffer=nullptr;
@@ -64,7 +64,7 @@ libsystempp::SystemException::~SystemException(){
 }
 
 int libsystempp::SystemException::getErrorType(){
-    return _curCType; 
+    return curCType; 
 }
 
 const char* libsystempp::SystemException::what(){
@@ -98,7 +98,7 @@ libsystempp::SystemException& libsystempp::SystemException::asign(const char *sr
         _lastMessage->_nextMessage=new Message();
         _lastMessage=_lastMessage->_nextMessage;
     }
-    _lastMessage->_CType=_curCType;
+    _lastMessage->_CType=curCType;
     _lastMessage->_BufferSize=getlen(src);
     _lastMessage->_Buffer=new char[_lastMessage->_BufferSize+1];
     scopy(src,src+_lastMessage->_BufferSize+1,_lastMessage->_Buffer);
@@ -106,7 +106,7 @@ libsystempp::SystemException& libsystempp::SystemException::asign(const char *sr
 }
 
 libsystempp::SystemException& libsystempp::SystemException::operator[](int errtype){
-    _curCType=errtype;
+    curCType=errtype;
     return *this;
 }
 

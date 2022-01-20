@@ -50,6 +50,8 @@ namespace libsystempp {
         SystemException& operator[](int errtype);
         SystemException& operator<<(const char *src);
         SystemException& operator<<(int src);
+    protected:
+        int      curCType;
     private:
         struct Message {
             Message();
@@ -65,6 +67,5 @@ namespace libsystempp {
         
         char    *_printBuffer;
         char    *_errnobuf;
-        int      _curCType;
     };
 }
