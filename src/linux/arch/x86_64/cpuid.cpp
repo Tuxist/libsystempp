@@ -1,7 +1,7 @@
 #include <sysinfo.h>
 #include <sysutils.h>
 
-#include <bits/stdint-uintn.h>
+#include <stdint.h>
 
 class _cpuIDinfo {
 public:
@@ -22,7 +22,7 @@ static inline void _cpuid(unsigned int func, unsigned int subfunc,_cpuIDinfo* in
 
 
 libsystempp::CpuInfo::CpuInfo(){
-    _cpuinfo=new _cpuIDinfo();
+    _cpuinfo=new _cpuIDinfo;
 }
 
 libsystempp::CpuInfo::~CpuInfo(){

@@ -27,9 +27,11 @@ include_directories(
 )
   
 if(NOT GLIB_SUPPORT)
+    message("Build without Glibc Support")
     list(APPEND systemppSrcs 
         "std/exception.cpp"
         "std/typeinfo.cpp"
+        "std/cstring.cpp"
     )
     list(APPEND linuxSrcs
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"

@@ -5,7 +5,7 @@ enable_testing ()
 set(LIBV "1.0.0")
 set(Upstream_VERSION 1.0.0)
 
-set(GLIB_SUPPORT True CACHE BOOL "Glib Support")
+set(GLIB_SUPPORT FALSE CACHE BOOL "Glib Support")
 
 if(NOT GLIB_SUPPORT)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nodefaultlibs -nostdlib")
