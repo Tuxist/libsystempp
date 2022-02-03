@@ -70,6 +70,7 @@ list(APPEND systemppSrcs ${linuxSrcs})
 install(FILES
         ${CMAKE_BINARY_DIR}/src/syscall.h
         ${CMAKE_BINARY_DIR}/src/sysbits.h
+        ${CMAKE_BINARY_DIR}/config.h
         DESTINATION include/systempp
         COMPONENT Devel
 )
