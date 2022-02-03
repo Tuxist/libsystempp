@@ -126,6 +126,7 @@ extern "C" {
     };
     
     void *__cxa_allocate_exception(unsigned long thrown_size){
+        return new char[thrown_size];
     };
     
     void __cxa_throw (void *thrown_exception,std::type_info *tinfo, void (*dest) (void *) ){
