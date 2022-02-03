@@ -9,66 +9,90 @@ namespace __cxxabiv1 {
         const __class_type_info* __src_type, const void* __src_ptr,
         __dyncast_result& __result) const{
             
-        }
+    }
         
         
         
-        bool __si_class_type_info::__do_upcast(
+    bool __si_class_type_info::__do_upcast(
             const __class_type_info*__dst, const void*__obj,
             __upcast_result& __restrict __result) const{
                 
-        };
+    };
             
-        __si_class_type_info::~__si_class_type_info(){
+    __si_class_type_info::~__si_class_type_info(){
                 
-        }
+    }
             
-        __class_type_info::~__class_type_info(){
+    __class_type_info::~__class_type_info(){
                 
-        }
+    }
             
-        __si_class_type_info::__sub_kind 
-        __class_type_info::__do_find_public_src(long, 
+    __si_class_type_info::__sub_kind 
+    __class_type_info::__do_find_public_src(long, 
             void const*, 
             __cxxabiv1::__class_type_info const*, 
             void const*) const{
                 
-        };
+    };
                                                                 
-        __si_class_type_info::__sub_kind
-        __si_class_type_info::__do_find_public_src(
+    __si_class_type_info::__sub_kind
+    __si_class_type_info::__do_find_public_src(
             long, 
             void const*,
             __class_type_info const*,
             void const*) const{
                                                                         
-        };
+    };
                                                                     
-        bool __class_type_info::__do_catch(type_info const*, 
+    bool __class_type_info::__do_catch(type_info const*, 
             void**, 
             unsigned int) const{
                                                                                                                        
-        };
+    };
                                                                                                                    
-        bool __class_type_info::__do_upcast(
+    bool __class_type_info::__do_upcast(
             __class_type_info const*, 
             void**) const{
                                                                                                                                                                        
-        };
+    };
                                                                                                                                                                    
-        bool __class_type_info::__do_upcast(
+    bool __class_type_info::__do_upcast(
             __class_type_info const*,
             void const*, 
             __class_type_info::__upcast_result&) const{
                 
-        }
+    }
         
-        bool __class_type_info::__do_dyncast(long,                                                                                                                                                                                                                                                                                                                          __class_type_info::__sub_kind,                                                                                                                                                               __class_type_info const*, 
+    bool __class_type_info::__do_dyncast(long,                                                                                                                                                                                                                                                                                                                              __class_type_info::__sub_kind,                                                                                                                                                               __class_type_info const*, 
         void const*,                                                                                                                                                                                                                                        __class_type_info const*, 
         void const*, 
         __class_type_info::__dyncast_result&) const{
                                                 
-        };
+    };
+
+    __vmi_class_type_info::~__vmi_class_type_info(){
+        
+    };
+    
+    bool __vmi_class_type_info::__do_dyncast(ptrdiff_t __src2dst, __sub_kind __access_path,
+		 const __class_type_info* __dst_type, const void* __obj_ptr,
+		 const __class_type_info* __src_type, const void* __src_ptr,
+		 __dyncast_result& __result) const{
+             
+    };
+    
+    bool __vmi_class_type_info::__do_upcast(const __class_type_info* __dst, const void* __obj,
+            __upcast_result& __restrict __result) const{
+                
+    };
+    
+    __class_type_info::__sub_kind __vmi_class_type_info::__do_find_public_src(ptrdiff_t __src2dst, 
+                                                                              const void* __obj_ptr,
+                                                                              const __class_type_info* __src_type,
+                                                                              const void* __src_ptr) const{
+    
+    };
+
 };
 
 extern "C" {
