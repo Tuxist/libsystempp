@@ -1,8 +1,10 @@
+#include <stdint.h>
 #include <cxxabi.h>
 #include <typeinfo>
+#include <mutex>
 
 namespace __cxxabiv1 {
-    
+
     bool __si_class_type_info::__do_dyncast(
         ptrdiff_t __src2dst, __sub_kind __access_path,
         const __class_type_info* __dst_type, const void* __obj_ptr,
@@ -95,6 +97,8 @@ namespace __cxxabiv1 {
 
 };
 
+static std::mutex __guard_mutex;
+
 extern "C" {
     int __cxa_atexit(void (*f)(void *), void *objptr, void *dso){
         return 0;
@@ -118,11 +122,27 @@ extern "C" {
     }
     
     int __cxa_guard_acquire(__cxxabiv1::__guard *guard_object){
-        return 0;
+        if(*((uint8_t*)guard_object) != 0 )
+            return 0;
+        
+        ::__guard_mutex.lock();
+        
+        if(( *((uint8_t*)guard_object))){
+            ::__guard_mutex.unlock();
+            return 0;
+        }
+        
+        return 1;
     };
     
     void __cxa_guard_release(__cxxabiv1::__guard *guard_object) _GLIBCXX_NOTHROW{
-        
+        if(( *((uint8_t*)guard_object))){
+            __guard_mutex.unlock();
+        }
+    };
+    
+    void __cxa_guard_abort(__cxxabiv1::__guard* guard_object) _GLIBCXX_NOTHROW{
+        __guard_mutex.unlock();
     };
     
     void *__cxa_allocate_exception(unsigned long thrown_size){
@@ -142,9 +162,6 @@ extern "C" {
     
     void __cxa_pure_virtual() { 
         while (1);
-    }
-    
-    void __cxa_guard_abort(__cxxabiv1::__guard* guard_object){
     };
     
 };
