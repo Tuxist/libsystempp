@@ -105,7 +105,7 @@ extern "C" {
     };
     
     int __cxa_finalize(void *f){
-
+        std::exit(0);
     };
     
     void __cxa_call_unexpected(void *u){
@@ -113,7 +113,7 @@ extern "C" {
     };
     
     void *__cxa_begin_catch(void *c) _GLIBCXX_NOTHROW{
-    
+        std::exit(0);
     };
     
     void __cxa_end_catch(){
@@ -150,18 +150,19 @@ extern "C" {
     };
     
     void __cxa_throw (void *thrown_exception,std::type_info *tinfo, void (*dest) (void *) ){
+        std::exit(0);
     };
     
     void __cxa_free_exception(void *thrown_exception){
-        
+        delete (char*) thrown_exception;
     };
 
     void __cxa_throw_bad_array_new_length(){
-      
+        std::exit(0);
     };
     
-    void __cxa_pure_virtual() { 
-        while (1);
+    void __cxa_pure_virtual() {
+        std::exit(0);
     };
     
 };

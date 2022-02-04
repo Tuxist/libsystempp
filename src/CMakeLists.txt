@@ -38,6 +38,7 @@ if(NOT GLIB_SUPPORT)
         "linux/std/cstring.cpp"
         "linux/std/mutex.cpp"
         "linux/std/system_error.cpp"
+        "linux/std/cstdlib.cpp"
     )
 endif()
 
