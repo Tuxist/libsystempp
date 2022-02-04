@@ -32,6 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace std {
     void terminate() noexcept{
-        syscall0(__NR_exit_group);
+        syscall0(__NR_exit);
     };
 };
