@@ -47,7 +47,7 @@ extern "C" {
 //   _URC_HANDLER_FOUND;
 //   _URC_INSTALL_CONTEXT;
 //   _URC_CONTINUE_UNWIND;
-        return _URC_FATAL_PHASE1_ERROR;
+        return _URC_END_OF_STACK;
     }
     
     void _Unwind_Resume(struct _Unwind_Exception * object){

@@ -3,6 +3,8 @@
 #include <typeinfo>
 #include <mutex>
 
+#include <systempp/sysconsole.h>
+
 namespace __cxxabiv1 {
 
     bool __si_class_type_info::__do_dyncast(
@@ -105,7 +107,7 @@ extern "C" {
     };
     
     int __cxa_finalize(void *f){
-        std::exit(0);
+        return 0;
     };
     
     void __cxa_call_unexpected(void *u){
@@ -113,11 +115,10 @@ extern "C" {
     };
     
     void *__cxa_begin_catch(void *c) _GLIBCXX_NOTHROW{
-        std::exit(0);
+        return c;
     };
     
-    void __cxa_end_catch(){
-    
+    void __cxa_end_catch(){    
         
     }
     
@@ -162,7 +163,7 @@ extern "C" {
     };
     
     void __cxa_pure_virtual() {
-        std::exit(0);
+        while(1);
     };
     
 };
