@@ -41,10 +41,10 @@ extern "C" void *memset( void * ptr, int value, size_t num ){
     return std::memset(ptr,value,num);
 }
 
-extern "C" void* memcpy(void* dst, const void* src, unsigned int size){
+extern "C" void *memcpy(void* dst, const void* src, unsigned int size){
     return std::memcpy(dst,src, size);
 }
 
-extern "C" void* memmove(void* dst, const void* src, unsigned int size){
+extern "C" void *memmove(void* dst, const void* src, unsigned int size){
     return std::memmove(dst,src, size);
 }
