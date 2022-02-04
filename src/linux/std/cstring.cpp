@@ -19,21 +19,16 @@ namespace std {
     void* memmove(void* dst, const void* src, size_t size){
         char *pDest = (char *)dst;
         const char *pSrc =( const char*)src;
-        //allocate memory for tmp array
         char *tmp  = new char[(sizeof(char ) * size)];
-        if(nullptr == tmp)
-        {
+        if(nullptr == tmp){
             return nullptr;
         }
-        else
-        {
+        else{
             unsigned int i = 0;
-            for(i =0; i < size ; ++i)
-            {
+            for(i =0; i < size ; ++i){
                 *(tmp + i) = *(pSrc + i);
             }
-            for(i =0 ; i < size ; ++i)
-            {
+            for(i =0 ; i < size ; ++i){
                 *(pDest + i) = *(tmp + i);
             }
             delete[] tmp;
