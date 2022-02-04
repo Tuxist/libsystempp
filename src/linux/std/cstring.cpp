@@ -35,6 +35,13 @@ namespace std {
         }
         return dst;
     }
+    
+    size_t strlen(const char * str){
+        size_t i = 0;
+        while(str[i] != '\0')
+            ++i;
+        return i;
+    }
 };
 
 extern "C" void *memset( void * ptr, int value, size_t num ){
@@ -47,4 +54,8 @@ extern "C" void *memcpy(void* dst, const void* src, unsigned int size){
 
 extern "C" void *memmove(void* dst, const void* src, unsigned int size){
     return std::memmove(dst,src, size);
+}
+
+extern "C" unsigned int strlen(const char * str){
+    return std::strlen(str);
 }
