@@ -28,12 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/fcntl.h>
 #include <linux/types.h>
 
-#include "sysexception.h"
-#include "sysfile.h"
-#include "syscall.h"
-#include "sysbits.h"
-#include "sysutils.h"
-#include "sysconsole.h"
+#include "systempp/sysexception.h"
+#include "systempp/sysfile.h"
+#include "systempp/syscall.h"
+#include "systempp/sysbits.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysconsole.h"
 
 enum DT{
         UNKNOWN  = 0,

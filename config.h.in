@@ -2,3 +2,7 @@
 #define CONFDBPATH  "/var/lib/confdb.db"
 #define CONFSOCKET  "/var/run/confdb.sock"
 #define GLIBSUPPORT ${GLIB_SUPPORT}
+
+#if GLIBSUPPORT == False
+    #undef __GLIBC__ 
+#endif

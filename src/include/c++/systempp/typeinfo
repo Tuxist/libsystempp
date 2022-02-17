@@ -1,17 +1,17 @@
 /*******************************************************************************
-Copyright (c) 2021, Jan Koester jan.koester@gmx.net
+Copyright (c) 2014, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -25,30 +25,22 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <cxxabi.h>
+
 #pragma once
 
-#include <sysarray.h>
-
-namespace libsystempp {
-    class JSONString {
+namespace std {
+    class type_info {
     public:
-    
+        ~type_info();
+        const char *name() const;
+        bool before (const type_info &__arg) const;
+        bool operator== (const type_info &__arg) const;
+        bool operator!= (const type_info &__arg) const;
+        size_t hash_code() const noexcept;
     private:
-        CharArray  *_Key;
-        CharArray  *_Value;
-        JSONString *_nextJSONString;
-    };
-    
-    class JSONArray {
-        
-    };
-    
-    class JSON {
-    public:
-        JSON();
-        ~JSON();
-        void parse(class CharArray *data);
-    private:
-        void cleanlines(class CharArray &data);
+        type_info (const type_info &tinfo);
+    protected:
+        inline explicit type_info(const char *__n);
     };
 };

@@ -1,14 +1,24 @@
+set(CMAKE_C_COMPILER "clang")
+set(CMAKE_CXX_COMPILER "clang++")
+set(LD_LLD lld)
+
 project(libsystempp CXX ASM)
 cmake_minimum_required(VERSION 2.6)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 enable_testing ()
 
 set(LIBV "1.0.0")
 set(Upstream_VERSION 1.0.0)
 
+find_package(Clang REQUIRED)
+find_package(Unwind REQUIRED)
+
 set(GLIB_SUPPORT FALSE CACHE BOOL "Glib Support")
 
 if(NOT GLIB_SUPPORT)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nodefaultlibs -nostdlib")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nodefaultlibs -nostdlib -nostdinc++")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nodefaultlibs -nostdlib")
 endif()
 
@@ -22,9 +32,14 @@ set(CMAKE_ASM_FLAGS "${CXXFLAGS} ${ASM_OPTIONS}" )
 
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-include_directories(${CMAKE_BINARY_DIR})
+include_directories(
+    ${CLANG_INCLUDE_DIRS}
+    ${CMAKE_BINARY_DIR}
+)
 
-
+add_definitions(
+    ${CLANG_DEFINITIONS}
+)
 
 add_subdirectory(doc)
 add_subdirectory(src)

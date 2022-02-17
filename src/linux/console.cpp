@@ -25,9 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "sysexception.h"
-#include "sysutils.h"
-#include "sysconsole.h"
+#include "systempp/sysexception.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysconsole.h"
 
 libsystempp::FileDescriptor STDIN(SYSIN);
 libsystempp::FileDescriptor STDOUT(SYSOUT);

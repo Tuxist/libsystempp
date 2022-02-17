@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2019, Jan Koester jan.koester@gmx.net
+Copyright (c) 2014, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,22 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-//#include <signal.h> 
+#pragma once
+
 #include <cstddef>
+#include <cstdint>
 
-#include "syscall.h"
-#include "systempp/sysbits.h"
-#include "systempp/sysctrlhandler.h"
+namespace std {
+    void *memset( void * ptr, int value, size_t num );
+    void *memcpy(void* dst, const void* src, size_t size);   
+    void *memmove(void* dst, const void* src, size_t size);
+    size_t strlen(const char * str);
+};
 
-libsystempp::CtrlHandler::CtrlHandler(){
-    int signalfd;
-    signalfd=syscall0(__NR_signalfd);
-    syscall3(__NR_rt_sigaction,signalfd,(unsigned long)this,sizeof(this));
+extern "C" {
+    void *memset( void * ptr, int value, std::size_t num );
+    void *memcpy(void* dst, const void* src, unsigned int size);
+    void *memmove(void* dst, const void* src, unsigned int size);
+    unsigned int strlen(const char * str);
 }
 
-libsystempp::CtrlHandler::~CtrlHandler(){
-    
-}
-
-void libsystempp::CtrlHandler::CTRLCloseEvent(){
-    return;
-}
-
-void libsystempp::CtrlHandler::CTRLBreakEvent(){
-    return;
-}
-
-void libsystempp::CtrlHandler::CTRLTermEvent(){
-    return;
-}
-
-void libsystempp::CtrlHandler::SIGPIPEEvent(){
-    return;
-}

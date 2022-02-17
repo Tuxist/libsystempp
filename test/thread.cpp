@@ -25,20 +25,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "sysconsole.h"
-#include "systhread.h"
+#include <iostream>
+
+#include "config.h"
+
+#include <thread>
+
+#undef __GLIBC__
 
 void *childfunc(void *test){
-    libsystempp::Console[SYSOUT] << (const char*)test 
-        << libsystempp::Console[SYSOUT].endl;
+    std::cout << (const char*)test << std::endl;
     return nullptr;
 }
 
 int main(int argv, char *argc[])
 {
-    libsystempp::Thread th;
-    th.Create(childfunc,(void*)"Thread Startet");
-    th.Join();
+    std::thread th(childfunc,(void*)"Thread Startet");
+    th.join();
     return 0;
 } 
 

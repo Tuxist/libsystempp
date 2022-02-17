@@ -25,18 +25,27 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <cstdint>
+
 #include <linux/fcntl.h>
 #include <linux/aio_abi.h>
+#include <linux/socket.h>
 
-#include "sysutils.h"
-#include "sysexception.h"
-#include "syssocket.h"
-#include "bits_socket.h"
-#include "sysbits.h"
-#include "syscall.h"
-#include <bits/stdint-uintn.h>
+#include "systempp/sysutils.h"
+#include "systempp/sysexception.h"
+#include "systempp/syssocket.h"
+#include "systempp/sysbits.h"
+#include "systempp/syscall.h"
 
-#define O_BLOCK     
+#define SO_REUSEADDR 2
+#define SOCK_STREAM  1
+
+#define SOL_SOCKET 1
+
+#define AF_UNIX 1
+#define AF_INET 2
+
+#define O_BLOCK     00000000
 #define O_NONBLOCK  00004000
 
 typedef uint32_t in_addr_t;
@@ -185,36 +194,6 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
     _Maxconnections=maxconnections;
     if(sockopts == -1)
         sockopts=SO_REUSEADDR;
-    
-//     char port_buffer[6];
-//     itoa(port,port_buffer);
-//     struct addrinfo *result, *rp,sockaddr;
-//     zero(&sockaddr,sizeof(struct addrinfo));
-//     sockaddr.ai_family = AF_UNSPEC;    /* Allow IPv4 or IPv6 */
-//     sockaddr.ai_socktype = SOCK_STREAM; /* Datagram socket */
-//     sockaddr.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
-//     sockaddr.ai_protocol = 0;          /* Any protocol */
-//     sockaddr.ai_canonname = nullptr;
-//     sockaddr.ai_addr = nullptr;
-//     sockaddr.ai_next = nullptr;
-//     rp=&sockaddr;
-// //     for (rp = result; rp != nullptr; rp = rp->ai_next) {
-//            _Socket = (int)syscall3(__NR_socket,rp->ai_family, rp->ai_socktype,rp->ai_protocol);
-// //         if (_Socket == -1)
-// //             continue;
-//         int optval = 1;
-//         syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts,(unsigned long) &optval,sizeof(optval));        
-//         /*if (*/syscall3(__NR_bind,_Socket, (unsigned long)rp->ai_addr, rp->ai_addrlen); /*== 0)*/
-// //             break;                  /* Success */
-// //         syscall1(__NR_close,_Socket);
-// //     }
-    
-//     if (rp == nullptr) {               /* No address succeeded */
-//         exception[SystemException::Critical] << "Could not bind serversocket";
-//         throw exception;
-//     }
-    
-//     zero(&result,sizeof(result));
     
     _Socket = (int)syscall3(__NR_socket,AF_INET,SOCK_STREAM,0);
     

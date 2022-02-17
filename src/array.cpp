@@ -25,9 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include "sysarray.h"
-#include "sysutils.h"
-#include "sysexception.h"
+#include "systempp/sysarray.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysexception.h"
 
 libsystempp::CharArray::CharArray(){
     _Data=nullptr;
@@ -41,7 +41,7 @@ libsystempp::CharArray::~CharArray(){
    delete[]   _c_str;
 }
 
-const char libsystempp::CharArray::at(unsigned long pos){
+const char libsystempp::CharArray::at(std::size_t pos){
     SystemException excep;
     if(pos>_DataSize)
         throw excep[SystemException::Error] << "position out of bound!";
@@ -49,10 +49,10 @@ const char libsystempp::CharArray::at(unsigned long pos){
 }
 
 
-void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
+void libsystempp::CharArray::assign(const char* src, std::size_t srcsize){
     if(srcsize==0)
         return;
-    unsigned long nsize=_DataSize+srcsize;
+    std::size_t nsize=_DataSize+srcsize;
     if(_ArraySize<nsize)
         resize(nsize);
     scopy(src,src+srcsize,_Data+_DataSize);
@@ -60,7 +60,7 @@ void libsystempp::CharArray::assign(const char* src, unsigned long srcsize){
 }
 
 void libsystempp::CharArray::push_back(const char src){
-    unsigned long nsize=_DataSize+1;
+    std::size_t nsize=_DataSize+1;
     if(nsize>_ArraySize)
         resize(nsize);
     _Data[_DataSize++]=src;
@@ -71,7 +71,7 @@ void libsystempp::CharArray::assign(const char* src) {
         assign(src,getlen(src));
 }
 
-void libsystempp::CharArray::insert(unsigned long pos, char src){
+void libsystempp::CharArray::insert(std::size_t pos, char src){
     SystemException excp;
     if(pos < _DataSize){
         excp[SystemException::Critical] << "CharArray: out of Bound!";
@@ -113,7 +113,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator=(libsystempp::CharArray
     return *this;
 }
 
-const char libsystempp::CharArray::operator[](unsigned long pos){
+const char libsystempp::CharArray::operator[](std::size_t pos){
     return at(pos);
 }
 
@@ -129,7 +129,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(int src){
     return *this;
 }
 
-libsystempp::CharArray &libsystempp::CharArray::operator<<(unsigned long src){
+libsystempp::CharArray &libsystempp::CharArray::operator<<(std::size_t src){
     char buf[512];
     ultoa(src,buf);
     assign(buf);
@@ -142,7 +142,7 @@ libsystempp::CharArray &libsystempp::CharArray::operator<<(char src){
 }
 
 /*new better behavior*/
-unsigned long libsystempp::CharArray::to_cbuffer(char ** buf){
+std::size_t libsystempp::CharArray::to_cbuffer(char ** buf){
     if(_DataSize<=0)
         return 0;
     char *temp=new char[_DataSize+1];
@@ -161,11 +161,11 @@ const char *libsystempp::CharArray::c_str() {
     return _c_str;
 }
 
-unsigned long libsystempp::CharArray::size(){
+std::size_t libsystempp::CharArray::size(){
     return _ArraySize;
 }
 
-unsigned long libsystempp::CharArray::length(){
+std::size_t libsystempp::CharArray::length(){
     return _DataSize;
 }
 
@@ -179,7 +179,7 @@ void libsystempp::CharArray::shrink(){
     _ArraySize=_DataSize;
 }
 
-void libsystempp::CharArray::resize(unsigned long size){
+void libsystempp::CharArray::resize(std::size_t size){
     SystemException excep;
     if(size<_DataSize)
         throw excep[SystemException::Error] << "CharArray to small not resizing: " 
@@ -208,7 +208,7 @@ bool libsystempp::CharArray::operator==(const char* src){
     return true;
 }
 
-size_t libsystempp::CharArray::substr(const char **substring, unsigned long spos, unsigned long size){
+std::size_t libsystempp::CharArray::substr(const char **substring, std::size_t spos, std::size_t size){
     substring=nullptr;
     if(_DataSize<=0)
         return 0;
@@ -219,7 +219,7 @@ size_t libsystempp::CharArray::substr(const char **substring, unsigned long spos
 }
 
 
-void libsystempp::CharArray::substr(libsystempp::CharArray& substring, unsigned long spos,unsigned long size){
+void libsystempp::CharArray::substr(libsystempp::CharArray& substring, std::size_t spos,std::size_t size){
     substring.clear();
     if(_DataSize<=0)
         return;

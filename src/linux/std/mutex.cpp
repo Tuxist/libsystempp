@@ -25,29 +25,27 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <stdint.h>
-#include <atomic>
+#include <cstdint>
+#include <mutex>
 
 #include <linux/futex.h>
 #include <linux/mman.h>
 
-#include "include/sysexception.h"
-
-#include "sysbits.h"
-#include "syscall.h"
+#include "systempp/sysexception.h"
+#include "systempp/sysbits.h"
+#include "systempp/syscall.h"
 
 namespace std {
-    class mutex{
-        mutex() noexcept{
+        mutex::mutex() noexcept{
             _LockData= new std::atomic<uint32_t>;   
             _LockData->store(1);
         }
         
-        ~mutex(){
+        mutex::~mutex(){
             delete _LockData;
         }
         
-        void lock(){
+        void mutex::lock(){
             long res;
             while(1){
                 uint32_t ldat = 1;
@@ -63,7 +61,7 @@ namespace std {
             }
         }
         
-        bool trylock(){
+        bool mutex::trylock(){
             uint32_t ldat = 1;
             
             if (std::atomic_compare_exchange_strong(_LockData,&ldat,0))
@@ -72,7 +70,7 @@ namespace std {
             return false;
         }
         
-        void unlock(){
+        void mutex::unlock(){
             uint32_t ldat=0;
             if (std::atomic_compare_exchange_strong(_LockData,&ldat,1)){
                 long res=syscall6(__NR_futex,(unsigned long)_LockData, FUTEX_WAKE, 1,0,0,0);
@@ -83,7 +81,4 @@ namespace std {
                 }
             }
         }
-private:
-        std::atomic<uint32_t> *_LockData;
-    };
 };

@@ -25,55 +25,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#define MAXCONN 1024
+#include <cstddef>
 
-#include "include/sysarray.h"
-#include "include/sysuuid.h"
+#include "config.h"
 
 #pragma once
 
 namespace libsystempp {
-    class ConfData {
+   class CharArray {
     public:
-        ConfData();
-        ~ConfData();
+        CharArray();
+        ~CharArray();
 
-        enum{
-            Folder=0,
-            CharArray=1,
-            INT=2,
-            UINT=3,
-            UUID=4
-        };
+        const char at(std::size_t pos);
         
-        void         setKey(class CharArray *key);
-        void         setKey(const char *key);
-        const char  *getKey();
+        void assign(const char *src,std::size_t srcsize);
+        void assign(const char *src);
         
-        void         setValue(class CharArray *value);
-        void         setValue(const char *value);
-        void         setValue(int value);
-        void         setValue(unsigned int value);
-        void         setValue(class UUID uuid);
+        void push_back(const char  src);
         
-        const char*  getValue();
-        int          getValueInt();
-        unsigned int getValueUInt();
-        class UUID   getValueUUID();
+        void insert(std::size_t pos,char src);
+        
+        CharArray &operator+=(const char *src);
+        CharArray &operator+=(CharArray arr);
+        CharArray &operator=(const char *src);
+        CharArray &operator=(CharArray arr);
+        const char operator[](std::size_t pos);
+        
+        CharArray &operator<<(const char *src);
+        CharArray &operator<<(int src);
+        CharArray &operator<<(char src);
+        CharArray &operator<<(std::size_t src);
 
-    private:
-        class CharArray _Key;
-        int             _ValueType;
-        class CharArray _Value;
-        ConfData       *_Parent;
-        ConfData       *_prevConfData;
-        ConfData       *_nextConfData;
-        friend class ConfDbD;
-    };
-    
-    class ConfDbD{
-    public:
-        ConfDbD(const char *conffile,const char *socket);
-    private:
-    };
+        bool       operator==(const char *src);
+        /*C functions*/
+        const char        *c_str();
+        std::size_t        to_cbuffer(char **buf);
+        
+        std::size_t        length();
+        std::size_t        size();
+        void               clear();
+        void               shrink();
+        void               resize(std::size_t size);
+        std::size_t        substr(const char **substring,std::size_t spos,std::size_t size);
+        void               substr(CharArray &substring,std::size_t spos,std::size_t size);
+     private:
+        char             *_c_str;
+        char             *_Data;
+        std::size_t       _DataSize;
+        std::size_t       _ArraySize;
+    }; 
 };

@@ -14,17 +14,14 @@ set(systemppSrcs
     "uuid.cpp"
 )
 
-list(APPEND systemppSrcs "confdb/confdb.cpp")
-
 include_directories(
-    ${CMAKE_SOURCE_DIR}/src/include
+    "/usr/include"
+    ${CMAKE_SOURCE_DIR}/src/include/
+    ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
 )
 
 #os dependencies
 message("Build with Linux Support")
-include_directories(
-    "linux/include"
-)
   
 if(NOT GLIB_SUPPORT)
     message("Build without Glibc Support")
@@ -32,13 +29,13 @@ if(NOT GLIB_SUPPORT)
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
         "linux/cxa.cpp"
-        "linux/unwind.cpp"
         "linux/std/exception.cpp"
         "linux/std/typeinfo.cpp"
         "linux/std/cstring.cpp"
         "linux/std/mutex.cpp"
         "linux/std/system_error.cpp"
         "linux/std/cstdlib.cpp"
+        "linux/std/thread.cpp"
     )
 endif()
 
@@ -53,7 +50,6 @@ list(APPEND linuxSrcs
     "linux/file.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
-    "linux/thread.cpp"
 )
 
 
@@ -86,26 +82,15 @@ add_library(
     term SHARED terminfo/term.cpp
 )
 
-add_executable(confdbd 
-    "confdb/confdbd.cpp"
-    "confdb/json_min.cpp"
-)
-
-add_executable(confcli 
-    "confdb/confcli.cpp"
-    "confdb/json_min.cpp"
-)
-
 generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(systempp)
+target_link_libraries(systempp
+    ${LIBUNWIND_LIBRARIES}
+)
 
 target_link_libraries(cmd systempp)
-
-target_link_libraries(confdbd systempp)
-target_link_libraries(confcli systempp)
 
 SET(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Output directory for libraries")
 

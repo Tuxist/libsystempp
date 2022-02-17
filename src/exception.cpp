@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <stddef.h>
+#include <cstddef>
 
-#include "sysutils.h"
-#include "sysexception.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysexception.h"
 
 libsystempp::SystemException::Message::Message(){
     _Buffer=nullptr;
@@ -68,7 +68,7 @@ int libsystempp::SystemException::getErrorType(){
 }
 
 const char* libsystempp::SystemException::what(){
-    size_t bufsize=0,written=0;
+    std::size_t bufsize=0,written=0;
     for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
         bufsize+=curmsg->_BufferSize;
     }

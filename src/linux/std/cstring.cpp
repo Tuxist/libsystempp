@@ -1,5 +1,4 @@
-#include <stddef.h>
-#include <stdint.h>
+#include <cstring>
 
 namespace std {
     void *memset( void * ptr, int value, size_t num ){
@@ -44,7 +43,7 @@ namespace std {
     }
 };
 
-extern "C" void *memset( void * ptr, int value, size_t num ){
+extern "C" void *memset( void * ptr, int value, std::size_t num ){
     return std::memset(ptr,value,num);
 }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2021, Jan Koester jan.koester@gmx.net
+Copyright (c) 2018, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,50 +25,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <cstddef>
+
+#include "config.h"
+
 #pragma once
 
 namespace libsystempp {
-   class CharArray {
-    public:
-        CharArray();
-        ~CharArray();
-
-        const char at(unsigned long pos);
-        
-        void assign(const char *src,unsigned long srcsize);
-        void assign(const char *src);
-        
-        void push_back(const char  src);
-        
-        void insert(unsigned long pos,char src);
-        
-        CharArray &operator+=(const char *src);
-        CharArray &operator+=(CharArray arr);
-        CharArray &operator=(const char *src);
-        CharArray &operator=(CharArray arr);
-        const char operator[](unsigned long pos);
-        
-        CharArray &operator<<(const char *src);
-        CharArray &operator<<(int src);
-        CharArray &operator<<(char src);
-        CharArray &operator<<(unsigned long src);
-
-        bool       operator==(const char *src);
-        /*C functions*/
-        const char        *c_str();
-        unsigned long      to_cbuffer(char **buf);
-        
-        unsigned long      length();
-        unsigned long      size();
-        void               clear();
-        void               shrink();
-        void               resize(unsigned long size);
-        unsigned long      substr(const char **substring,unsigned long spos,unsigned long size);
-        void               substr(CharArray &substring,unsigned long spos,unsigned long size);
-     private:
-        char             *_c_str;
-        char             *_Data;
-        unsigned long     _DataSize;
-        unsigned long     _ArraySize;
-    }; 
+   const char *scopy(const char* first, const char* last, char* des);
+   unsigned int getlen(const char *str);
+   void rscopy(const char* first, const char* last, char** des);
+   void reverse(char s[]);
+   void itoa(int n, char s[]);
+   void ultoa(unsigned long n, char s[]);
+   void zero(void *s, unsigned n);
+   int atoi(char* str);
+   unsigned long atoul(char* str);
+   int ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize);
+   unsigned long append(char** src, const char* append);
+   unsigned long append(char** src, const char append);
+   std::size_t cleannewline(const char *src,std::size_t srcsize,char **dest);
+   int substr(const char *src,char **dest,std::size_t spos,std::size_t endpos);
+   int rfind(const char *src,std::size_t len,const char find);
 };

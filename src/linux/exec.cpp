@@ -25,17 +25,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
+#include <stddef.h>
 
 #include <linux/types.h>
 #include <linux/signal.h>
 #include <linux/resource.h>
 #include <linux/wait.h>
 
-#include "sysexec.h"
-#include "syscall.h"
-#include "sysbits.h"
-#include "sysexception.h"
+#include "systempp/sysexec.h"
+#include "systempp/syscall.h"
+#include "systempp/sysbits.h"
+#include "systempp/sysexception.h"
 
 libsystempp::Exec::Exec(const char *wrkdir[],const char *filename,const char *argv[]){
     SystemException exception;

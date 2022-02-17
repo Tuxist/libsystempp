@@ -1,14 +1,14 @@
-#include <sysinfo.h>
-#include <sysutils.h>
+#include <systempp/sysinfo.h>
+#include <systempp/sysutils.h>
 
-#include <stdint.h>
+#include <cstdint>
 
 class _cpuIDinfo {
 public:
-    uint32_t EAX;
-    uint32_t EBX;
-    uint32_t ECX;
-    uint32_t EDX;
+    std::uint32_t EAX;
+    std::uint32_t EBX;
+    std::uint32_t ECX;
+    std::uint32_t EDX;
 };
 
 static inline void _cpuid(unsigned int func, unsigned int subfunc,_cpuIDinfo* info){
@@ -18,8 +18,6 @@ static inline void _cpuid(unsigned int func, unsigned int subfunc,_cpuIDinfo* in
         : "a"(func), "c"(subfunc)
     );
 }
-
-
 
 libsystempp::CpuInfo::CpuInfo(){
     _cpuinfo=new _cpuIDinfo;

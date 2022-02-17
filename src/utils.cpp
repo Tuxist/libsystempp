@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstddef>
 
-#include "sysutils.h"
+#include "systempp/sysutils.h"
 
 const  char *libsystempp::scopy(const char* first, const char* last, char* des){
     while (first != last) {
@@ -47,7 +47,7 @@ unsigned int libsystempp::getlen(const char *str) {
 }
 
 void libsystempp::rscopy(const char* first, const char* last, char** des){
-    size_t rs=last-first;
+    std::size_t rs=last-first;
     *des=new char[rs+1];
     scopy(first,last,*des);
     *des[rs]='\0';
@@ -134,7 +134,7 @@ unsigned long libsystempp::atoul(char* str){
     return base * sign;
 }
 
-int libsystempp::ncompare(const char *src,size_t ssize,const char *comp,size_t csize){
+int libsystempp::ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize){
     if(ssize>csize)
         return -1;
     for(int i=0; i<csize; ++i){
@@ -178,7 +178,7 @@ unsigned long libsystempp::append(char** src, const char append){
     return nsize;
 }
 
-size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
+std::size_t libsystempp::cleannewline(const char *src,std::size_t srcsize,char **dest){
     struct buffer {
         buffer(){
             nextbuffer=nullptr;
@@ -188,13 +188,13 @@ size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
             delete nextbuffer;
         }
         char   *text;
-        size_t  tsize;
+        std::size_t  tsize;
         buffer *nextbuffer;
     }*ftbuf=nullptr,*ltbuf=nullptr;
     
-    size_t spos=0;
+    std::size_t spos=0;
     
-    for(size_t i=0; i<srcsize; ++i){
+    for(std::size_t i=0; i<srcsize; ++i){
         if(src[i] == '\n' || src[i] == '\r'){
             if(ftbuf){
                 ltbuf->nextbuffer= new buffer;
@@ -210,7 +210,7 @@ size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
                 spos=(++i);
         }
     }
-    size_t ssize=0,written=0;
+    std::size_t ssize=0,written=0;
     for(buffer *cbuf=ftbuf; cbuf; cbuf=cbuf->nextbuffer)
         ssize+=cbuf->tsize;
     
@@ -226,8 +226,8 @@ size_t libsystempp::cleannewline(const char *src,size_t srcsize,char **dest){
     return ssize;
 }
 
-int libsystempp::substr(const char *src,char **dest,size_t spos,size_t endpos){
-    size_t srcsize=endpos-spos;
+int libsystempp::substr(const char *src,char **dest,std::size_t spos,std::size_t endpos){
+    std::size_t srcsize=endpos-spos;
     char *buf = new char[srcsize+1];
     for(int i=spos,j=0; j<srcsize; ++i,++j){
         buf[j]=src[i];
@@ -237,7 +237,7 @@ int libsystempp::substr(const char *src,char **dest,size_t spos,size_t endpos){
     return srcsize;
 }
 
-int libsystempp::rfind(const char* src,size_t len,const char find){
+int libsystempp::rfind(const char* src,std::size_t len,const char find){
     for(int i=len; i<=0; --i){
         if(src[i]==find)
             return i;
