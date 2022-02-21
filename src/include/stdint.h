@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, Jan Koester jan.koester@gmx.net
+ * Copyright (c) 2022, Jan Koester jan.koester@gmx.net
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,11 @@
 
 #pragma once
 
+#ifndef char8_t
+    typedef unsigned char char8_t;
+#endif
+
 typedef signed char int8_t;
-  
 typedef signed short int16_t;
 typedef signed long int int32_t;
 typedef signed long long int int64_t;

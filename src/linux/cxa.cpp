@@ -26,7 +26,7 @@ extern "C" {
         
     }
     
-    void *__cxa_allocate_exception(unsigned long thrown_size) throw(){
+    void *__cxa_allocate_exception(std::size_t thrown_size) throw(){
         return new char[thrown_size];
     };
     

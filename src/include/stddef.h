@@ -27,37 +27,5 @@
 
 #pragma once
 
-#include <stddef.h>
-
-namespace std {
-
-    using size_t = size_t;
-    using ptrdiff_t = ptrdiff_t;
-
-//  using max_align_t = /* see description */;
-    using nullptr_t = decltype(nullptr);
-
-  /*
-  enum class byte : unsigned char {};
-  
-  template<class IntType> 
-    constexpr byte& operator<<=(byte& b, IntType shift) noexcept;
-  template<class IntType>
-    constexpr byte operator<<(byte b, IntType shift) noexcept;
-  template<class IntType>
-    constexpr byte& operator>>=(byte& b, IntType shift) noexcept;
-  template<class IntType>
-    constexpr byte operator>>(byte b, IntType shift) noexcept;
-  constexpr byte& operator|=(byte& l, byte r) noexcept;
-  constexpr byte operator|(byte l, byte r) noexcept;
-  constexpr byte& operator&=(byte& l, byte r) noexcept;
-  constexpr byte operator&(byte l, byte r) noexcept;
-  constexpr byte& operator^=(byte& l, byte r) noexcept;
-  constexpr byte operator^(byte l, byte r) noexcept;
-  constexpr byte operator~(byte b) noexcept;
-  template<class IntType>
-    constexpr IntType to_integer(byte b) noexcept;
-    */
-};
-
-#define offsetof(P, D) /* see description */
+typedef unsigned long long size_t;
+typedef long long ptrdiff_t;
