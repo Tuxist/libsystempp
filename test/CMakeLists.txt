@@ -10,6 +10,3 @@ target_link_libraries(sysinfo systempp)
 
 add_executable (thread thread.cpp)
 target_link_libraries(thread systempp)
-
-add_executable (iostream iostream.cpp)
-target_link_libraries(iostream systempp)

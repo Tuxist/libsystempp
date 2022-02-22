@@ -21,19 +21,11 @@ include_directories(
 
 #os dependencies
 message("Build with Linux Support")
-  
-if(NOT GLIB_SUPPORT)
-    message("Build without Glibc Support")
-    list(APPEND linuxSrcs
-        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
-        "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
-    )
-endif()
 
 list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
-    "linux/ctrlhandler.cpp"    
+    "linux/ctrlhandler.cpp"
     "linux/errno.cpp"
     "linux/exec.cpp"
     "linux/socket.cpp"
@@ -76,6 +68,7 @@ set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(systempp
     ${LIBUNWIND_LIBRARIES}
+    pthread
 )
 
 target_link_libraries(cmd systempp)
