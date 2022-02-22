@@ -8,7 +8,6 @@ ENDIF()
 include(GenerateExportHeader)
 
 set(systemppSrcs
-    "array.cpp"
     "exception.cpp"
     "utils.cpp"
     "uuid.cpp"
@@ -28,14 +27,6 @@ if(NOT GLIB_SUPPORT)
     list(APPEND linuxSrcs
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
         "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
-        "linux/cxa.cpp"
-        "linux/std/exception.cpp"
-        "linux/std/typeinfo.cpp"
-        "linux/std/cstring.cpp"
-        "linux/std/mutex.cpp"
-        "linux/std/system_error.cpp"
-        "linux/std/cstdlib.cpp"
-        "linux/std/thread.cpp"
     )
 endif()
 
@@ -47,7 +38,6 @@ list(APPEND linuxSrcs
     "linux/ctrlhandler.cpp"    
     "linux/errno.cpp"
     "linux/exec.cpp"
-    "linux/file.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
 )

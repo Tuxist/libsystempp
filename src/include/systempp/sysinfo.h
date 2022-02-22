@@ -28,6 +28,7 @@
 // #include <sys/sysinfo.h>
 // #include <sys/mount.h>
 
+#include <string>
 #include "sysarray.h"
 
 #define FSINFOMAXLEN 255
@@ -44,7 +45,7 @@ namespace libsystempp {
         int         getThreads();
         int         getActualThread();
     private:
-        CharArray   _Vendor;
+        std::string _Vendor;
         void       *_cpuinfo;
     };
     

@@ -15,14 +15,8 @@ set(Upstream_VERSION 1.0.0)
 find_package(Clang REQUIRED)
 find_package(Unwind REQUIRED)
 
-set(GLIB_SUPPORT FALSE CACHE BOOL "Glib Support")
-
-if(NOT GLIB_SUPPORT)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nodefaultlibs -nostdlib -nostdinc++")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nodefaultlibs -nostdlib")
-endif()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++2a -pthread")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)
 

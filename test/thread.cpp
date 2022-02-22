@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <thread>
 
-#undef __GLIBC__
-
 void *childfunc(void *test){
     std::cout << (const char*)test << std::endl;
     return nullptr;
