@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <string>
+
 #include "sysarray.h"
 
 #pragma once
@@ -73,6 +75,6 @@ namespace sys {
     private:
         int             _Socket;
         int             _Maxconnections;
-        CharArray       _UxPath;
+        std::string     _UxPath;
     };
 };
