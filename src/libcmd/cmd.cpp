@@ -27,9 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
-#include "systempp/syssocket.h"
-#include "systempp/sysutils.h"
-#include "systempp/sysexception.h"
+#include "syssocket.h"
+#include "sysutils.h"
+#include "sysexception.h"
 
 #include "cmd.h"
 

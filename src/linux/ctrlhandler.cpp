@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstddef>
 
 #include "syscall.h"
-#include "systempp/sysbits.h"
-#include "systempp/sysctrlhandler.h"
+#include "sysbits.h"
+#include "sysctrlhandler.h"
 
 sys::CtrlHandler::CtrlHandler(){
     int signalfd;

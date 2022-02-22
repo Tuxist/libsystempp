@@ -25,8 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "systempp/sysinfo.h"
-#include "systempp/sysutils.h"
+#include "sysinfo.h"
+#include "sysutils.h"
 
 #define LINUX_SYS_CPU_DIRECTORY "/sys/devices/system/cpu"
 

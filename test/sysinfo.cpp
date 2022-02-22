@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
-#include "systempp/sysinfo.h"
+#include "sysinfo.h"
 
 int main(int argv, char *argc[])
 {

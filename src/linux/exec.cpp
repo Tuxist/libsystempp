@@ -32,10 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/resource.h>
 #include <linux/wait.h>
 
-#include "systempp/sysexec.h"
-#include "systempp/syscall.h"
-#include "systempp/sysbits.h"
-#include "systempp/sysexception.h"
+#include "sysexec.h"
+#include "syscall.h"
+#include "sysbits.h"
+#include "sysexception.h"
 
 sys::Exec::Exec(const char *wrkdir[],const char *filename,const char *argv[]){
     SystemException exception;

@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/aio_abi.h>
 #include <linux/socket.h>
 
-#include "systempp/sysutils.h"
-#include "systempp/sysexception.h"
-#include "systempp/syssocket.h"
-#include "systempp/sysbits.h"
-#include "systempp/syscall.h"
+#include "sysutils.h"
+#include "sysexception.h"
+#include "syssocket.h"
+#include "sysbits.h"
+#include "syscall.h"
 
 #define SO_REUSEADDR 2
 #define SOCK_STREAM  1
