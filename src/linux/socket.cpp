@@ -253,7 +253,7 @@ int sys::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     int socket = syscall3(__NR_accept,_Socket,(unsigned long)&clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
     if(socket<0){
-        exception[SystemException::Error] << "Can't accept on  Socket";
+        exception[SystemException::Error] << "Can't accept on Socket";
         throw exception;
     }
     clientsocket->_Socket=socket;
