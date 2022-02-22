@@ -133,18 +133,18 @@ struct aibuf {
     short slot, ref;
 };
 
-libsystempp::ClientSocket::ClientSocket(){
+sys::ClientSocket::ClientSocket(){
     _Socket=-1;
     _SocketPtr=nullptr;
     _SocketPtrSize=0;
 }
 
-libsystempp::ClientSocket::~ClientSocket(){
+sys::ClientSocket::~ClientSocket(){
     syscall1(__NR_close, _Socket);
 }
 
 
-void libsystempp::ClientSocket::setnonblocking(){
+void sys::ClientSocket::setnonblocking(){
     int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
     if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)<0){
         SystemException exception;
@@ -153,12 +153,12 @@ void libsystempp::ClientSocket::setnonblocking(){
     }
 }
 
-int libsystempp::ClientSocket::getSocket(){
+int sys::ClientSocket::getSocket(){
     return _Socket;
 }
 
 
-libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
+sys::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
                                         int sockettype,int sockopts){
     SystemException exception;
     int optval = 1;
@@ -188,7 +188,7 @@ libsystempp::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
     }
 }
 
-libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnections,
+sys::ServerSocket::ServerSocket(const char* addr, int port,int maxconnections,
                                         int sockettype,int sockopts){
     SystemException exception;
     _Maxconnections=maxconnections;
@@ -213,14 +213,14 @@ libsystempp::ServerSocket::ServerSocket(const char* addr, int port,int maxconnec
     }
 }
                                         
-libsystempp::ServerSocket::~ServerSocket(){
+sys::ServerSocket::~ServerSocket(){
     syscall1(__NR_close, _Socket);
     if(_UxPath.size()>0){
         syscall1(__NR_unlink,(unsigned long)_UxPath.c_str());
     }
 }
 
-void libsystempp::ServerSocket::setnonblocking(){
+void sys::ServerSocket::setnonblocking(){
     int sockopts=(int)syscall3(__NR_fcntl, _Socket, F_GETFL, 0);
     if((int)syscall3(__NR_fcntl, _Socket, F_SETFL,sockopts | O_NONBLOCK)<0){
         SystemException exception;
@@ -229,7 +229,7 @@ void libsystempp::ServerSocket::setnonblocking(){
     }
 }
 
-void libsystempp::ServerSocket::listenSocket(){
+void sys::ServerSocket::listenSocket(){
     SystemException httpexception;
     if(syscall2(__NR_listen,_Socket,_Maxconnections) < 0){
         httpexception[SystemException::Critical] << "Can't listen Server Socket";
@@ -237,15 +237,15 @@ void libsystempp::ServerSocket::listenSocket(){
     }
 }
 
-int libsystempp::ServerSocket::getSocket(){
+int sys::ServerSocket::getSocket(){
     return _Socket;
 }
 
-int libsystempp::ServerSocket::getMaxconnections(){
+int sys::ServerSocket::getMaxconnections(){
     return _Maxconnections;
 }
 
-int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
+int sys::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     SystemException exception;
     clientsocket->_SocketPtr = new struct sockaddr();
     clientsocket->_SocketPtrSize=sizeof(sockaddr);
@@ -260,11 +260,11 @@ int libsystempp::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     return socket;
 }
 
-int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size){
+int sys::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size){
     return sendData(socket,data,size,0);
 }
 
-int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size,int flags){
+int sys::ServerSocket::sendData(ClientSocket* socket, void* data, unsigned long size,int flags){
     SystemException exception;
     int rval=syscall6(__NR_sendto,socket->_Socket,
                         (unsigned long)data,
@@ -281,11 +281,11 @@ int libsystempp::ServerSocket::sendData(ClientSocket* socket, void* data, unsign
 }
 
 
-int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size){
+int sys::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size){
     return recvData(socket,data,size,0);
 }
 
-int libsystempp::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size,int flags){
+int sys::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long size,int flags){
     SystemException exception;
     int recvsize=syscall6(__NR_recvfrom,socket->_Socket,
                             (unsigned long)data,

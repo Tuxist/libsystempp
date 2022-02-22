@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-namespace libsystempp {
+namespace sys {
     class Exec {
     public:
         Exec(const char *wrkdir[],const char *filename,const char *argv[]);

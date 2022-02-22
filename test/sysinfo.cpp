@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main(int argv, char *argc[])
 {
-    libsystempp::CpuInfo cpuinfo;
+    sys::CpuInfo cpuinfo;
     std::cout << "Vendor: " << cpuinfo.getVendor() << std::endl
               << "Cores: "    << cpuinfo.getCores()  << std::endl
               << "Threads: " << cpuinfo.getThreads() << std::endl

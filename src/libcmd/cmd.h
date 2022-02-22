@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace libsystempp {
+namespace sys {
     class Cmd {
     public:
         const char *getKey();
@@ -58,7 +58,7 @@ namespace libsystempp {
     public:
 
         static CmdController& getInstance(){
-            static libsystempp::CmdController instance;
+            static sys::CmdController instance;
             return instance; 
         }
 

@@ -19,15 +19,15 @@ static inline void _cpuid(unsigned int func, unsigned int subfunc,_cpuIDinfo* in
     );
 }
 
-libsystempp::CpuInfo::CpuInfo(){
+sys::CpuInfo::CpuInfo(){
     _cpuinfo=new _cpuIDinfo;
 }
 
-libsystempp::CpuInfo::~CpuInfo(){
+sys::CpuInfo::~CpuInfo(){
     delete   (_cpuIDinfo*)_cpuinfo;
 }
 
-int libsystempp::CpuInfo::getCores(){
+int sys::CpuInfo::getCores(){
     unsigned short cores=1;
     const char *vendor=getVendor();
     if (ncompare(vendor,getlen(vendor),"GenuineIntel",12)==0) {
@@ -41,12 +41,12 @@ int libsystempp::CpuInfo::getCores(){
     return cores;
 }
 
-int libsystempp::CpuInfo::getThreads(){
+int sys::CpuInfo::getThreads(){
     _cpuid(0x0001,0x0000, (_cpuIDinfo*)_cpuinfo);
     return ((unsigned)((((_cpuIDinfo*)_cpuinfo)->EBX >> 16)  & 0xff));
 }
 
-int libsystempp::CpuInfo::getActualThread(){
+int sys::CpuInfo::getActualThread(){
     const char *vendor=getVendor();
     if (ncompare(vendor,getlen(vendor),"GenuineIntel",12)==0) {
         _cpuid(0x0001,0x0000, (_cpuIDinfo*)_cpuinfo);
@@ -55,7 +55,7 @@ int libsystempp::CpuInfo::getActualThread(){
     return 0;
 }
 
-const char* libsystempp::CpuInfo::getVendor(){
+const char* sys::CpuInfo::getVendor(){
     _cpuid(0x0000,0x0000,(_cpuIDinfo*)_cpuinfo);
     _Vendor.clear();
     

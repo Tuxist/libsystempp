@@ -32,19 +32,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // 
-// libsystempp::SysInfo::SysInfo(){
+// sys::SysInfo::SysInfo(){
 //     sysinfo(&_Sysinfo);
 // }
 // 
-// uint libsystempp::SysInfo::getTotalRam(){
+// uint sys::SysInfo::getTotalRam(){
 //     return _Sysinfo.totalram;
 // }
 // 
-// uint libsystempp::SysInfo::getBufferRam(){
+// uint sys::SysInfo::getBufferRam(){
 //     return _Sysinfo.bufferram;
 // }
 // 
-// uint libsystempp::SysInfo::getFreeRam(){
+// uint sys::SysInfo::getFreeRam(){
 //     return _Sysinfo.freeram;
 // }
 

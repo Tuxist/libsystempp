@@ -34,7 +34,6 @@ list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/allocator.cpp"
-    "linux/console.cpp"
     "linux/ctrlhandler.cpp"    
     "linux/errno.cpp"
     "linux/exec.cpp"

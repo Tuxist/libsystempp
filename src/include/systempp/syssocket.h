@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace libsystempp {
+namespace sys {
     class ClientSocket {
     public:
         ClientSocket();

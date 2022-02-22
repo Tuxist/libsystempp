@@ -35,7 +35,7 @@
 
 #pragma once
 
-namespace libsystempp {   
+namespace sys {   
     class CpuInfo {
     public:
         CpuInfo();

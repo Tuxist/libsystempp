@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-namespace libsystempp {
+namespace sys {
    const char *scopy(const char* first, const char* last, char* des);
    unsigned int getlen(const char *str);
    void rscopy(const char* first, const char* last, char** des);

@@ -30,25 +30,25 @@
 #include "systempp/sysutils.h"
 #include "systempp/sysexception.h"
 
-libsystempp::SystemException::Message::Message(){
+sys::SystemException::Message::Message(){
     _Buffer=nullptr;
     _BufferSize=0;
     _nextMessage=nullptr;
 }
 
-libsystempp::SystemException::Message::~Message(){
+sys::SystemException::Message::~Message(){
     delete[] _Buffer;
     delete   _nextMessage;
 }
 
-libsystempp::SystemException::SystemException(){
+sys::SystemException::SystemException(){
     curCType=Note;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     _printBuffer=nullptr;
 };
 
-libsystempp::SystemException::SystemException(const SystemException &exp){
+sys::SystemException::SystemException(const SystemException &exp){
     curCType=exp.curCType;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
@@ -58,16 +58,16 @@ libsystempp::SystemException::SystemException(const SystemException &exp){
     }
 }
 
-libsystempp::SystemException::~SystemException(){
+sys::SystemException::~SystemException(){
     delete[] _printBuffer;
     delete _firstMessage;
 }
 
-int libsystempp::SystemException::getErrorType(){
+int sys::SystemException::getErrorType(){
     return curCType; 
 }
 
-const char* libsystempp::SystemException::what(){
+const char* sys::SystemException::what(){
     std::size_t bufsize=0,written=0;
     for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
         bufsize+=curmsg->_BufferSize;
@@ -83,12 +83,12 @@ const char* libsystempp::SystemException::what(){
     return _printBuffer;
 }
 
-const libsystempp::SystemException & libsystempp::SystemException::Exception() throw(){
+const sys::SystemException & sys::SystemException::Exception() throw(){
     return *this;
 }
 
 
-libsystempp::SystemException& libsystempp::SystemException::asign(const char *src){
+sys::SystemException& sys::SystemException::asign(const char *src){
     if(!src)
         return *this;
     if(!_firstMessage){
@@ -105,16 +105,16 @@ libsystempp::SystemException& libsystempp::SystemException::asign(const char *sr
     return *this;   
 }
 
-libsystempp::SystemException& libsystempp::SystemException::operator[](int errtype){
+sys::SystemException& sys::SystemException::operator[](int errtype){
     curCType=errtype;
     return *this;
 }
 
-libsystempp::SystemException& libsystempp::SystemException::operator<<(const char *src){
+sys::SystemException& sys::SystemException::operator<<(const char *src){
     return asign(src);   
 };
 
-libsystempp::SystemException& libsystempp::SystemException::operator<<(int src){
+sys::SystemException& sys::SystemException::operator<<(int src){
     char *buf=new char[sizeof(int)+1];
     itoa(src,buf);
     asign(buf);

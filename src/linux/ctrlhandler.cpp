@@ -32,28 +32,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/sysbits.h"
 #include "systempp/sysctrlhandler.h"
 
-libsystempp::CtrlHandler::CtrlHandler(){
+sys::CtrlHandler::CtrlHandler(){
     int signalfd;
     signalfd=syscall0(__NR_signalfd);
     syscall3(__NR_rt_sigaction,signalfd,(unsigned long)this,sizeof(this));
 }
 
-libsystempp::CtrlHandler::~CtrlHandler(){
+sys::CtrlHandler::~CtrlHandler(){
     
 }
 
-void libsystempp::CtrlHandler::CTRLCloseEvent(){
+void sys::CtrlHandler::CTRLCloseEvent(){
     return;
 }
 
-void libsystempp::CtrlHandler::CTRLBreakEvent(){
+void sys::CtrlHandler::CTRLBreakEvent(){
     return;
 }
 
-void libsystempp::CtrlHandler::CTRLTermEvent(){
+void sys::CtrlHandler::CTRLTermEvent(){
     return;
 }
 
-void libsystempp::CtrlHandler::SIGPIPEEvent(){
+void sys::CtrlHandler::SIGPIPEEvent(){
     return;
 }

@@ -25,8 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <iostream>
+
 #include "systempp/syssocket.h"
-#include "systempp/sysconsole.h"
 #include "systempp/sysutils.h"
 #include "systempp/sysexception.h"
 
@@ -35,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define KTKEY 0
 #define KTSKEY 1
 
-libsystempp::Cmd::Cmd() {
+sys::Cmd::Cmd() {
     _Key = nullptr;
     _SKey = '\0';
     _Value = nullptr;
@@ -45,55 +46,55 @@ libsystempp::Cmd::Cmd() {
     _nextCmd = nullptr;
 }
 
-const char *libsystempp::Cmd::getKey() {
+const char *sys::Cmd::getKey() {
     return _Key;
 }
 
-const char libsystempp::Cmd::getShortkey() {
+const char sys::Cmd::getShortkey() {
     return _SKey;
 }
 
-const char *libsystempp::Cmd::getValue() {
+const char *sys::Cmd::getValue() {
     return _Value;
 }
 
-size_t libsystempp::Cmd::getValueSize_t() {
+size_t sys::Cmd::getValueSize_t() {
     return atoi(_Value);
 }
 
-int libsystempp::Cmd::getValueInt() {
+int sys::Cmd::getValueInt() {
     return atoi(_Value);
 }
 
-const char *libsystempp::Cmd::getHelp() {
+const char *sys::Cmd::getHelp() {
     return _Help;
 }
 
-bool libsystempp::Cmd::getFound() {
+bool sys::Cmd::getFound() {
     return _Found;
 }
 
-bool libsystempp::Cmd::getRequired() {
+bool sys::Cmd::getRequired() {
     return _Required;
 }
 
-libsystempp::Cmd *libsystempp::Cmd::nextCmd() {
+sys::Cmd *sys::Cmd::nextCmd() {
     return _nextCmd;
 }
 
-libsystempp::Cmd::~Cmd() {
+sys::Cmd::~Cmd() {
     delete[] _Key;
     delete[] _Value;
     delete[] _Help;
     delete _nextCmd;
 }
 
-libsystempp::CmdController::CmdController() {
+sys::CmdController::CmdController() {
     _firstCmd = NULL;
     _lastCmd = NULL;
 }
 
-void libsystempp::CmdController::registerCmd(const char *key, const char skey,bool required, const char *defaultvalue, const char *help) {
+void sys::CmdController::registerCmd(const char *key, const char skey,bool required, const char *defaultvalue, const char *help) {
     SystemException   sysexception;
     if (!key || !skey || !help) {
         sysexception[SystemException::Critical] << "cmd parser key,skey or help not set!";
@@ -151,19 +152,19 @@ void libsystempp::CmdController::registerCmd(const char *key, const char skey,bo
     
 }
 
-void libsystempp::CmdController::registerCmd(const char *key, const char skey, bool required, size_t defaultvalue, const char *help) {
+void sys::CmdController::registerCmd(const char *key, const char skey, bool required, size_t defaultvalue, const char *help) {
     char buf[255];
     itoa(defaultvalue,buf);
     registerCmd(key,skey,required,buf,help);
 }
 
-void libsystempp::CmdController::registerCmd(const char *key, const char skey, bool required, int defaultvalue, const char *help) {
+void sys::CmdController::registerCmd(const char *key, const char skey, bool required, int defaultvalue, const char *help) {
     char buf[255];
     itoa(defaultvalue,buf);
     registerCmd(key, skey, required, buf, help);
 }
 
-void libsystempp::CmdController::parseCmd(int argc, char** argv){
+void sys::CmdController::parseCmd(int argc, char** argv){
     for (int args = 1; args < argc; args++) {
         int keytype = -1;
         if (argv[args][0]=='-' && argv[args][1] == '-') {
@@ -226,7 +227,7 @@ void libsystempp::CmdController::parseCmd(int argc, char** argv){
     }
 }
 
-bool libsystempp::CmdController::checkRequired() {
+bool sys::CmdController::checkRequired() {
     for (Cmd *curdcmd = _firstCmd; curdcmd; curdcmd = curdcmd->nextCmd()) {
         if (curdcmd->getRequired() && !curdcmd->_Found) {
             return false;
@@ -235,16 +236,16 @@ bool libsystempp::CmdController::checkRequired() {
     return true;
 }
 
-void libsystempp::CmdController::printHelp() {
+void sys::CmdController::printHelp() {
     for (Cmd *curdcmd = _firstCmd; curdcmd; curdcmd = curdcmd->nextCmd()) {
-        Console[SYSOUT] << "--" << curdcmd->getKey() 
+        std::cout << "--" << curdcmd->getKey() 
                                      << " -" << curdcmd->getShortkey()
                                      << " "  << curdcmd->getHelp() 
-                                     << Console[SYSOUT].endl;
+                                     << std::endl;
     }
 }
 
-libsystempp::Cmd *libsystempp::CmdController::getCmdbyKey(const char *key) {
+sys::Cmd *sys::CmdController::getCmdbyKey(const char *key) {
     for (Cmd *curdcmd = _firstCmd; curdcmd; curdcmd = curdcmd->nextCmd()) {
         if (ncompare(key,getlen(key),curdcmd->getKey(),getlen(curdcmd->getKey())) == 0) {
             return curdcmd;
@@ -253,7 +254,7 @@ libsystempp::Cmd *libsystempp::CmdController::getCmdbyKey(const char *key) {
     return nullptr;
 }
 
-libsystempp::CmdController::~CmdController() {
+sys::CmdController::~CmdController() {
     delete _firstCmd;
     _lastCmd = nullptr;
 }

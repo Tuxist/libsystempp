@@ -29,14 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "systempp/sysutils.h"
 
-const  char *libsystempp::scopy(const char* first, const char* last, char* des){
+const  char *sys::scopy(const char* first, const char* last, char* des){
     while (first != last) {
         *des++ = *first++;
     }
     return des;
 }
 
-unsigned int libsystempp::getlen(const char *str) {
+unsigned int sys::getlen(const char *str) {
     if(!str)
         return 0;
     unsigned int len = 0;
@@ -46,14 +46,14 @@ unsigned int libsystempp::getlen(const char *str) {
     return len;
 }
 
-void libsystempp::rscopy(const char* first, const char* last, char** des){
+void sys::rscopy(const char* first, const char* last, char** des){
     std::size_t rs=last-first;
     *des=new char[rs+1];
     scopy(first,last,*des);
     *des[rs]='\0';
 }
 
-void libsystempp::reverse(char s[]){
+void sys::reverse(char s[]){
     int i, j;
     char c;
     
@@ -64,7 +64,7 @@ void libsystempp::reverse(char s[]){
     }
 }    
 
-void libsystempp::itoa(int n, char s[]){
+void sys::itoa(int n, char s[]){
         int i, sign;
         if ((sign = n) < 0) 
             n = -n;
@@ -78,7 +78,7 @@ void libsystempp::itoa(int n, char s[]){
         reverse(s);
 }
 
-void libsystempp::ultoa(unsigned long n, char s[]){
+void sys::ultoa(unsigned long n, char s[]){
         unsigned int i, sign;
         i = 0;
         do {       /* generate digits in reverse order */
@@ -88,14 +88,14 @@ void libsystempp::ultoa(unsigned long n, char s[]){
         reverse(s);
 }
 
-void libsystempp::zero(void *s, unsigned n){
+void sys::zero(void *s, unsigned n){
     char *str;       
     str = (char *)s;
     while (n--)
         str[n] = 0;       
 }
 
-int libsystempp::atoi(char* str){
+int sys::atoi(char* str){
     int sign = 1, base = 0, i = 0;
     while (str[i] == ' '){
         i++;
@@ -117,7 +117,7 @@ int libsystempp::atoi(char* str){
     return base * sign;
 }
 
-unsigned long libsystempp::atoul(char* str){
+unsigned long sys::atoul(char* str){
     unsigned long sign = 1, base = 0, i = 0;
     while (str[i] == ' '){
         i++;
@@ -134,7 +134,7 @@ unsigned long libsystempp::atoul(char* str){
     return base * sign;
 }
 
-int libsystempp::ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize){
+int sys::ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize){
     if(ssize>csize)
         return -1;
     for(int i=0; i<csize; ++i){
@@ -145,7 +145,7 @@ int libsystempp::ncompare(const char *src,std::size_t ssize,const char *comp,std
 }
 
 
-unsigned long libsystempp::append(char** src, const char* append){
+unsigned long sys::append(char** src, const char* append){
     if(!append)
         return 0;
     char *srcptr=*src;
@@ -161,7 +161,7 @@ unsigned long libsystempp::append(char** src, const char* append){
     return nsize;
 }
 
-unsigned long libsystempp::append(char** src, const char append){
+unsigned long sys::append(char** src, const char append){
     if(!append)
         return 0;
     unsigned long srcsize=0;
@@ -178,7 +178,7 @@ unsigned long libsystempp::append(char** src, const char append){
     return nsize;
 }
 
-std::size_t libsystempp::cleannewline(const char *src,std::size_t srcsize,char **dest){
+std::size_t sys::cleannewline(const char *src,std::size_t srcsize,char **dest){
     struct buffer {
         buffer(){
             nextbuffer=nullptr;
@@ -226,7 +226,7 @@ std::size_t libsystempp::cleannewline(const char *src,std::size_t srcsize,char *
     return ssize;
 }
 
-int libsystempp::substr(const char *src,char **dest,std::size_t spos,std::size_t endpos){
+int sys::substr(const char *src,char **dest,std::size_t spos,std::size_t endpos){
     std::size_t srcsize=endpos-spos;
     char *buf = new char[srcsize+1];
     for(int i=spos,j=0; j<srcsize; ++i,++j){
@@ -237,7 +237,7 @@ int libsystempp::substr(const char *src,char **dest,std::size_t spos,std::size_t
     return srcsize;
 }
 
-int libsystempp::rfind(const char* src,std::size_t len,const char find){
+int sys::rfind(const char* src,std::size_t len,const char find){
     for(int i=len; i<=0; --i){
         if(src[i]==find)
             return i;

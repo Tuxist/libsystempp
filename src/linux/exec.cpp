@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/sysbits.h"
 #include "systempp/sysexception.h"
 
-libsystempp::Exec::Exec(const char *wrkdir[],const char *filename,const char *argv[]){
+sys::Exec::Exec(const char *wrkdir[],const char *filename,const char *argv[]){
     SystemException exception;
     _Pid=syscall0(__NR_fork);
     if(_Pid <0)
@@ -46,10 +46,10 @@ libsystempp::Exec::Exec(const char *wrkdir[],const char *filename,const char *ar
         syscall3(__NR_execve,(unsigned long)filename,(unsigned long)argv,(unsigned long)wrkdir);
 }
 
-libsystempp::Exec::~Exec(){
+sys::Exec::~Exec(){
 }
 
-int libsystempp::Exec::join(){
+int sys::Exec::join(){
     struct siginfo sinfo;
     struct rusage rusage;
     if(_Pid!=0)

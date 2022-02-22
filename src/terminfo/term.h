@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef CXX
 
-namespace systempp {
+namespace sys {
    class Terminal {
        
    };
