@@ -115,7 +115,7 @@ sys::SystemException& sys::SystemException::operator<<(const char *src){
 };
 
 sys::SystemException& sys::SystemException::operator<<(int src){
-    char *buf=new char[sizeof(int)+1];
+    char *buf=new char[255];
     itoa(src,buf);
     asign(buf);
     delete[] buf;

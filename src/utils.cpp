@@ -66,7 +66,7 @@ void sys::reverse(char s[]){
 
 void sys::itoa(int n, char s[]){
         int i, sign;
-        if ((sign = n) < 0) 
+        if ((sign = n) < 0)
             n = -n;
         i = 0;
         do {       /* generate digits in reverse order */
