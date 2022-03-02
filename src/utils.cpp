@@ -79,7 +79,7 @@ void sys::itoa(int n, char s[]){
 }
 
 void sys::ultoa(unsigned long n, char s[]){
-        unsigned int i, sign;
+        unsigned int i;
         i = 0;
         do {       /* generate digits in reverse order */
             s[i++] = n % 10 + '0';   /* get next digit */

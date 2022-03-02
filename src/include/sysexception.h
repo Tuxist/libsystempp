@@ -30,7 +30,6 @@
 #pragma once
 
 namespace sys {
-    
     class SystemException {
     public:
         
@@ -62,10 +61,10 @@ namespace sys {
             Message *_nextMessage;
         };
         
-        Message *_firstMessage;
-        Message *_lastMessage;
+        Message    *_firstMessage;
+        Message    *_lastMessage;
         
-        char    *_printBuffer;
-        char    *_errnobuf;
+        char       *_printBuffer;
+        char       *_errnobuf;
     };
 }
