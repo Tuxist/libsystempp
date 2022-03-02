@@ -101,7 +101,7 @@ sys::SystemException& sys::SystemException::asign(const char *src){
     _lastMessage->_CType=curCType;
     _lastMessage->_BufferSize=getlen(src);
     _lastMessage->_Buffer=new char[_lastMessage->_BufferSize+1];
-    scopy(src,src+_lastMessage->_BufferSize+1,_lastMessage->_Buffer);
+    scopy(src,src+getlen(src),_lastMessage->_Buffer);
     return *this;   
 }
 
