@@ -27,15 +27,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 
-#include <linux/fcntl.h>
-#include <linux/aio_abi.h>
-#include <linux/socket.h>
-
-#include "sysutils.h"
-#include "sysexception.h"
-#include "syssocket.h"
 #include "sysbits.h"
 #include "syscall.h"
+
+#include "systempp/sysutils.h"
+#include "systempp/sysexception.h"
+#include "systempp/syssocket.h"
+
+
+#define F_GETFL 3
+#define F_SETFL 4
 
 #define SO_REUSEADDR 2
 #define SOCK_STREAM  1

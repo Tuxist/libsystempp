@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "syscall.h"
 #include "sysbits.h"
-#include "sysctrlhandler.h"
+
+#include "systempp/sysctrlhandler.h"
 
 sys::CtrlHandler::CtrlHandler(){
     int signalfd;

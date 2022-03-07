@@ -14,8 +14,9 @@ set(Upstream_VERSION 1.0.0)
 
 find_package(Clang REQUIRED)
 find_package(Unwind REQUIRED)
+find_package(Linux)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++2a")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++2a -nostdinc -nostdlib -nolibc")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)
@@ -27,8 +28,10 @@ set(CMAKE_ASM_FLAGS "${CXXFLAGS} ${ASM_OPTIONS}" )
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(
+    /usr/src/linux/include
     ${CLANG_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}
+    ${Unwind_INCLUDE_DIRS}
 )
 
 add_definitions(

@@ -14,7 +14,6 @@ set(systemppSrcs
 )
 
 include_directories(
-    "/usr/include"
     ${CMAKE_SOURCE_DIR}/src/include/
     ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
 )
@@ -30,8 +29,15 @@ list(APPEND linuxSrcs
     "linux/exec.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
+    "linux/allocator.cpp"
 )
 
+list(APPEND linuxstdSrcs
+    "linux/std/cstdlib.cpp"
+    "linux/std/mutex.cpp"
+    "linux/std/string.cpp"
+    "linux/std/thread.cpp"
+)
 
 configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
@@ -41,7 +47,7 @@ configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/sysbits.h.in ${CMAKE_CURRENT_BINARY_DIR}/sysbits.h
 )
 
-list(APPEND systemppSrcs ${linuxSrcs})
+list(APPEND systemppSrcs ${linuxSrcs} ${linuxstdSrcs})
 
 install(FILES
         ${CMAKE_BINARY_DIR}/src/syscall.h

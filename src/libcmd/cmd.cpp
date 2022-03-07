@@ -27,9 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
-#include "syssocket.h"
-#include "sysutils.h"
-#include "sysexception.h"
+#include "systempp/syssocket.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysexception.h"
 
 #include "cmd.h"
 
@@ -90,8 +90,8 @@ sys::Cmd::~Cmd() {
 }
 
 sys::CmdController::CmdController() {
-    _firstCmd = NULL;
-    _lastCmd = NULL;
+    _firstCmd = nullptr;
+    _lastCmd = nullptr;
 }
 
 void sys::CmdController::registerCmd(const char *key, const char skey,bool required, const char *defaultvalue, const char *help) {
@@ -184,7 +184,7 @@ void sys::CmdController::parseCmd(int argc, char** argv){
             }
         }
         
-        char *key = NULL;
+        char *key = nullptr;
         char skey = '0';
         if (keytype == KTKEY) {
             key = new char[kendpos-1];
