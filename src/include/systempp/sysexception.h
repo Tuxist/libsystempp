@@ -41,8 +41,6 @@ namespace sys {
         
         int getErrorType();
         
-        const char* what();
-        
         const SystemException& Exception() throw();
         
         enum Type {Note,Warning,Error,Critical};

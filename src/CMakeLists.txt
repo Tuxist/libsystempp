@@ -29,10 +29,10 @@ list(APPEND linuxSrcs
     "linux/exec.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
-    "linux/allocator.cpp"
 )
 
 list(APPEND linuxstdSrcs
+    "linux/std/memory.cpp"
     "linux/std/cstdlib.cpp"
     "linux/std/mutex.cpp"
     "linux/std/string.cpp"
