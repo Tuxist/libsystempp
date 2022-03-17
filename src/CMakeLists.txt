@@ -31,14 +31,6 @@ list(APPEND linuxSrcs
     "linux/sysinfo.cpp"
 )
 
-list(APPEND linuxstdSrcs
-    "linux/std/memory.cpp"
-    "linux/std/cstdlib.cpp"
-    "linux/std/mutex.cpp"
-    "linux/std/string.cpp"
-    "linux/std/thread.cpp"
-)
-
 configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/syscall.h.in ${CMAKE_CURRENT_BINARY_DIR}/syscall.h
 )

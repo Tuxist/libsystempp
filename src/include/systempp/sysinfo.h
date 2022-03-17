@@ -29,7 +29,8 @@
 // #include <sys/mount.h>
 
 #include <string>
-#include "sysarray.h"
+
+#include "systempp/sysarray.h"
 
 #define FSINFOMAXLEN 255
 

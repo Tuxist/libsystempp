@@ -16,7 +16,7 @@ find_package(Clang REQUIRED)
 find_package(Unwind REQUIRED)
 find_package(Linux)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++2a -nostdinc -nostdlib -nolibc")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++2a")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)

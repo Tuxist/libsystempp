@@ -27,8 +27,6 @@
 
 #include <string>
 
-#include "sysarray.h"
-
 #pragma once
 
 namespace sys {
