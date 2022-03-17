@@ -96,8 +96,8 @@ else()
     )
 endif()
 
-install(DIRECTORY include/
-        DESTINATION include/systempp
+install(DIRECTORY include/systempp
+        DESTINATION include
         COMPONENT Devel
 )
 

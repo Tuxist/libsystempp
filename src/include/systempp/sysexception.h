@@ -32,7 +32,7 @@
 #pragma once
 
 namespace sys {
-    class SystemException : public std::exception{
+    class SystemException {
     public:
         
         SystemException();
@@ -40,6 +40,8 @@ namespace sys {
         virtual ~SystemException();
         
         int getErrorType();
+        
+        const char* what();
         
         const SystemException& Exception() throw();
         
