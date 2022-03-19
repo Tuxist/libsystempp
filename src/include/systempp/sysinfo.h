@@ -30,8 +30,6 @@
 
 #include <string>
 
-#include "systempp/sysarray.h"
-
 #define FSINFOMAXLEN 255
 
 #pragma once
