@@ -7,6 +7,3 @@ target_link_libraries(main systempp)
 
 add_executable (sysinfo sysinfo.cpp)
 target_link_libraries(sysinfo systempp)
-
-add_executable (thread thread.cpp)
-target_link_libraries(thread systempp)
