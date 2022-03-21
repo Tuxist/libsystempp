@@ -36,13 +36,7 @@ add_definitions(
     ${CLANG_DEFINITIONS}
 )
 
-set(LIBCXX_ABI_NAMESPACE "__libsystempp")
-
-add_subdirectory(thirdparty/llvm)
-add_subdirectory(thirdparty/libcxxabi)
-add_subdirectory(thirdparty/libcxx)
-add_subdirectory(thirdparty/libunwind)
-
+add_subdirectory(thirdparty)
 add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(test)

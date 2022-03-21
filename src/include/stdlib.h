@@ -43,11 +43,13 @@ extern "C" {
     long          a64l(const char *);
     void          abort(void);
     int           abs(int);
+    void         *aligned_alloc( size_t alignment, size_t size );
     int           atexit(void (*)(void));
     double        atof(const char *);
     int           atoi(const char *);
     long          atol(const char *);
     long long     atoll(const char *);
+    int           at_quick_exit(void (*func)(void));
     void         *bsearch(const void *, const void *, size_t, size_t,
                           int (*)(const void *, const void *));
     void         *calloc(size_t, size_t);
@@ -79,6 +81,7 @@ extern "C" {
     int           posix_openpt(int);
     char         *ptsname(int);
     int           putenv(char *);
+    void          quick_exit( int exit_code );
     void          qsort(void *, size_t, size_t, int (*)(const void *,
                                                         const void *));
     int           rand(void);
