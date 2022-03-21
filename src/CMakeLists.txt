@@ -13,11 +13,6 @@ set(systemppSrcs
     "uuid.cpp"
 )
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src/include/
-    ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
-)
-
 #os dependencies
 message("Build with Linux Support")
 
