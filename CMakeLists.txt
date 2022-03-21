@@ -1,8 +1,8 @@
-#set(CMAKE_C_COMPILER "clang")
-#set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_C_COMPILER "clang")
+set(CMAKE_CXX_COMPILER "clang++")
 set(LD_LLD lld)
 
-project(libsystempp CXX ASM)
+project(libsystempp CXX ASM C)
 cmake_minimum_required(VERSION 2.6)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -36,7 +36,13 @@ add_definitions(
     ${CLANG_DEFINITIONS}
 )
 
+set(LIBCXX_ABI_NAMESPACE "__libsystempp")
+
+add_subdirectory(thirdparty/llvm)
+add_subdirectory(thirdparty/libcxxabi)
 add_subdirectory(thirdparty/libcxx)
+add_subdirectory(thirdparty/libunwind)
+
 add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(test)
