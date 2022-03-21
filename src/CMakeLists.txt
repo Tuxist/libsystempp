@@ -29,6 +29,7 @@ list(APPEND linuxSrcs
     "linux/exec.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
+    "linux/mutex.cpp"
 )
 
 configure_file(
@@ -66,7 +67,6 @@ set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(systempp
     ${LIBUNWIND_LIBRARIES}
-    pthread
 )
 
 target_link_libraries(cmd systempp)
