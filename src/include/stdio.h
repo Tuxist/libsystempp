@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include "stdarg.h"
+
 #pragma once
 
-typedef unsigned long long size_t;
-typedef long long ptrdiff_t;
-typedef long int max_align_t;
+int vsscanf ( const char * s, const char * format, va_list arg );

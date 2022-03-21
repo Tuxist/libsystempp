@@ -22,6 +22,8 @@ include_directories(
 message("Build with Linux Support")
 
 list(APPEND linuxSrcs
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/ctrlhandler.cpp"
