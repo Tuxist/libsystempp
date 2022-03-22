@@ -1,53 +1,117 @@
-/*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
-All rights reserved.
+// -*- C++ -*-
+//===----------------------------------------------------------------------===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+#ifndef _LIBCPP_INITIALIZER_LIST
+#define _LIBCPP_INITIALIZER_LIST
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*******************************************************************************/
+/*
+    initializer_list synopsis
 
+namespace std
+{
+
+template<class E>
+class initializer_list
+{
+public:
+    typedef E        value_type;
+    typedef const E& reference;
+    typedef const E& const_reference;
+    typedef size_t   size_type;
+
+    typedef const E* iterator;
+    typedef const E* const_iterator;
+
+    initializer_list() noexcept; // constexpr in C++14
+
+    size_t   size()  const noexcept; // constexpr in C++14
+    const E* begin() const noexcept; // constexpr in C++14
+    const E* end()   const noexcept; // constexpr in C++14
+};
+
+template<class E> const E* begin(initializer_list<E> il) noexcept; // constexpr in C++14
+template<class E> const E* end(initializer_list<E> il) noexcept; // constexpr in C++14
+
+}  // std
+
+*/
+
+#include <__config>
 #include <cstddef>
 
-#pragma once
+#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+#  pragma GCC system_header
+#endif
 
-namespace std {
-  template<class E> class initializer_list {
-  public:
-    using value_type      = E;
-    using reference       = const E&;
-    using const_reference = const E&;
-    using size_type       = size_t;
- 
-    using iterator        = const E*;
-    using const_iterator  = const E*;
- 
-    constexpr initializer_list() noexcept;
- 
-    constexpr size_t size() const noexcept;     // number of elements
-    constexpr const E* begin() const noexcept;  // first element
-    constexpr const E* end() const noexcept;    // one past the last element
-  };
- 
-  // initializer list range access
-  template<class E> constexpr const E* begin(initializer_list<E> il) noexcept;
-  template<class E> constexpr const E* end(initializer_list<E> il) noexcept;
+namespace std  // purposefully not versioned
+{
+
+#ifndef _LIBCPP_CXX03_LANG
+
+template<class _Ep>
+class _LIBCPP_TEMPLATE_VIS initializer_list
+{
+    const _Ep* __begin_;
+    size_t    __size_;
+
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    initializer_list(const _Ep* __b, size_t __s) _NOEXCEPT
+        : __begin_(__b),
+          __size_(__s)
+        {}
+public:
+    typedef _Ep        value_type;
+    typedef const _Ep& reference;
+    typedef const _Ep& const_reference;
+    typedef size_t    size_type;
+
+    typedef const _Ep* iterator;
+    typedef const _Ep* const_iterator;
+
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    initializer_list() _NOEXCEPT : __begin_(nullptr), __size_(0) {}
+
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    size_t    size()  const _NOEXCEPT {return __size_;}
+
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    const _Ep* begin() const _NOEXCEPT {return __begin_;}
+
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    const _Ep* end()   const _NOEXCEPT {return __begin_ + __size_;}
+};
+
+template<class _Ep>
+inline _LIBCPP_INLINE_VISIBILITY
+_LIBCPP_CONSTEXPR_AFTER_CXX11
+const _Ep*
+begin(initializer_list<_Ep> __il) _NOEXCEPT
+{
+    return __il.begin();
 }
+
+template<class _Ep>
+inline _LIBCPP_INLINE_VISIBILITY
+_LIBCPP_CONSTEXPR_AFTER_CXX11
+const _Ep*
+end(initializer_list<_Ep> __il) _NOEXCEPT
+{
+    return __il.end();
+}
+
+#endif // !defined(_LIBCPP_CXX03_LANG)
+
+} // namespace std
+
+#endif // _LIBCPP_INITIALIZER_LIST

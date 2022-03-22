@@ -1,34 +1,162 @@
-/*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
-All rights reserved.
+// -*- C++ -*-
+//===----------------------------------------------------------------------===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+#ifndef _LIBCPP_CSTDDEF
+#define _LIBCPP_CSTDDEF
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*******************************************************************************/
+/*
+    cstddef synopsis
 
-#include "stddef.h"
+Macros:
 
-#pragma once
+    offsetof(type,member-designator)
+    NULL
 
-namespace std {
-    using ::size_t;
+namespace std
+{
+
+Types:
+
+    ptrdiff_t
+    size_t
+    max_align_t // C++11
+    nullptr_t
+    byte // C++17
+
+}  // std
+
+*/
+
+#include <__config>
+#include <stddef.h>
+#include <version>
+
+#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+#  pragma GCC system_header
+#endif
+
+_LIBCPP_BEGIN_NAMESPACE_STD
+
+using ::nullptr_t;
+using ::ptrdiff_t _LIBCPP_USING_IF_EXISTS;
+using ::size_t _LIBCPP_USING_IF_EXISTS;
+
+#if !defined(_LIBCPP_CXX03_LANG)
+using ::max_align_t _LIBCPP_USING_IF_EXISTS;
+#endif
+
+template <class _Tp> struct __libcpp_is_integral                     { enum { value = 0 }; };
+template <>          struct __libcpp_is_integral<bool>               { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<char>               { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<signed char>        { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<unsigned char>      { enum { value = 1 }; };
+#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
+template <>          struct __libcpp_is_integral<wchar_t>            { enum { value = 1 }; };
+#endif
+#ifndef _LIBCPP_HAS_NO_CHAR8_T
+template <>          struct __libcpp_is_integral<char8_t>            { enum { value = 1 }; };
+#endif
+#ifndef _LIBCPP_HAS_NO_UNICODE_CHARS
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<char32_t>           { enum { value = 1 }; };
+#endif
+template <>          struct __libcpp_is_integral<short>              { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<unsigned short>     { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<int>                { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<unsigned int>       { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<long>               { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<unsigned long>      { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<long long>          { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<unsigned long long> { enum { value = 1 }; };
+#ifndef _LIBCPP_HAS_NO_INT128
+template <>          struct __libcpp_is_integral<__int128_t>         { enum { value = 1 }; };
+template <>          struct __libcpp_is_integral<__uint128_t>        { enum { value = 1 }; };
+#endif
+
+_LIBCPP_END_NAMESPACE_STD
+
+#if _LIBCPP_STD_VER > 14
+namespace std  // purposefully not versioned
+{
+enum class byte : unsigned char {};
+
+
+template <bool> struct __enable_if_integral_imp {};
+template <> struct __enable_if_integral_imp<true> { using type = byte; };
+template <class _Tp> using _EnableByteOverload = typename __enable_if_integral_imp<__libcpp_is_integral<_Tp>::value>::type;
+
+constexpr byte  operator| (byte  __lhs, byte __rhs) noexcept
+{
+    return static_cast<byte>(
+      static_cast<unsigned char>(
+         static_cast<unsigned int>(__lhs) | static_cast<unsigned int>(__rhs)
+    ));
 }
+
+constexpr byte& operator|=(byte& __lhs, byte __rhs) noexcept
+{ return __lhs = __lhs | __rhs; }
+
+constexpr byte  operator& (byte  __lhs, byte __rhs) noexcept
+{
+    return static_cast<byte>(
+      static_cast<unsigned char>(
+         static_cast<unsigned int>(__lhs) & static_cast<unsigned int>(__rhs)
+    ));
+}
+
+constexpr byte& operator&=(byte& __lhs, byte __rhs) noexcept
+{ return __lhs = __lhs & __rhs; }
+
+constexpr byte  operator^ (byte  __lhs, byte __rhs) noexcept
+{
+    return static_cast<byte>(
+      static_cast<unsigned char>(
+         static_cast<unsigned int>(__lhs) ^ static_cast<unsigned int>(__rhs)
+    ));
+}
+
+constexpr byte& operator^=(byte& __lhs, byte __rhs) noexcept
+{ return __lhs = __lhs ^ __rhs; }
+
+constexpr byte  operator~ (byte __b) noexcept
+{
+    return static_cast<byte>(
+      static_cast<unsigned char>(
+        ~static_cast<unsigned int>(__b)
+    ));
+}
+template <class _Integer>
+  constexpr _EnableByteOverload<_Integer> &
+  operator<<=(byte& __lhs, _Integer __shift) noexcept
+  { return __lhs = __lhs << __shift; }
+
+template <class _Integer>
+  constexpr _EnableByteOverload<_Integer>
+  operator<< (byte  __lhs, _Integer __shift) noexcept
+  { return static_cast<byte>(static_cast<unsigned char>(static_cast<unsigned int>(__lhs) << __shift)); }
+
+template <class _Integer>
+  constexpr _EnableByteOverload<_Integer> &
+  operator>>=(byte& __lhs, _Integer __shift) noexcept
+  { return __lhs = __lhs >> __shift; }
+
+template <class _Integer>
+  constexpr _EnableByteOverload<_Integer>
+  operator>> (byte  __lhs, _Integer __shift) noexcept
+  { return static_cast<byte>(static_cast<unsigned char>(static_cast<unsigned int>(__lhs) >> __shift)); }
+
+template <class _Integer, class = _EnableByteOverload<_Integer> >
+  _LIBCPP_NODISCARD_EXT constexpr _Integer
+  to_integer(byte __b) noexcept { return static_cast<_Integer>(__b); }
+
+} // namespace std
+
+#endif
+
+#endif // _LIBCPP_CSTDDEF

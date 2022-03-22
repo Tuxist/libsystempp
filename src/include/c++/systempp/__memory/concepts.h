@@ -1,60 +1,68 @@
-/*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
-All rights reserved.
+// -*- C++ -*-
+//===----------------------------------------------------------------------===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+#ifndef _LIBCPP___MEMORY_CONCEPTS_H
+#define _LIBCPP___MEMORY_CONCEPTS_H
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*******************************************************************************/
+#include <__config>
+#include <__iterator/concepts.h>
+#include <__iterator/iterator_traits.h>
+#include <__iterator/readable_traits.h>
+#include <__ranges/access.h>
+#include <__ranges/concepts.h>
+#include <concepts>
+#include <type_traits>
 
-#include "../__iterator/concepts.h"
+#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
+#  pragma GCC system_header
+#endif
 
-#pragma once
+_LIBCPP_BEGIN_NAMESPACE_STD
 
-namespace std {
-    namespace ranges {
-        template <class _Ip>
-        concept __nothrow_input_iterator = input_iterator<_Ip> &&
-                                           is_lvalue_reference_v<iter_reference_t<_Ip>> &&
-                                           same_as<remove_cvref_t<iter_reference_t<_Ip>>, iter_value_t<_Ip>>;
+#if _LIBCPP_STD_VER > 17 && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
 
-        template <class _Sp, class _Ip>
-        concept __nothrow_sentinel_for = sentinel_for<_Sp, _Ip>;
+namespace ranges {
 
-        template <class _Rp>
-        concept __nothrow_input_range =
-        range<_Rp> &&
-                __nothrow_input_iterator<iterator_t<_Rp>> &&
-                __nothrow_sentinel_for<sentinel_t<_Rp>, iterator_t<_Rp>>;
+// [special.mem.concepts]
 
-        template <class _Ip>
-        concept __nothrow_forward_iterator =
-                __nothrow_input_iterator<_Ip> &&
-                forward_iterator<_Ip> &&
-                __nothrow_sentinel_for<_Ip, _Ip>;
+// This concept ensures that uninitialized algorithms can construct an object
+// at the address pointed-to by the iterator, which requires an lvalue.
+template <class _Ip>
+concept __nothrow_input_iterator =
+    input_iterator<_Ip> &&
+    is_lvalue_reference_v<iter_reference_t<_Ip>> &&
+    same_as<remove_cvref_t<iter_reference_t<_Ip>>, iter_value_t<_Ip>>;
 
-        template <class _Rp>
-        concept __nothrow_forward_range =
-                __nothrow_input_range<_Rp> &&
-                __nothrow_forward_iterator<iterator_t<_Rp>>;
+template <class _Sp, class _Ip>
+concept __nothrow_sentinel_for = sentinel_for<_Sp, _Ip>;
 
-    } 
-};
+template <class _Rp>
+concept __nothrow_input_range =
+    range<_Rp> &&
+    __nothrow_input_iterator<iterator_t<_Rp>> &&
+    __nothrow_sentinel_for<sentinel_t<_Rp>, iterator_t<_Rp>>;
+
+template <class _Ip>
+concept __nothrow_forward_iterator =
+    __nothrow_input_iterator<_Ip> &&
+    forward_iterator<_Ip> &&
+    __nothrow_sentinel_for<_Ip, _Ip>;
+
+template <class _Rp>
+concept __nothrow_forward_range =
+    __nothrow_input_range<_Rp> &&
+    __nothrow_forward_iterator<iterator_t<_Rp>>;
+
+} // namespace ranges
+
+#endif // _LIBCPP_STD_VER > 17 && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
+
+_LIBCPP_END_NAMESPACE_STD
+
+#endif // _LIBCPP___MEMORY_CONCEPTS_H
