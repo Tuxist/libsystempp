@@ -27,6 +27,8 @@
 
 #pragma once
 
+#define NULL ((char *)0)
+
 typedef unsigned long long size_t;
 typedef long long ptrdiff_t;
 typedef long int max_align_t;

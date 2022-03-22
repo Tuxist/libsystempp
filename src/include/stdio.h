@@ -37,6 +37,9 @@ typedef void* FILE;
 #ifdef __cplusplus
 extern "C" {
 #endif
+    void *stderr;
+    void *stdout;
+    
     void     clearerr(FILE *);
     char    *ctermid(char *);
     int      fclose(FILE *);
@@ -88,7 +91,7 @@ extern "C" {
     int      setvbuf(FILE *, char *, int, size_t);
     int      snprintf(char *, size_t, const char *, ...);
     int      sprintf(char *, const char *, ...);
-    int      sscanf(const char *, const char *, int ...);
+    int      sscanf(const char *, const char *, int n,...);
     char    *tempnam(const char *, const char *);
     FILE    *tmpfile(void);
     char    *tmpnam(char *);

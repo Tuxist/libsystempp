@@ -31,6 +31,8 @@
 
 #pragma once
 
+#define wchar_t unsigned short
+
 #ifndef WEOF
 # define WEOF (0xffffffffu)
 #endif
@@ -38,8 +40,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-    typedef wchar_t wint_t;
+   
+    typedef unsigned short wint_t;
     typedef void* wctype_t;
     typedef int mbstate_t;
     

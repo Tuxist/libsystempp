@@ -13,10 +13,22 @@ set(LIBV "1.0.0")
 set(Upstream_VERSION 1.0.0)
 
 find_package(Clang REQUIRED)
-find_package(LIBUNWIND REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem ${CMAKE_SOURCE_DIR}/src/include/ -fPIC -std=c++2a")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isystem ${CMAKE_SOURCE_DIR}/src/include/ ")
+set(CMAKE_CXX_FLAGS 
+    "${CMAKE_CXX_FLAGS} \
+    -nostdinc++ \
+    -nostdlib++ \
+    -isystem ${CMAKE_SOURCE_DIR}/src/include/ \
+    -fPIC \
+    -std=c++2a"
+)
+
+set(CMAKE_C_FLAGS 
+    "${CMAKE_C_FLAGS} \
+    -isystem ${CMAKE_SOURCE_DIR}/src/include/ \
+    -nostdlib \
+    -std=c11"
+)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)
 
@@ -27,9 +39,10 @@ set(CMAKE_ASM_FLAGS "${CXXFLAGS} ${ASM_OPTIONS}" )
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(
+    ${CMAKE_SOURCE_DIR}/thirdparty/libcxx/include/
+    ${CMAKE_SOURCE_DIR}/thirdparty/libunwind/include/
     ${CLANG_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}
-    ${Unwind_INCLUDE_DIRS}
 )
 
 add_definitions(
