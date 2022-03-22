@@ -14,15 +14,14 @@
 ## On Work
 - confdb
 - json class
+- implementation of libcxx headers
 
 ## Todo:
 - Syscalls (Arm)
 - Syscalls (x86)
-- unwind lib
 - cxa implementation
 - sysinfo class
 - signal class
-- dir class
 - typeinfo class
 
 ## Download:
@@ -30,7 +29,7 @@ https://github.com/Tuxist/libhsystempp
 
 ### Requirements
 - kernel 4.19 (lowest that i have testing)
-- gcc/clang
+- clang
 - cmake
 
 ## Optional
