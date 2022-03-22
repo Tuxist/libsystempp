@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <concepts>
 
 #include "__utility/pair.h"
+#include "__memory/concepts.h"
 
 #pragma once
 
@@ -111,15 +112,15 @@ namespace std {
   // specialized algorithms
   // special memory concepts
   template<class I>
-    concept no-throw-input-iterator = /* see description */;    // exposition only
+    concept no-throw-input-iterator = __nothrow_input_iterator;    // exposition only
   template<class I>
-    concept no-throw-forward-iterator = /* see description */;  // exposition only
+    concept no-throw-forward-iterator = ;  // exposition only
   template<class S, class I>
-    concept no-throw-sentinel-for = /* see description */;      // exposition only
+    concept no-throw-sentinel-for =;      // exposition only
   template<class R>
-    concept no-throw-input-range = /* see description */;       // exposition only
+    concept no-throw-input-range = ;       // exposition only
   template<class R>
-    concept no-throw-forward-range = /* see description */;     // exposition only
+    concept no-throw-forward-range =;     // exposition only
  
   template<class NoThrowForwardIt>
     void uninitialized_default_construct(NoThrowForwardIt first,
