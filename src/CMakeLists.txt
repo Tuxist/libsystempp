@@ -54,17 +54,9 @@ add_library(
     cmd STATIC libcmd/cmd.cpp
 )
 
-add_library(
-    term SHARED terminfo/term.cpp
-)
-
 generate_export_header(systempp)
 
 set_property(TARGET systempp PROPERTY CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-target_link_libraries(systempp
-    ${LIBUNWIND_LIBRARIES}
-)
 
 target_link_libraries(cmd systempp)
 
@@ -78,7 +70,7 @@ set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_
 
 
 if(NOT GLIB_SUPPORT)
-    install(TARGETS systempp cmd term EXPORT systemppTargets
+    install(TARGETS systempp cmd EXPORT systemppTargets
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
@@ -102,13 +94,6 @@ install(FILES libcmd/cmd.h
         DESTINATION include/libcmd
         COMPONENT Devel
 )
-
-if(NOT GLIB_SUPPORT)
-    install(FILES terminfo/term.h
-        DESTINATION include/
-        COMPONENT Devel
-    )
-endif()
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(

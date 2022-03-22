@@ -39,8 +39,8 @@ set(CMAKE_ASM_FLAGS "${CXXFLAGS} ${ASM_OPTIONS}" )
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/thirdparty/libcxx/include/
-    ${CMAKE_SOURCE_DIR}/thirdparty/libunwind/include/
+    ${CMAKE_SOURCE_DIR}/src/include/
+    ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
     ${CLANG_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}
 )
@@ -49,7 +49,6 @@ add_definitions(
     ${CLANG_DEFINITIONS}
 )
 
-add_subdirectory(thirdparty)
 add_subdirectory(doc)
 add_subdirectory(src)
 add_subdirectory(test)
