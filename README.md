@@ -13,7 +13,6 @@
 
 ## On Work
 - confdb
-- json class
 - implementation of libcxx headers
 
 ## Todo:
