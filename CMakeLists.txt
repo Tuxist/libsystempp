@@ -20,7 +20,7 @@ set(CMAKE_CXX_FLAGS
     -nostdlib++ \
     -isystem ${CMAKE_SOURCE_DIR}/src/include/ \
     -fPIC \
-    -std=c++2a"
+    -std=c++20"
 )
 
 set(CMAKE_C_FLAGS 
