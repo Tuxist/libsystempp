@@ -27,8 +27,51 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+#define LC_ALL
+#define LC_COLLATE
+#define LC_CTYPE
+#define LC_MESSAGES
+#define LC_MONETARY
+#define LC_NUMERIC
+#define LC_TIME
+
+#ifdef __cplusplus
 namespace sys {
+#endif
+    struct lconv {
+      char    *currency_symbol;
+      char    *decimal_point;
+      char     frac_digits;
+      char    *grouping;
+      char    *int_curr_symbol;
+      char     int_frac_digits;
+      char     int_n_cs_precedes;
+      char     int_n_sep_by_space;
+      char     int_n_sign_posn;
+      char     int_p_cs_precedes;
+      char     int_p_sep_by_space;
+      char     int_p_sign_posn;
+      char    *mon_decimal_point;
+      char    *mon_grouping;
+      char    *mon_thousands_sep;
+      char    *negative_sign;
+      char     n_cs_precedes;
+      char     n_sep_by_space;
+      char     n_sign_posn;
+      char    *positive_sign;
+      char     p_cs_precedes;
+      char     p_sep_by_space;
+      char     p_sign_posn;
+      char    *thousands_sep;
+    };
+#ifdef __cplusplus
     class locale {
-        
+    public:
+      locale(int, const char *);
+      ~locale();
+      struct lconv *conv(void);
+      char         *setlocale(int, const char *);
+      locale       *uselocale(locale *l);
     };
 };
+#endif
