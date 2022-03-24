@@ -37,16 +37,6 @@ configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/sysbits.h.in ${CMAKE_CURRENT_BINARY_DIR}/sysbits.h
 )
 
-add_definitions(
-  -D_LIBCPP_HAS_NO_VENDOR_AVAILABILITY_ANNOTATIONS
-  -D_LIBCPP_PROVIDES_DEFAULT_RUNE_TABLE
-)
-
-configure_file(
-    "include/c++/systempp/__config_site.in" "${CMAKE_CURRENT_BINARY_DIR}/__config_site" @ONLY
-)
-
-
 list(APPEND systemppSrcs ${linuxSrcs} ${linuxstdSrcs})
 
 install(FILES
