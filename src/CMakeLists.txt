@@ -26,6 +26,7 @@ list(APPEND linuxSrcs
     "linux/exec.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
+    "linux/epoll.cpp"
 )
 
 configure_file(
@@ -42,6 +43,7 @@ install(FILES
         ${CMAKE_BINARY_DIR}/src/syscall.h
         ${CMAKE_BINARY_DIR}/src/sysbits.h
         ${CMAKE_BINARY_DIR}/config.h
+        ${CMAKE_BINARY_DIR}/event.h
         DESTINATION include/systempp
         COMPONENT Devel
 )
