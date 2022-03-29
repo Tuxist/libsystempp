@@ -26,7 +26,6 @@ list(APPEND linuxSrcs
     "linux/exec.cpp"
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
-    "linux/mutex.cpp"
 )
 
 configure_file(
