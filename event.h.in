@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <mutex>
 
-#include "eventapi.h"
+#include "syseventapi.h"
 
 #include "event/${EVENT_HEADER}"
 
