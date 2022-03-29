@@ -89,11 +89,6 @@ install(DIRECTORY include/systempp
         COMPONENT Devel
 )
 
-install(DIRECTORY include/c++
-        DESTINATION include
-        COMPONENT Devel
-)
-
 install(FILES libcmd/cmd.h
         DESTINATION include/libcmd
         COMPONENT Devel
