@@ -39,8 +39,6 @@ configure_file(
     linux/arch/${CMAKE_SYSTEM_PROCESSOR}/sysbits.h.in ${CMAKE_CURRENT_BINARY_DIR}/sysbits.h
 )
 
-configure_file(linux/event.h.in ${CMAKE_CURRENT_BINARY_DIR}/event.h)
-
 list(APPEND systemppSrcs ${linuxSrcs} ${linuxstdSrcs})
 
 install(FILES

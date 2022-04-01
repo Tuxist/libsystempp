@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-namespace sys {
+namespace sys {   
     class EventApi {
     public:
         
@@ -43,6 +43,8 @@ namespace sys {
         virtual void initEventHandler()=0;
         virtual Connection *waitEventHandler()=0;
         virtual const char *getEventType()=0;
+        
+        /*Locking API*/
         
         /*EventHandler*/
         virtual void ConnectEventHandler(Connection **curcon)=0;
@@ -61,5 +63,20 @@ namespace sys {
          *DANGEROUS to burnout your cpu
          *only use this if know what you do!*/
         virtual void sendReady(Connection *curcon,bool ready)=0;
-  };
+    };
+
+    class Event {
+    public:
+        Event(sys::ServerSocket *serversocket);
+        void runEventloop();
+        static void *WorkerThread(void *wrkevent);
+        
+        virtual ~Event();
+        static bool _Run;
+        static bool _Restart;
+    private:
+        EventApi *_EAPI;
+        int       _Threads;
+    };
+
 };

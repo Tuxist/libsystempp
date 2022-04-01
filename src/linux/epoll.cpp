@@ -25,6 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <iostream>
 #include <vector>
 #include <mutex>
 #include <thread>
@@ -35,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <systempp/sysexception.h>
 #include <systempp/syseventapi.h>
 #include <systempp/sysutils.h>
+#include <systempp/sysinfo.h>
 
 #include <config.h>
 
@@ -568,4 +570,78 @@ namespace sys {
         sys::ServerSocket             *_ServerSocket;
         std::mutex                     _ELock;
     };
+    
+    bool Event::_Run=true;
+    bool Event::_Restart=false;
+
+    Event::Event(sys::ServerSocket* serversocket){
+        _EAPI = new EPOLL(serversocket);
+    }
+
+    Event::~Event(){
+    }
+
+    EventApi::~EventApi(){
+    }
+
+    void Event::runEventloop(){
+        sys::CpuInfo cpuinfo;
+        size_t thrs = 48;
+        _EAPI->initEventHandler();
+MAINWORKERLOOP:
+        ThreadPool thpool;
+        for (size_t i = 0; i < thrs; i++) {
+            try{
+                thpool.addjob(WorkerThread, (void*)_EAPI);
+            }catch(SystemException &e){
+                throw e;
+            }
+        }
+        
+        thpool.join();
+        
+        if(sys::Event::_Restart){
+            sys::Event::_Restart=false;
+            goto MAINWORKERLOOP;
+        }
+    }
+
+    void * sys::Event::WorkerThread(void* wrkevent){
+        EventApi *eventptr=((EventApi*)wrkevent);
+        SystemException excep;
+        while (sys::Event::_Run) {
+            try {
+                Connection *i=eventptr->waitEventHandler();
+                
+                eventptr->ConnectEventHandler(&i);
+                try {
+                    switch(eventptr->StatusEventHandler(i)) {
+                        case EPOLL::EVIN:
+                            eventptr->ReadEventHandler(i);
+                            break;
+                        case EPOLL::EVOUT:
+                            eventptr->WriteEventHandler(i);
+                            break;
+                        default:
+                            excep[SystemException::Error] << "no action try to close";
+                            throw excep;
+                    }
+                } catch(SystemException &e) {
+                    eventptr->CloseEventHandler(i);
+                    if(e.getErrorType()==SystemException::Critical) {
+                        throw e;
+                    }
+                }
+            } catch(SystemException &e) {
+                switch(e.getErrorType()) {
+                    case SystemException::Critical:
+                        throw e;
+                        break;
+                    default:
+                        std::cerr<< e.what() << std::endl;
+                }
+            }
+        }
+        return nullptr;
+    }
 };
