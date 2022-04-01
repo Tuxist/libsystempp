@@ -30,8 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "syseventapi.h"
 
-#include "event/${EVENT_HEADER}"
-
 #pragma once
 
 namespace sys {
@@ -47,7 +45,7 @@ namespace libhttppp {
 	class __attribute__((visibility("default"))) Event : public ${EVENT} {
 #endif
     public:
-        Event(sys::ServerSocket *serversocket);
+        Event(sys::ServerSocket *serversocket) : ${EVENT}(serversocket);
         void runEventloop();
         static void *WorkerThread(void *wrkevent);
         
