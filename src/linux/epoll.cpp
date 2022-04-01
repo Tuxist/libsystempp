@@ -364,7 +364,8 @@ namespace sys {
             _currFD=0;
         };
         
-        ~EPOLL();
+        virtual ~EPOLL(){
+        };
         
         /*basic functions*/
         const char *getEventType(){

@@ -20,7 +20,6 @@ message("Build with Linux Support")
 
 list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/ctrlhandler.cpp"
@@ -45,13 +44,14 @@ install(FILES
         ${CMAKE_BINARY_DIR}/src/syscall.h
         ${CMAKE_BINARY_DIR}/src/sysbits.h
         ${CMAKE_BINARY_DIR}/config.h
-        ${CMAKE_BINARY_DIR}/event.h
         DESTINATION include/systempp
         COMPONENT Devel
 )
 
 
-add_library(systempp STATIC ${systemppSrcs} )
+add_library(systempp SHARED ${systemppSrcs} )
+
+target_link_libraries(systempp pthread)
 
 add_library(
     cmd STATIC libcmd/cmd.cpp

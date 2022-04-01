@@ -43,9 +43,7 @@ namespace sys {
         virtual void initEventHandler()=0;
         virtual Connection *waitEventHandler()=0;
         virtual const char *getEventType()=0;
-        
-        /*Locking API*/
-        
+               
         /*EventHandler*/
         virtual void ConnectEventHandler(Connection **curcon)=0;
         virtual int  StatusEventHandler(Connection *curcon)=0;
