@@ -27,83 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <systempp/syssocket.h>
 #include <systempp/sysexception.h>
+#include <systempp/sysconnection.h>
+
 #include "config.h"
 
 #pragma once
 
 namespace sys {
-
-    class EventApi;
-    
-    class ConnectionData {
-    public:
-        const char*      getData();
-        size_t           getDataSize();
-        ConnectionData  *nextConnectionData();
-    protected:
-        ConnectionData(const char*data, size_t datasize);
-        ~ConnectionData();
-    private:
-        char              *_Data;
-        size_t             _DataSize;
-        ConnectionData   *_nextConnectionData;
-        friend class      Connection;
-    };
-    
-    class Connection {
-    public:
-        Connection(ServerSocket *servsock,EventApi *event);
-        ~Connection();
-        
-        /*get client Socket from Connection*/
-        ClientSocket   *getClientSocket();
-        
-        /*Cache helper functions*/
-        
-        int             copyValue(ConnectionData* startblock, int startpos,
-                                  ConnectionData* endblock, int endpos, char** buffer);
-        int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
-                                    const char* keyword);
-        int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
-                                    const char* keyword,size_t keylen);
-        
-        ConnectionData *addSendQueue(const char *data,size_t datasize);
-        ConnectionData *resizeSendQueue(size_t size);
-        void            cleanSendData();
-        ConnectionData *getSendData();
-        size_t          getSendSize();
-        
-        /*Get Data funtions Recv Queue*/
-        ConnectionData *addRecvQueue(const char *data,size_t datasize);
-        ConnectionData *resizeRecvQueue(size_t size);
-        void            cleanRecvData();
-        ConnectionData *getRecvData();
-        size_t          getRecvSize();
-        size_t          Blocksize;
-    protected:
-        /*Incomming Data*/
-        size_t          _ReadDataSize;
-        /*Outgoing Data*/
-        size_t          _SendDataSize;
-    private:
-        ConnectionData *_resizeQueue(ConnectionData **firstdata, ConnectionData **lastdata,
-                                     size_t *qsize,size_t size);
-        ClientSocket   *_ClientSocket;
-        ServerSocket   *_ServerSocket;
-        
-        /*Incomming Data*/
-        ConnectionData *_ReadDataFirst;
-        ConnectionData *_ReadDataLast;
-        
-        /*Outgoing Data*/
-        ConnectionData *_SendDataFirst;
-        ConnectionData *_SendDataLast;
-        EventApi       *_EventApi;
-
-        friend class ConnectionPool;
-        friend class Event;
-    };
-
     class EventApi {
     public:
         

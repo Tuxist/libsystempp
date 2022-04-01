@@ -33,8 +33,6 @@ set(CMAKE_ASM_FLAGS "${CXXFLAGS} ${ASM_OPTIONS}" )
 
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-configure_file(event.h.in ${CMAKE_CURRENT_BINARY_DIR}/event.h)
-
 include_directories(
     ${CMAKE_SOURCE_DIR}/src/include/
     ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
