@@ -136,12 +136,14 @@ struct aibuf {
 
 sys::ClientSocket::ClientSocket(){
     _Socket=-1;
-    _SocketPtr=nullptr;
-    _SocketPtrSize=0;
+    _SocketPtr = new struct sockaddr();
+    _SocketPtrSize=sizeof(sockaddr);
+    zero(_SocketPtr,_SocketPtrSize);
 }
 
 sys::ClientSocket::~ClientSocket(){
     syscall1(__NR_close, _Socket);
+    delete (struct sockaddr*)_SocketPtr;
 }
 
 
@@ -248,12 +250,10 @@ int sys::ServerSocket::getMaxconnections(){
 
 int sys::ServerSocket::acceptEvent(ClientSocket *clientsocket){
     SystemException exception;
-    clientsocket->_SocketPtr = new struct sockaddr();
-    clientsocket->_SocketPtrSize=sizeof(sockaddr);
-    zero(clientsocket->_SocketPtr,clientsocket->_SocketPtrSize);
     int socket = syscall3(__NR_accept,_Socket,(unsigned long)&clientsocket->_SocketPtr,
                           (unsigned long)&clientsocket->_SocketPtrSize);
     if(socket<0){
+        delete (struct sockaddr*)clientsocket->_SocketPtr;
         exception[SystemException::Error] << "Can't accept on Socket";
         throw exception;
     }

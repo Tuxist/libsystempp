@@ -50,6 +50,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define EPOLL_CTL_DEL 2
 #define EPOLL_CTL_MOD 3 
 
+#define BLOCKSIZE 16384
+
 struct epoll_event {
     uint32_t events; /* epoll events (bit mask) */
     uint64_t data; /* User data */
@@ -136,28 +138,18 @@ sys::ClientSocket *sys::Connection::getClientSocket(){
   */
 
 sys::ConnectionData *sys::Connection::addSendQueue(const char*data,size_t datasize){
-    SystemException excep;
-    size_t written=0;
-    if(datasize==0)
-        return nullptr;
-    for(size_t cursize=datasize; cursize>0; cursize=datasize-written){
-        if(cursize>Blocksize){
-            cursize=Blocksize;
-        }
-        if(!_SendDataFirst){
-            _SendDataFirst= new ConnectionData(data+written,cursize);
-            _SendDataLast=_SendDataFirst;
-        }else{
-            _SendDataLast->_nextConnectionData=new ConnectionData(data+written,cursize);
-            _SendDataLast=_SendDataLast->_nextConnectionData;
-        }
-        written+=cursize;
+    if(datasize<=0){
+        SystemException exception;
+        exception[SystemException::Error] << "addRecvQueue wrong datasize";
+        throw exception;
     }
-#ifdef DEBUG
-    std::cout << "Written:" << written << " Datasize: " << datasize  << std::endl;
-#endif
-    if(datasize!=written)
-        throw excep[SystemException::Critical] << "something goes wrong in addsendque !";
+    if(!_SendDataFirst){
+        _SendDataFirst= new ConnectionData(data,datasize);
+        _SendDataLast=_SendDataFirst;
+    }else{
+        _SendDataLast->_nextConnectionData=new ConnectionData(data,datasize);
+        _SendDataLast=_SendDataLast->_nextConnectionData;
+    }
     _SendDataSize+=datasize;
     _EventApi->sendReady(this,true);
     return _SendDataLast;
@@ -337,7 +329,6 @@ int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** fi
 }
 
 sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
-    Blocksize=16384;
     _ClientSocket=new sys::ClientSocket();
     _ServerSocket = servsock;
     _ReadDataFirst=nullptr;
@@ -421,6 +412,7 @@ namespace sys {
                 }        
                 _currFD = 0;
             }
+            std::cerr << _currFD << _waitFD << std::endl;
             return (Connection*)_Events[_currFD].data;
         };
 
@@ -439,9 +431,9 @@ namespace sys {
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                     curct->getClientSocket()->getSocket(),(unsigned long) &setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
-                throw exception;
-                    }
-                    ConnectEvent(curct);
+                    throw exception;
+                }
+                ConnectEvent(curct);
             }catch (sys::SystemException& e) {
                 delete curct;
                 exception[SystemException::Error] << e.what();
@@ -461,14 +453,14 @@ namespace sys {
         
         void ReadEventHandler(Connection *curcon){
             SystemException except;
-            char *buf = new char[curcon->Blocksize];
+            char buf[BLOCKSIZE];
             
             if(!curcon){
                 except[SystemException::Error] << "ReadEventHandler: no valid data !";
                 throw except;
             }
             try{
-                int rcvsize=_ServerSocket->recvData(curcon->getClientSocket(),&buf,curcon->Blocksize);
+                int rcvsize=_ServerSocket->recvData(curcon->getClientSocket(),&buf,BLOCKSIZE);
                 curcon->addRecvQueue(buf,rcvsize);
             }catch(sys::SystemException &e){
                 except[SystemException::Critical] << e.what();
@@ -613,10 +605,11 @@ MAINWORKERLOOP:
         while (sys::Event::_Run) {
             try {
                 Connection *i=eventptr->waitEventHandler();
-                
-                eventptr->ConnectEventHandler(&i);
                 try {
                     switch(eventptr->StatusEventHandler(i)) {
+                        case EPOLL::EVCON:
+                            eventptr->ConnectEventHandler(&i);
+                            break;
                         case EPOLL::EVIN:
                             eventptr->ReadEventHandler(i);
                             break;

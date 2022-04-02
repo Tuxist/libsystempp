@@ -76,7 +76,6 @@ namespace sys {
         void            cleanRecvData();
         ConnectionData *getRecvData();
         size_t          getRecvSize();
-        size_t          Blocksize;
     protected:
         /*Incomming Data*/
         size_t          _ReadDataSize;
