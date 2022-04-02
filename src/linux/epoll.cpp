@@ -579,7 +579,7 @@ namespace sys {
 
     void Event::runEventloop(){
         sys::CpuInfo cpuinfo;
-        size_t thrs = 48;
+        size_t thrs = 1;
         _EAPI->initEventHandler();
 MAINWORKERLOOP:
         ThreadPool thpool;
