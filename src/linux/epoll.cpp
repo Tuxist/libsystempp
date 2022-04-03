@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BLOCKSIZE 16384
 
+
 struct epoll_event {
     uint32_t events; /* epoll events (bit mask) */
     uint64_t data; /* User data */
@@ -341,7 +342,7 @@ sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
 }
 
 sys::Connection::~Connection(){
-    delete _ClientSocket;
+//     delete _ClientSocket;
     delete _ReadDataFirst;
     delete _SendDataFirst;
 }
@@ -351,8 +352,7 @@ namespace sys {
     public:
         EPOLL(sys::ServerSocket* serversocket){
             _ServerSocket=serversocket;
-            _waitFD=0;
-            _currFD=0;
+            _WaitFD=-1;
         };
         
         virtual ~EPOLL(){
@@ -388,32 +388,31 @@ namespace sys {
             
             if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                 _ServerSocket->getSocket(),(unsigned long)&setevent) < 0) {
-                exception[SystemException::Critical] << "initEventHandler: can't create epoll";
-            throw exception;
-                }
+                    exception[SystemException::Critical] << "initEventHandler: can't create epoll";
+                    throw exception;
+            }
                 
-                _Events = new epoll_event[_ServerSocket->getMaxconnections()];
-                for(int i=0; i<_ServerSocket->getMaxconnections(); ++i)
-                    _Events[i].data = 0;
+            _Events = new epoll_event[_ServerSocket->getMaxconnections()];
+            for(int i=0; i<_ServerSocket->getMaxconnections(); ++i)
+                _Events[i].data = 0;
         };
         
         sys::Connection *waitEventHandler(){
             std::lock_guard<std::mutex> lock(_ELock);
-            
-            ++_currFD;
-            
-            if(_waitFD<_currFD){
-                _waitFD = syscall4(__NR_epoll_wait,_epollFD,
-                                   (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);
-                if(_waitFD<0) {
+            if(_WaitFD<1){
+                _WaitFD=syscall4(__NR_epoll_wait,_epollFD,
+                                  (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);      
+                
+                if(_WaitFD<1) {
                     SystemException exception;
-                    exception[SystemException::Critical] << "initEventHandler: epoll wait failure";
+                    exception[SystemException::Error] << "initEventHandler: epoll wait failure";
                     throw exception;
-                }        
-                _currFD = 0;
+                }
             }
-            std::cerr << _currFD << _waitFD << std::endl;
-            return (Connection*)_Events[_currFD].data;
+            --_WaitFD;
+            std::cerr << "WaitFD: " << _WaitFD << "Ptr: " 
+                      << ((Connection*)(uint64_t)_Events[_WaitFD].data) << std::endl;
+            return ((Connection*)_Events[_WaitFD].data);
         };
 
         void ConnectEventHandler(sys::Connection **curcon){
@@ -427,19 +426,19 @@ namespace sys {
                 curct->getClientSocket()->setnonblocking();
                 struct epoll_event setevent{0};
                 setevent.events = EPOLLIN;
-                setevent.data =(uint64_t) curct;
+                setevent.data=(uint64_t)curct;
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                     curct->getClientSocket()->getSocket(),(unsigned long) &setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
                     throw exception;
                 }
+                *curcon=curct;
                 ConnectEvent(curct);
             }catch (sys::SystemException& e) {
                 delete curct;
                 exception[SystemException::Error] << e.what();
                 throw exception;
             }
-            curcon=&curct;
         };
         
         
@@ -500,7 +499,8 @@ namespace sys {
                     throw except;
                 }
                 
-                int ect=syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_DEL,curcon->getClientSocket()->getSocket(),0);
+                int ect=syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_DEL,
+                                 curcon->getClientSocket()->getSocket(),0);
                 
                 if(ect<0) {
                     except[SystemException::Error] << "CloseEvent can't delete Connection from epoll";
@@ -548,17 +548,16 @@ namespace sys {
             SystemException except;
             struct epoll_event setevent{ 0 };
             setevent.events = events;
-            setevent.data =(uint64_t) curcon;
+            setevent.data = (uint64_t) curcon;
             if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_MOD, 
                 curcon->getClientSocket()->getSocket(), (unsigned long)&setevent) < 0) {
                 except[SystemException::Error] << "_setEpollEvents: can change socket!";
                 throw except;
-            }   
+            }
         };
         
+        int                            _WaitFD;
         int                            _epollFD;
-        int                            _waitFD;
-        int                            _currFD;
         struct epoll_event            *_Events;
         sys::ServerSocket             *_ServerSocket;
         std::mutex                     _ELock;
