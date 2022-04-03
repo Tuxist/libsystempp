@@ -185,7 +185,6 @@ sys::ServerSocket::ServerSocket(const char* uxsocket,int maxconnections,
     syscall5(__NR_setsockopt,_Socket,SOL_SOCKET,sockopts,(long)&optval, sizeof(optval));
     
     if (syscall3(__NR_bind,_Socket,(long)&usock, sizeof(struct sockaddr_un)) < 0){
-        char errbuf[255];
         exception[SystemException::Error] << "Can't bind Server UnixSocket";
         throw exception;
     }

@@ -54,8 +54,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 struct epoll_event {
-    uint32_t events; /* epoll events (bit mask) */
-    uint64_t data; /* User data */
+    uint32_t         events; /* epoll events (bit mask) */
+    sys::Connection *data; /* User data */
 };
 
 namespace sys {
@@ -411,7 +411,7 @@ namespace sys {
             }
             --_WaitFD;
             std::cerr << "WaitFD: " << _WaitFD << "Ptr: " 
-                      << ((Connection*)(uint64_t)_Events[_WaitFD].data) << std::endl;
+                      << _Events[_WaitFD].data << std::endl;
             return ((Connection*)_Events[_WaitFD].data);
         };
 
@@ -426,7 +426,7 @@ namespace sys {
                 curct->getClientSocket()->setnonblocking();
                 struct epoll_event setevent{0};
                 setevent.events = EPOLLIN;
-                setevent.data=(uint64_t)curct;
+                setevent.data= curct;
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                     curct->getClientSocket()->getSocket(),(unsigned long) &setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
@@ -548,7 +548,7 @@ namespace sys {
             SystemException except;
             struct epoll_event setevent{ 0 };
             setevent.events = events;
-            setevent.data = (uint64_t) curcon;
+            setevent.data = curcon;
             if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_MOD, 
                 curcon->getClientSocket()->getSocket(), (unsigned long)&setevent) < 0) {
                 except[SystemException::Error] << "_setEpollEvents: can change socket!";

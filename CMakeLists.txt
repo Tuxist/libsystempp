@@ -17,12 +17,14 @@ find_package(Clang REQUIRED)
 set(CMAKE_CXX_FLAGS 
     "${CMAKE_CXX_FLAGS} \
     -fPIC \
-    -std=c++20"
+    -std=c++20 \
+    -Wall"
 )
 
 set(CMAKE_C_FLAGS 
     "${CMAKE_C_FLAGS} \
-    -std=c11"
+    -std=c11 \
+    -Wall"
 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)

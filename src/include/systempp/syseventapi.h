@@ -74,7 +74,6 @@ namespace sys {
         static bool _Restart;
     private:
         EventApi *_EAPI;
-        int       _Threads;
     };
 
 };

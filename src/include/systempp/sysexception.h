@@ -65,6 +65,5 @@ namespace sys {
         Message    *_lastMessage;
         
         char       *_printBuffer;
-        char       *_errnobuf;
     };
 }
