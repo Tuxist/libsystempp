@@ -25,18 +25,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include "syscall.h"
+#include "sysbits.h"
+
+# ifndef SYS_futex
+#  define SYS_futex __NR_futex
+# endif
+
 #include <iostream>
 #include <vector>
 #include <mutex>
 #include <thread>
 #include <unistd.h>
 
-#include <systempp/syscall.h>
-#include <systempp/sysbits.h>
-#include <systempp/sysexception.h>
-#include <systempp/syseventapi.h>
-#include <systempp/sysutils.h>
-#include <systempp/sysinfo.h>
+#include "systempp/sysexception.h"
+#include "systempp/syseventapi.h"
+#include "systempp/sysutils.h"
+#include "systempp/sysinfo.h"
 
 #include <config.h>
 
@@ -51,7 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define EPOLL_CTL_MOD 3 
 
 #define BLOCKSIZE 16384
-
 
 struct epoll_event {
     uint32_t events; /* epoll events (bit mask) */
