@@ -10,6 +10,7 @@ set(EVENT "EPOLL")
 include(GenerateExportHeader)
 
 set(systemppSrcs
+    "connection.cpp"
     "exception.cpp"
     "utils.cpp"
     "uuid.cpp"

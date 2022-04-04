@@ -45,7 +45,7 @@ namespace sys {
         virtual const char *getEventType()=0;
                
         /*EventHandler*/
-        virtual void ConnectEventHandler(Connection **curcon)=0;
+        virtual void ConnectEventHandler(Connection *curcon)=0;
         virtual int  StatusEventHandler(Connection *curcon)=0;
         virtual void ReadEventHandler(Connection *curcon)=0;
         virtual void WriteEventHandler(Connection *curcon)=0;

@@ -103,260 +103,12 @@ namespace sys {
     };
 };
 
-const char* sys::ConnectionData::getData(){
-  return _Data;
-}
-
-size_t sys::ConnectionData::getDataSize(){
-  return _DataSize;
-}
-
-sys::ConnectionData *sys::ConnectionData::nextConnectionData(){
-  return _nextConnectionData;
-}
-
-sys::ConnectionData::ConnectionData(const char*data,size_t datasize)  {
-    SystemException excep;
-    _Data = new char[datasize];
-    sys::scopy(data,data+datasize,_Data);
-    _DataSize=datasize;
-    _nextConnectionData=nullptr;
-}
-
-sys::ConnectionData::~ConnectionData() {
-    delete[] _Data;
-    delete _nextConnectionData;
-}
-
-sys::ClientSocket *sys::Connection::getClientSocket(){
-  return _ClientSocket;
-}
-
-/** \brief a method to add Data to Sendqueue
-  * \param data an const char* to add to sendqueue
-  * \param datasize an size_t to set datasize
-  * \return the last ConnectionData Block from Sendqueue
-  * 
-  * This method does unbelievably useful things.  
-  * And returns exceptionally the new connection data block.
-  * Use it everyday with good health.
-  */
-
-sys::ConnectionData *sys::Connection::addSendQueue(const char*data,size_t datasize){
-    if(datasize<=0){
-        SystemException exception;
-        exception[SystemException::Error] << "addRecvQueue wrong datasize";
-        throw exception;
-    }
-    if(!_SendDataFirst){
-        _SendDataFirst= new ConnectionData(data,datasize);
-        _SendDataLast=_SendDataFirst;
-    }else{
-        _SendDataLast->_nextConnectionData=new ConnectionData(data,datasize);
-        _SendDataLast=_SendDataLast->_nextConnectionData;
-    }
-    _SendDataSize+=datasize;
-    _EventApi->sendReady(this,true);
-    return _SendDataLast;
-}
-
-void sys::Connection::cleanSendData(){
-   delete _SendDataFirst;
-   _SendDataFirst=nullptr;
-   _SendDataLast=nullptr;
-   _SendDataSize=0;
-}
-
-sys::ConnectionData *sys::Connection::resizeSendQueue(size_t size){
-    try{
-        return _resizeQueue(&_SendDataFirst,&_SendDataLast,&_SendDataSize,size);
-    }catch(SystemException &e){
-        throw e; 
-    }
-}
-
-sys::ConnectionData* sys::Connection::getSendData(){
-  return _SendDataFirst;
-}
-
-size_t sys::Connection::getSendSize(){
-  return _SendDataSize;
-}
-
-sys::ConnectionData *sys::Connection::addRecvQueue(const char *data,size_t datasize){
-    if(datasize<=0){
-        SystemException exception;
-        exception[SystemException::Error] << "addRecvQueue wrong datasize";
-        throw exception;
-    }
-    if(!_ReadDataFirst){
-        _ReadDataFirst= new ConnectionData(data,datasize);
-        _ReadDataLast=_ReadDataFirst;
-    }else{
-        _ReadDataLast->_nextConnectionData=new ConnectionData(data,datasize);
-        _ReadDataLast=_ReadDataLast->_nextConnectionData;
-    }
-    _ReadDataSize+=datasize;
-    return _ReadDataLast;
-}
-
-void sys::Connection::cleanRecvData(){
-   delete _ReadDataFirst;
-  _ReadDataFirst=nullptr;
-  _ReadDataLast=nullptr;
-  _ReadDataSize=0;
-}
-
-
-sys::ConnectionData *sys::Connection::resizeRecvQueue(size_t size){
-    try{
-        return _resizeQueue(&_ReadDataFirst,&_ReadDataLast,&_ReadDataSize,size);
-    }catch(SystemException &e){
-        throw e; 
-    }
-}
-
-sys::ConnectionData *sys::Connection::getRecvData(){
-  return _ReadDataFirst;
-}
-
-size_t sys::Connection::getRecvSize(){
-  return _ReadDataSize;
-}
-
-sys::ConnectionData *sys::Connection::_resizeQueue(ConnectionData** firstdata, ConnectionData** lastdata,
-                                                               size_t *qsize, size_t size){
-    SystemException exception;
-    if(!*firstdata || size > *qsize){
-        exception[SystemException::Error] << "_resizeQueue wrong datasize or ConnectionData";
-        throw exception;
-    }
-    #ifdef DEBUG
-    size_t delsize=0,presize=*qsize;
-    #endif
-    (*qsize)-=size;
-HAVEDATA:
-    if((*firstdata)->getDataSize() <=size){
-        #ifdef DEBUG
-        delsize+=(*firstdata)->getDataSize();;
-        #endif
-        size-=(*firstdata)->getDataSize();
-        ConnectionData *newdat=(*firstdata)->_nextConnectionData;
-        (*firstdata)->_nextConnectionData=nullptr;
-        if(*firstdata==*lastdata)
-            (*lastdata)=nullptr; 
-        delete *firstdata;
-        *firstdata=newdat;
-        if(*firstdata)
-            goto HAVEDATA;
-    }
-    if(size>0){
-        #ifdef DEBUG
-        delsize+=size;
-        #endif
-        for(size_t i=0; i<((*firstdata)->getDataSize()-size); ++i){
-            (*firstdata)->_Data[i]=(*firstdata)->_Data[size+i];
-        }
-        (*firstdata)->_DataSize-=size;
-        *firstdata=(*firstdata);
-    }
-    #ifdef DEBUG
-    std::cout << " delsize: "    << delsize
-                                 << " Calculated Blocksize: " << (presize-delsize) 
-                                 << std::endl;
-    if((presize-delsize)!=*qsize)
-        throw exception[SystemException::Critical] << "_resizeQueue: Calculated wrong size";
-    #endif
-    
-    return *firstdata;
-}
-                                                               
-int sys::Connection::copyValue(ConnectionData* startblock, int startpos, 
-                          ConnectionData* endblock, int endpos, char** buffer){
-  size_t copysize=0,copypos=0;
-  for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-    if(curdat==endblock){
-      copysize+=endpos;
-      break;
-    }
-    copysize+=curdat->getDataSize();
-  }
-  copysize-=startpos;
-  char *buf;
-  buf = new char[(copysize+1)]; //one more for termination
-  for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-    if(curdat==startblock && curdat==endblock){
-      sys::scopy(curdat->_Data+startpos,curdat->_Data+(endpos-startpos),buf+copypos);
-    }else if(curdat==startblock){
-      sys::scopy(curdat->_Data+startpos,curdat->_Data+(curdat->getDataSize()-startpos),buf+copypos);
-      copypos+=curdat->getDataSize()-startpos;
-    }else if(curdat==endblock){
-      sys::scopy(curdat->_Data,curdat->_Data+endpos,buf+copypos);
-      copypos+=endpos;
-    }else{
-      sys::scopy(curdat->_Data,curdat->_Data+curdat->getDataSize(),buf+copypos);
-      copypos+=curdat->getDataSize();
-    }
-    if(curdat==endblock)
-      break;
-  }
-  buf[copysize]='\0';
-  *buffer=buf;
-  return copysize; //not include termination
-}
-
-int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 
-                                       const char* keyword){
-    return searchValue(startblock, findblock, keyword,sys::getlen(keyword));
-}
-                                       
-int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 
-                                       const char* keyword,size_t keylen){
-    size_t fpos=0,fcurpos=0;
-    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-        for(size_t pos=0; pos<curdat->getDataSize(); ++pos){
-            if(keyword[fcurpos]==curdat->_Data[pos]){
-                if(fcurpos==0){
-                    fpos=pos;
-                    *findblock=curdat;
-                }
-                fcurpos++;
-            }else{
-                fcurpos=0;
-                fpos=0;
-                *findblock=nullptr;
-            }
-            if(fcurpos==keylen)
-                return fpos;
-        }
-    }
-    return -1;
-}
-
-sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
-    _ClientSocket=new sys::ClientSocket();
-    _ServerSocket = servsock;
-    _ReadDataFirst=nullptr;
-    _ReadDataLast=nullptr;
-    _ReadDataSize=0;
-    _SendDataFirst=nullptr;
-    _SendDataLast=nullptr;
-    _SendDataSize=0;
-    _EventApi=event;
-}
-
-sys::Connection::~Connection(){
-//     delete _ClientSocket;
-    delete _ReadDataFirst;
-    delete _SendDataFirst;
-}
-
 namespace sys {    
     class EPOLL : public EventApi{
     public:
         EPOLL(sys::ServerSocket* serversocket){
             _ServerSocket=serversocket;
-            _WaitFD=-1;
+            _WaitPos=0;
         };
         
         virtual ~EPOLL(){
@@ -398,48 +150,53 @@ namespace sys {
                 
             _Events = new epoll_event[_ServerSocket->getMaxconnections()];
             for(int i=0; i<_ServerSocket->getMaxconnections(); ++i)
-                _Events[i].data = 0;
+                _Events[i].data = nullptr;
         };
         
         sys::Connection *waitEventHandler(){
             std::lock_guard<std::mutex> lock(_ELock);
-            if(_WaitFD<1){
-                _WaitFD=syscall4(__NR_epoll_wait,_epollFD,
+
+            if(_WaitPos<1){
+                _WaitPos=syscall4(__NR_epoll_wait,_epollFD,
                                   (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);      
                 
-                if(_WaitFD<1) {
+                if(_WaitPos<1) {
                     SystemException exception;
                     exception[SystemException::Error] << "initEventHandler: epoll wait failure";
                     throw exception;
                 }
             }
-            --_WaitFD;
-            std::cerr << "WaitFD: " << _WaitFD << "Ptr: " 
-                      << _Events[_WaitFD].data << std::endl;
-            return ((Connection*)_Events[_WaitFD].data);
+
+            --_WaitPos;
+            
+            if(!_Events[_WaitPos].data)
+                return (new Connection(_ServerSocket,this));
+
+            return _Events[_WaitPos].data;
         };
 
-        void ConnectEventHandler(sys::Connection **curcon){
+        void ConnectEventHandler(sys::Connection *curcon){
             SystemException exception;
-            Connection *curct=new Connection(_ServerSocket,this);
             try {
+                if(!curcon){
+                    exception[SystemException::Error] << "ConnectEventHandler: no valid data !";
+                    throw exception;
+                }
                 /*will create warning debug mode that normally because the check already connection
                  * with this socket if getconnection throw they will be create a new one
                  */
-                _ServerSocket->acceptEvent(curct->getClientSocket());
-                curct->getClientSocket()->setnonblocking();
+                _ServerSocket->acceptEvent(curcon->getClientSocket());
+                curcon->getClientSocket()->setnonblocking();
                 struct epoll_event setevent{0};
                 setevent.events = EPOLLIN;
-                setevent.data= curct;
+                setevent.data = curcon;
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
-                    curct->getClientSocket()->getSocket(),(unsigned long) &setevent) < 0) {
+                    curcon->getClientSocket()->getSocket(),(unsigned long)&setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
                     throw exception;
                 }
-                *curcon=curct;
-                ConnectEvent(curct);
+                ConnectEvent(curcon);
             }catch (sys::SystemException& e) {
-                delete curct;
                 exception[SystemException::Error] << e.what();
                 throw exception;
             }
@@ -447,7 +204,7 @@ namespace sys {
         
         
         int StatusEventHandler(Connection *curcon){
-            if(!curcon)
+            if(curcon->getClientSocket()->getSocket()==-1)
                 return EventHandlerStatus::EVCON;
             if(curcon->getSendSize()>0)
                 return EventHandlerStatus::EVOUT;
@@ -495,7 +252,6 @@ namespace sys {
         
         void CloseEventHandler(sys::Connection *curcon){
             SystemException except;
-            std::lock_guard<std::mutex> lock(_ELock);
             try {
                 
                 if(!curcon){
@@ -560,7 +316,7 @@ namespace sys {
             }
         };
         
-        int                            _WaitFD;
+        int                            _WaitPos;
         int                            _epollFD;
         struct epoll_event            *_Events;
         sys::ServerSocket             *_ServerSocket;
@@ -611,7 +367,7 @@ MAINWORKERLOOP:
                 try {
                     switch(eventptr->StatusEventHandler(i)) {
                         case EPOLL::EVCON:
-                            eventptr->ConnectEventHandler(&i);
+                            eventptr->ConnectEventHandler(i);
                             break;
                         case EPOLL::EVIN:
                             eventptr->ReadEventHandler(i);
@@ -632,10 +388,8 @@ MAINWORKERLOOP:
             } catch(SystemException &e) {
                 switch(e.getErrorType()) {
                     case SystemException::Critical:
-                        throw e;
-                        break;
-                    default:
                         std::cerr<< e.what() << std::endl;
+                        break;
                 }
             }
         }
