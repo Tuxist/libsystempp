@@ -201,36 +201,36 @@ HAVEDATA:
                                                                
 int sys::Connection::copyValue(ConnectionData* startblock, int startpos, 
                           ConnectionData* endblock, int endpos, char** buffer){
-  size_t copysize=0,copypos=0;
-  for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-    if(curdat==endblock){
-      copysize+=endpos;
-      break;
+    size_t copysize=0,copypos=0;
+    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
+        if(curdat==endblock){
+        copysize+=endpos;
+        break;
+        }
+        copysize+=curdat->getDataSize();
     }
-    copysize+=curdat->getDataSize();
-  }
-  copysize-=startpos;
-  char *buf;
-  buf = new char[(copysize+1)]; //one more for termination
-  for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-    if(curdat==startblock && curdat==endblock){
-      sys::scopy(curdat->_Data+startpos,curdat->_Data+(endpos-startpos),buf+copypos);
-    }else if(curdat==startblock){
-      sys::scopy(curdat->_Data+startpos,curdat->_Data+(curdat->getDataSize()-startpos),buf+copypos);
-      copypos+=curdat->getDataSize()-startpos;
-    }else if(curdat==endblock){
-      sys::scopy(curdat->_Data,curdat->_Data+endpos,buf+copypos);
-      copypos+=endpos;
-    }else{
-      sys::scopy(curdat->_Data,curdat->_Data+curdat->getDataSize(),buf+copypos);
-      copypos+=curdat->getDataSize();
+    copysize-=startpos;
+    char *buf;
+    buf = new char[(copysize+1)]; //one more for termination
+    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
+        if(curdat==startblock && curdat==endblock){
+            sys::scopy(curdat->_Data+startpos,curdat->_Data+(endpos-startpos),buf+copypos);
+        }else if(curdat==startblock){
+            sys::scopy(curdat->_Data+startpos,curdat->_Data+(curdat->getDataSize()-startpos),buf+copypos);
+            copypos+=curdat->getDataSize()-startpos;
+        }else if(curdat==endblock){
+            sys::scopy(curdat->_Data,curdat->_Data+endpos,buf+copypos);
+            copypos+=endpos;
+        }else{
+            sys::scopy(curdat->_Data,curdat->_Data+curdat->getDataSize(),buf+copypos);
+            copypos+=curdat->getDataSize();
+        }
+        if(curdat==endblock)
+            break;
     }
-    if(curdat==endblock)
-      break;
-  }
-  buf[copysize]='\0';
-  *buffer=buf;
-  return copysize; //not include termination
+    buf[copysize]='\0';
+    *buffer=buf;
+    return copysize; //not include termination
 }
 
 int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 

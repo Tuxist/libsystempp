@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <mutex>
 #include <thread>
-#include <unistd.h>
 
 #include "systempp/sysexception.h"
 #include "systempp/syseventapi.h"
@@ -57,9 +56,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BLOCKSIZE 16384
 
+typedef union epoll_data {
+    void    *ptr;
+    int      fd;
+    uint32_t u32;
+    uint64_t u64;
+} epoll_data_t;
+
+
 struct epoll_event {
     uint32_t         events; /* epoll events (bit mask) */
-    sys::Connection *data; /* User data */
+    epoll_data_t     data; /* User data */
 };
 
 namespace sys {
@@ -94,7 +101,7 @@ namespace sys {
                         _Threads.erase(thit);
                     }
                 }
-                usleep(1000);
+               
             }
         };
 
@@ -150,7 +157,7 @@ namespace sys {
                 
             _Events = new epoll_event[_ServerSocket->getMaxconnections()];
             for(int i=0; i<_ServerSocket->getMaxconnections(); ++i)
-                _Events[i].data = nullptr;
+                _Events[i].data.ptr = nullptr;
         };
         
         sys::Connection *waitEventHandler(){
@@ -169,10 +176,12 @@ namespace sys {
 
             --_WaitPos;
             
-            if(!_Events[_WaitPos].data)
-                return (new Connection(_ServerSocket,this));
+            Connection *rcon=(sys::Connection*)_Events[_WaitPos].data.ptr;
+            
+            if(!rcon)
+                rcon = new Connection(_ServerSocket,this);
 
-            return _Events[_WaitPos].data;
+            return rcon;
         };
 
         void ConnectEventHandler(sys::Connection *curcon){
@@ -189,7 +198,7 @@ namespace sys {
                 curcon->getClientSocket()->setnonblocking();
                 struct epoll_event setevent{0};
                 setevent.events = EPOLLIN;
-                setevent.data = curcon;
+                setevent.data.ptr = curcon;
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                     curcon->getClientSocket()->getSocket(),(unsigned long)&setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
@@ -308,7 +317,7 @@ namespace sys {
             SystemException except;
             struct epoll_event setevent{ 0 };
             setevent.events = events;
-            setevent.data = curcon;
+            setevent.data.ptr = curcon;
             if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_MOD, 
                 curcon->getClientSocket()->getSocket(), (unsigned long)&setevent) < 0) {
                 except[SystemException::Error] << "_setEpollEvents: can change socket!";
