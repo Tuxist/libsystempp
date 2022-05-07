@@ -26,3 +26,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #pragma once
+
+namespace sys {
+    class Timezone {
+    public:
+        Timezone(const char* name=nullptr);
+        static void *Timezones;
+    private:
+        void **_CTimezone;
+    };
+    
+    class Time {
+    public:
+        void setNanoSeconds(unsigned int nanosec);
+        unsigned int getNanoSeconds();
+        
+        void setSeconds(unsigned int sec);
+        unsigned int  getSeconds();
+        
+        void setMinute(unsigned int min);
+        unsigned int  getMinute();
+        
+        void setHour(unsigned int hour);
+        unsigned int  getHour();
+        
+        void setMounth(unsigned int mounth);
+        unsigned int  getMounth();
+        
+        void setYear(int year);
+        int  getYear();
+        
+        void localtime(int Timezone);
+        void gmtime();
+        void compare(Time comptime,Time &result);
+        
+    private:
+        unsigned int   _NSec;
+        unsigned int   _Sec;
+        unsigned int   _Min;
+        unsigned int   _Hour;
+        unsigned int   _Mounth;
+        int            _Year;
+        void          *_timeval;
+        void          *_timespec;
+    };
+};
