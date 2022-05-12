@@ -7,3 +7,6 @@ target_link_libraries(main systempp)
 
 add_executable (sysinfo sysinfo.cpp)
 target_link_libraries(sysinfo systempp)
+
+add_executable (time time.cpp)
+target_link_libraries(time systempp)

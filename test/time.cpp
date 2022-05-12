@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2021, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
-#include <cstring>
+#include "systempp/systime.h"
+#include <iostream>
 
-#include "config.h"
+int main(int argv, char *argc[]){
+    sys::Timezone tz("Europe/Berlin");
+    sys::Time testtime(&tz);
+    testtime.getHWTime();
 
-#pragma once
+    std::cout << "Date: " << testtime.getDay() << "."
+                          << testtime.getMounth() << "."
+                          << testtime.getYear() << std::endl;
 
-namespace sys {
-   const char *scopy(const char* first, const char* last, char* des);
-   unsigned int getlen(const char *str);
-   void rscopy(const char* first, const char* last, char** des);
-   void reverse(char s[]);
-   void itoa(int n, char s[]);
-   void ultoa(unsigned long n, char s[]);
-   void zero(void *s, unsigned n);
-   int atoi(char* str);
-   unsigned long atoul(char* str);
-   int ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize);
-   unsigned long append(char** src, const char* append);
-   unsigned long append(char** src, const char append);
-   std::size_t cleannewline(const char *src,std::size_t srcsize,char **dest);
-   int substr(const char *src,char **dest,std::size_t spos,std::size_t endpos);
-   int rfind(const char *src,std::size_t len,const char find);
-};
+    std::cout << "time: " << testtime.getHour() << ":"
+                          << testtime.getMinute() << ":" 
+                          << testtime.getSeconds() << std::endl;
+    testtime.setHWTime();
+    return 0;
+} 

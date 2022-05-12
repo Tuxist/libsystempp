@@ -29,6 +29,7 @@ list(APPEND linuxSrcs
     "linux/socket.cpp"
     "linux/sysinfo.cpp"
     "linux/epoll.cpp"
+    "linux/time.cpp"
 )
 
 configure_file(

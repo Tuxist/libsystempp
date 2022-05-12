@@ -31,13 +31,14 @@ namespace sys {
     class Timezone {
     public:
         Timezone(const char* name=nullptr);
-        static void *Timezones;
-    private:
-        void **_CTimezone;
+        static const void *Timezones[];
+        /*please only use in systempp plattform depended code*/
+        void  *_CTimezone;
     };
     
     class Time {
     public:
+        Time(Timezone *timezone=nullptr);
         void setNanoSeconds(unsigned int nanosec);
         unsigned int getNanoSeconds();
         
@@ -49,6 +50,9 @@ namespace sys {
         
         void setHour(unsigned int hour);
         unsigned int  getHour();
+
+        void setDay(unsigned int day);
+        unsigned int  getDay();
         
         void setMounth(unsigned int mounth);
         unsigned int  getMounth();
@@ -56,18 +60,25 @@ namespace sys {
         void setYear(int year);
         int  getYear();
         
-        void localtime(int Timezone);
-        void gmtime();
+        void getHWTime();
+        void setHWTime();
+
         void compare(Time comptime,Time &result);
         
+        /*please use only systempp only plattform depend code*/
+        void _toUnixtime(void **ptimespec);
+        void _fromUnixtime(void *ptimespec);
     private:
+        
+
+        
         unsigned int   _NSec;
         unsigned int   _Sec;
         unsigned int   _Min;
         unsigned int   _Hour;
+        unsigned int   _Day;
         unsigned int   _Mounth;
         int            _Year;
-        void          *_timeval;
-        void          *_timespec;
+        Timezone      *_Zone;
     };
 };
