@@ -37,3 +37,10 @@ sys::Sleep::Sleep(Time *time){
     syscall4(__NR_clock_nanosleep,0,0,(long)treq,0);
     delete treq;
 }
+
+sys::Sleep::Sleep(int seconds){
+    struct timespec treq;
+    treq.tv_sec=seconds;
+    treq.tv_nsec=0;
+    syscall4(__NR_clock_nanosleep,0,0,(long)&treq,0);  
+}

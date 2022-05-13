@@ -33,5 +33,6 @@ namespace sys {
     class Sleep {
     public:
         Sleep(Time *sleeptime);
+        Sleep(int seconds);
     };
 };
