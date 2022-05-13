@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/syseventapi.h"
 #include "systempp/sysutils.h"
 #include "systempp/sysinfo.h"
+#include "systempp/syssleep.h"
 
 #include <config.h>
 
@@ -101,7 +102,7 @@ namespace sys {
                         _Threads.erase(thit);
                     }
                 }
-               
+                Sleep(1);
             }
         };
 
