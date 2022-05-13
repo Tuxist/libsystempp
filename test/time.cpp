@@ -41,5 +41,6 @@ int main(int argv, char *argc[]){
                           << testtime.getMinute() << ":" 
                           << testtime.getSeconds() << std::endl;
     testtime.setHWTime();
+    
     return 0;
 } 

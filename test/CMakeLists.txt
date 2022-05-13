@@ -10,3 +10,6 @@ target_link_libraries(sysinfo systempp)
 
 add_executable (time time.cpp)
 target_link_libraries(time systempp)
+
+add_executable (sleep sleep.cpp)
+target_link_libraries(sleep systempp)

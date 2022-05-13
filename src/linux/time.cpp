@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -90,8 +90,9 @@ sys::Time::Time(sys::Timezone* timezone){
     _Sec=0;
     _Min=0;
     _Hour=0;
-    _Day=0;
-    _Year=0;
+    _Day=1;
+    _Mounth=1;
+    _Year=1970;
 }
 
 void sys::Time::setNanoSeconds(unsigned int nanosec){
@@ -99,7 +100,8 @@ void sys::Time::setNanoSeconds(unsigned int nanosec){
     if(nanosec>999999999){
         excep[sys::SystemException::Error] << "Nano Secondes can't greater than a value of 999999999";
         throw excep;
-    } 
+    }
+    _NSec=nanosec;
 };
 
 unsigned int sys::Time::getNanoSeconds(){
@@ -209,23 +211,23 @@ void sys::Time::_fromUnixtime(void* ptimespec){
 }
 
 void sys::Time::_toUnixtime(void **ptimespec){
-   struct timespec *ts=new struct timespec;
-   const short start_days[12] =
+    struct timespec *ts=new struct timespec;
+    const short start_days[12] =
     {0,31,59,90,120,151,181,212,243,273,304,334};
 
-  int leapyears = ((_Year-1)-1968)/4
+    int leapyears = ((_Year-1)-1968)/4
                   - ((_Year-1)-1900)/100
                   + ((_Year-1)-1600)/400;
 
-  long long since1970 = (_Year-1970)*365 + leapyears
+    long long since1970 = (_Year-1970)*365 + leapyears
                            + start_days[_Mounth-1] + _Day-1;
 
-  if ( (_Mounth>2) && (_Year%4==0 && (_Year%100!=0 || _Year%400==0)) )
-    since1970 += 1;
+    if ( (_Mounth>2) && (_Year%4==0 && (_Year%100!=0 || _Year%400==0)) )
+        since1970 += 1;
 
-  ts->tv_sec=_Sec + 60 * ( _Min + 60 * (_Hour + 24*since1970) );
-  ts->tv_nsec=_NSec;
-  *ptimespec=ts;
+    ts->tv_sec=_Sec + 60 * ( _Min + 60 * (_Hour + 24*since1970) );
+    ts->tv_nsec=_NSec;
+    *ptimespec=ts;
 }
 
 void sys::Time::compare(Time comptime,Time &result){

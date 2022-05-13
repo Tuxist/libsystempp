@@ -30,6 +30,7 @@ list(APPEND linuxSrcs
     "linux/sysinfo.cpp"
     "linux/epoll.cpp"
     "linux/time.cpp"
+    "linux/sleep.cpp"
 )
 
 configure_file(

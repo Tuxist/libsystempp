@@ -26,12 +26,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "systempp/systime.h"
+#include "systempp/syssleep.h"
 
-#pragma once
+#include <iostream>
 
-namespace sys {
-    class Sleep {
-    public:
-        Sleep(Time *sleeptime);
-    };
-};
+int main(int argv, char *argc[]){
+    sys::Timezone tz("Europe/Berlin");
+    sys::Time testtime(&tz),waitime;
+    
+    waitime.setNanoSeconds(999999999);
+    
+    testtime.getHWTime();
+
+    std::cout << "time: " << testtime.getHour() << ":"
+                          << testtime.getMinute() << ":" 
+                          << testtime.getSeconds() << std::endl;
+    
+    std::cout << "nsec: " << testtime.getNanoSeconds() << std::endl;
+                          
+    sys::Sleep spwait(&waitime);
+    
+    testtime.getHWTime();
+    std::cout << "nsec: " << testtime.getNanoSeconds() << std::endl;
+    
+    
+
+    std::cout << "time: " << testtime.getHour() << ":"
+                          << testtime.getMinute() << ":" 
+                          << testtime.getSeconds() << std::endl;
+    
+    return 0;
+} 
