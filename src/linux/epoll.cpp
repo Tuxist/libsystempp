@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/sysinfo.h"
 #include "systempp/syssleep.h"
 #include "systempp/sysconnection.h"
+#include "systempp/systhread.h"
 
 #include <config.h>
 
@@ -285,20 +286,16 @@ namespace sys {
         size_t thrs = 1; //cpuinfo.getThreads();
         _EAPI->initEventHandler();
 MAINWORKERLOOP:
-//         ThreadPool thpool;
-//         for (size_t i = 0; i < thrs; i++) {
-//             try{
-//                 thpool.addjob(WorkerThread, (void*)_EAPI);
-//             }catch(SystemException &e){
-//                 throw e;
-//             }
-//         }
-//         
-//         thpool.join();
+        sys::ThreadPool thpool;
+        for (size_t i = 0; i < thrs; i++) {
+            try{
+                thpool.addjob(new Thread(WorkerThread, (void*)_EAPI));
+            }catch(SystemException &e){
+                throw e;
+            }
+        }
         
-        std::thread th(WorkerThread, (void*)_EAPI);
-        
-        th.join();
+        thpool.join();
         
         if(sys::Event::_Restart){
             sys::Event::_Restart=false;

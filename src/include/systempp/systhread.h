@@ -31,6 +31,7 @@
 
 namespace sys {
     class Thread {
+    public:
         Thread(void *function(void*),void *args);
         virtual ~Thread();
         void     join();
