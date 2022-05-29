@@ -136,7 +136,7 @@ struct aibuf {
 
 sys::ClientSocket::ClientSocket(){
     _Socket=-1;
-    _SocketPtr = new struct sockaddr();
+    _SocketPtr = new struct sockaddr;
     _SocketPtrSize=sizeof(sockaddr);
     zero(_SocketPtr,_SocketPtrSize);
 }

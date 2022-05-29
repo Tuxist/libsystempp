@@ -31,6 +31,7 @@ list(APPEND linuxSrcs
     "linux/epoll.cpp"
     "linux/time.cpp"
     "linux/sleep.cpp"
+    "linux/thread.cpp"
 )
 
 configure_file(

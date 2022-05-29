@@ -77,6 +77,7 @@ namespace sys {
         ConnectionData *getRecvData();
         size_t          getRecvSize();
     protected:
+        Connection();
         /*Incomming Data*/
         size_t          _ReadDataSize;
         /*Outgoing Data*/

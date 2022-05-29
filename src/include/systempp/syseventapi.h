@@ -40,16 +40,15 @@ namespace sys {
         enum EventHandlerStatus{EVIN=0,EVOUT=1,EVUP=2,EVERR=3,EVWAIT=4,EVCON=5};
         
         virtual ~EventApi();
-        virtual void initEventHandler()=0;
-        virtual Connection *waitEventHandler()=0;
+        virtual void initEventHandler()=0;        
         virtual const char *getEventType()=0;
                
         /*EventHandler*/
-        virtual void ConnectEventHandler(Connection *curcon)=0;
-        virtual int  StatusEventHandler(Connection *curcon)=0;
-        virtual void ReadEventHandler(Connection *curcon)=0;
-        virtual void WriteEventHandler(Connection *curcon)=0;
-        virtual void CloseEventHandler(Connection *curcon)=0;
+        virtual int waitEventHandler(Connection **cucron)=0;
+        virtual void ConnectEventHandler(Connection **curcon)=0;
+        virtual void ReadEventHandler(Connection **curcon)=0;
+        virtual void WriteEventHandler(Connection **curcon)=0;
+        virtual void CloseEventHandler(Connection **curcon)=0;
         
         /*HTTP API Events*/
         virtual void RequestEvent(Connection *curcon)=0;

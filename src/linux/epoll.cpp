@@ -28,12 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 
-# ifndef SYS_futex
-#  define SYS_futex __NR_futex
-# endif
-
 #include <iostream>
-#include <vector>
 #include <mutex>
 #include <thread>
 
@@ -42,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/sysutils.h"
 #include "systempp/sysinfo.h"
 #include "systempp/syssleep.h"
+#include "systempp/sysconnection.h"
 
 #include <config.h>
 
@@ -70,53 +66,12 @@ struct epoll_event {
     epoll_data_t     data; /* User data */
 };
 
-namespace sys {
-    class ThreadPool {
-    public:
-        ThreadPool(){
-        
-        };
-        
-        ~ThreadPool(){
-            for(std::vector<std::thread*>::iterator thit=_Threads.begin(); thit!=_Threads.end(); ++thit){
-                (*thit)->join();
-            }   
-        }
-        
-        void addjob(void *func(void*),void *args){
-            _Threads.push_back((new std::thread(func,args)));
-        };
-        
-        int size(){
-            return _Threads.size();
-        };
-        
-        void join(){
-            for(;;){
-                if(_Threads.empty()){
-                    break; 
-                }
-                for(std::vector<std::thread*>::iterator thit=_Threads.begin(); thit!=_Threads.end(); ++thit){
-                    if((*thit)->joinable()){
-                        (*thit)->join();
-                        _Threads.erase(thit);
-                    }
-                }
-                Sleep(1);
-            }
-        };
-
-    private:
-        std::vector<std::thread*> _Threads;
-    };
-};
-
 namespace sys {    
     class EPOLL : public EventApi{
     public:
         EPOLL(sys::ServerSocket* serversocket){
             _ServerSocket=serversocket;
-            _WaitPos=0;
+            _nfds=-1;
         };
         
         virtual ~EPOLL(){
@@ -159,127 +114,106 @@ namespace sys {
             _Events = new epoll_event[_ServerSocket->getMaxconnections()];
             for(int i=0; i<_ServerSocket->getMaxconnections(); ++i)
                 _Events[i].data.ptr = nullptr;
+
         };
         
-        sys::Connection *waitEventHandler(){
+        int waitEventHandler(sys::Connection **curcon){
             std::lock_guard<std::mutex> lock(_ELock);
-
-            if(_WaitPos<1){
-                _WaitPos=syscall4(__NR_epoll_wait,_epollFD,
-                                  (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);      
-                
-                if(_WaitPos<1) {
+            
+            if(_nfds<0){
+                _nfds=syscall4(__NR_epoll_wait,_epollFD,
+                                  (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);           
+            }
+            
+            if(_nfds>1){
                     SystemException exception;
                     exception[SystemException::Error] << "initEventHandler: epoll wait failure";
                     throw exception;
-                }
             }
-
-            --_WaitPos;
             
-            Connection *rcon=(sys::Connection*)_Events[_WaitPos].data.ptr;
+            --_nfds;
             
-            if(!rcon)
-                rcon = new Connection(_ServerSocket,this);
-
-            return rcon;
+            *curcon=(Connection*)_Events[_nfds].data.ptr;
+            
+            if(!*curcon)
+                return EventHandlerStatus::EVCON;
+            
+            if((*curcon)->getSendSize() > 0)
+                return EventHandlerStatus::EVOUT;
+            
+            return EventHandlerStatus::EVIN;
         };
 
-        void ConnectEventHandler(sys::Connection *curcon){
+        void ConnectEventHandler(sys::Connection **curcon){
             SystemException exception;
             try {
-                if(!curcon){
-                    exception[SystemException::Error] << "ConnectEventHandler: no valid data !";
-                    throw exception;
-                }
-                /*will create warning debug mode that normally because the check already connection
-                 * with this socket if getconnection throw they will be create a new one
-                 */
-                _ServerSocket->acceptEvent(curcon->getClientSocket());
-                curcon->getClientSocket()->setnonblocking();
-                struct epoll_event setevent{0};
+                Connection *newcon = new Connection(_ServerSocket,this);
+                struct epoll_event setevent;
                 setevent.events = EPOLLIN;
-                setevent.data.ptr = curcon;
+                setevent.data.ptr = newcon;
+                _ServerSocket->acceptEvent(newcon->getClientSocket());
+                newcon->getClientSocket()->setnonblocking();
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
-                    curcon->getClientSocket()->getSocket(),(unsigned long)&setevent) < 0) {
+                    (unsigned long)newcon->getClientSocket()->getSocket(),(unsigned long)&setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
                     throw exception;
                 }
-                ConnectEvent(curcon);
+                ConnectEvent(newcon);
+                *curcon=newcon;
             }catch (sys::SystemException& e) {
                 exception[SystemException::Error] << e.what();
                 throw exception;
             }
         };
         
-        
-        int StatusEventHandler(Connection *curcon){
-            if(curcon->getClientSocket()->getSocket()==-1)
-                return EventHandlerStatus::EVCON;
-            if(curcon->getSendSize()>0)
-                return EventHandlerStatus::EVOUT;
-            return EventHandlerStatus::EVIN;
-        };
-        
-        void ReadEventHandler(Connection *curcon){
+        void ReadEventHandler(Connection **curcon){
             SystemException except;
             char buf[BLOCKSIZE];
-            
-            if(!curcon){
-                except[SystemException::Error] << "ReadEventHandler: no valid data !";
-                throw except;
-            }
             try{
-                int rcvsize=_ServerSocket->recvData(curcon->getClientSocket(),&buf,BLOCKSIZE);
-                curcon->addRecvQueue(buf,rcvsize);
+                int rcvsize=_ServerSocket->recvData((*curcon)->getClientSocket(),&buf,BLOCKSIZE);
+                (*curcon)->addRecvQueue(buf,rcvsize);
             }catch(sys::SystemException &e){
                 except[SystemException::Critical] << e.what();
                 throw except;
             }
-            RequestEvent(curcon);
+            RequestEvent(*curcon);
         };
 
-        void WriteEventHandler(Connection *curcon){
+        void WriteEventHandler(Connection **curcon){
             SystemException exception;
-            
-            if(!curcon){
-                exception[SystemException::Error] << "WriteEventHandler: no valid data !";
-                throw exception;
-            }
             try{
-                ssize_t sended=_ServerSocket->sendData(curcon->getClientSocket(),
-                                                       (void*)curcon->getSendData()->getData(),
-                                                       curcon->getSendData()->getDataSize());
-                curcon->resizeSendQueue(sended);
-                if(!curcon->getSendData())
-                    _setEpollEvents(curcon,EPOLLIN);
+                ssize_t sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
+                                                       (void*)(*curcon)->getSendData()->getData(),
+                                                       (*curcon)->getSendData()->getDataSize());
+                (*curcon)->resizeSendQueue(sended);
+                if(!(*curcon)->getSendData())
+                    _setEpollEvents(*curcon,EPOLLIN);
+                
             }catch(sys::SystemException &e){
                 exception[SystemException::Critical] << e.what();
                 throw exception;
             }
-            ResponseEvent(curcon);    
+            ResponseEvent(*curcon);    
         };
         
-        void CloseEventHandler(sys::Connection *curcon){
+        void CloseEventHandler(sys::Connection **curcon){
             SystemException except;
+            Connection *conptr=*curcon;
+            if(!conptr)
+                return;
             try {
                 
-                if(!curcon){
-                    except[SystemException::Error] << "CloseEvent empty DataPtr!";
-                    throw except;
-                }
-                
                 int ect=syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_DEL,
-                                 curcon->getClientSocket()->getSocket(),0);
+                        conptr->getClientSocket()->getSocket(),0);
                 
                 if(ect<0) {
                     except[SystemException::Error] << "CloseEvent can't delete Connection from epoll";
                     throw except;
                 }
                 
-                DisconnectEvent(curcon);
-                
-                delete curcon;
+                DisconnectEvent(conptr);
+                delete conptr;
+                curcon=nullptr;
                 
                 except[SystemException::Note] << "CloseEventHandler: Connection shutdown!";
             } catch(SystemException &e) {
@@ -326,7 +260,7 @@ namespace sys {
             }
         };
         
-        int                            _WaitPos;
+        int                            _nfds;
         int                            _epollFD;
         struct epoll_event            *_Events;
         sys::ServerSocket             *_ServerSocket;
@@ -348,19 +282,23 @@ namespace sys {
 
     void Event::runEventloop(){
         sys::CpuInfo cpuinfo;
-        size_t thrs = 1;
+        size_t thrs = 1; //cpuinfo.getThreads();
         _EAPI->initEventHandler();
 MAINWORKERLOOP:
-        ThreadPool thpool;
-        for (size_t i = 0; i < thrs; i++) {
-            try{
-                thpool.addjob(WorkerThread, (void*)_EAPI);
-            }catch(SystemException &e){
-                throw e;
-            }
-        }
+//         ThreadPool thpool;
+//         for (size_t i = 0; i < thrs; i++) {
+//             try{
+//                 thpool.addjob(WorkerThread, (void*)_EAPI);
+//             }catch(SystemException &e){
+//                 throw e;
+//             }
+//         }
+//         
+//         thpool.join();
         
-        thpool.join();
+        std::thread th(WorkerThread, (void*)_EAPI);
+        
+        th.join();
         
         if(sys::Event::_Restart){
             sys::Event::_Restart=false;
@@ -373,24 +311,26 @@ MAINWORKERLOOP:
         SystemException excep;
         while (sys::Event::_Run) {
             try {
-                Connection *i=eventptr->waitEventHandler();
+                sys::Connection *i=nullptr;
                 try {
-                    switch(eventptr->StatusEventHandler(i)) {
+                    switch(eventptr->waitEventHandler(&i)) {
                         case EPOLL::EVCON:
-                            eventptr->ConnectEventHandler(i);
+                            eventptr->ConnectEventHandler(&i);
                             break;
                         case EPOLL::EVIN:
-                            eventptr->ReadEventHandler(i);
+                            eventptr->ReadEventHandler(&i);
                             break;
                         case EPOLL::EVOUT:
-                            eventptr->WriteEventHandler(i);
+                            eventptr->WriteEventHandler(&i);
+                            break;
+                        case EPOLL::EVWAIT:
                             break;
                         default:
                             excep[SystemException::Error] << "no action try to close";
                             throw excep;
                     }
                 } catch(SystemException &e) {
-                    eventptr->CloseEventHandler(i);
+                    eventptr->CloseEventHandler(&i);
                     if(e.getErrorType()==SystemException::Critical) {
                         throw e;
                     }

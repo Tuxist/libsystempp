@@ -273,8 +273,20 @@ sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
     _EventApi=event;
 }
 
+sys::Connection::Connection(){
+    _ClientSocket=new sys::ClientSocket();
+    _ServerSocket = nullptr;
+    _ReadDataFirst=nullptr;
+    _ReadDataLast=nullptr;
+    _ReadDataSize=0;
+    _SendDataFirst=nullptr;
+    _SendDataLast=nullptr;
+    _SendDataSize=0;
+    _EventApi=nullptr;
+}
+
 sys::Connection::~Connection(){
-//     delete _ClientSocket;
+    delete _ClientSocket;
     delete _ReadDataFirst;
     delete _SendDataFirst;
 }
