@@ -132,6 +132,6 @@ void sys::ThreadPool::join(){
         }
         if(!_firstThread)
             return;
-        Sleep(1):
+        Sleep(1);
     }
 }
