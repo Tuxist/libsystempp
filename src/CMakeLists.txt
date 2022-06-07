@@ -32,6 +32,7 @@ list(APPEND linuxSrcs
     "linux/time.cpp"
     "linux/sleep.cpp"
     "linux/thread.cpp"
+    "linux/iostream.cpp"
 )
 
 configure_file(
@@ -74,7 +75,8 @@ set_property(TARGET systempp PROPERTY SOVERSION ${LIBV})
 set_property(TARGET systempp PROPERTY INTERFACE_httppp_MAJOR_VERSION ${LIBV})
 set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_MAJOR_VERSION)
 
-
+set(LIBCXX_GENERATED_INCLUDE_DIR "${CMAKE_BINARY_DIR}/include/systempp/c++")
+set(LIBCXX_GENERATED_INCLUDE_TARGET_DIR ${LIBCXX_GENERATED_INCLUDE_DIR})
 
 if(NOT GLIB_SUPPORT)
     install(TARGETS systempp cmd EXPORT systemppTargets

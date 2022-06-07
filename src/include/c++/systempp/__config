@@ -10,8 +10,6 @@
 #ifndef _LIBCPP___CONFIG
 #define _LIBCPP___CONFIG
 
-#include <__config_site>
-
 #if defined(_MSC_VER) && !defined(__clang__)
 #  if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #    define _LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER
@@ -711,7 +709,7 @@ typedef __char32_t char32_t;
 #define _LIBCPP_INLINE_VISIBILITY _LIBCPP_HIDE_FROM_ABI
 
 // Inline namespaces are available in Clang/GCC/MSVC regardless of C++ dialect.
-#define _LIBCPP_BEGIN_NAMESPACE_STD namespace std { inline namespace _LIBCPP_ABI_NAMESPACE {
+#define _LIBCPP_BEGIN_NAMESPACE_STD namespace std { inline namespace systempp {
 #define _LIBCPP_END_NAMESPACE_STD  } }
 #define _VSTD std
 _LIBCPP_BEGIN_NAMESPACE_STD _LIBCPP_END_NAMESPACE_STD
