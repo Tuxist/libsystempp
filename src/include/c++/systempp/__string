@@ -28,6 +28,8 @@
 #include <iosfwd>      // for streampos & friends
 #include <type_traits> // for __libcpp_is_constant_evaluated
 
+#include <systempp/sysutils.h>
+
 #ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
 #   include <cwchar> // for wmemcpy
 #endif
@@ -352,7 +354,7 @@ struct _LIBCPP_TEMPLATE_VIS char_traits<char>
         return __i;
       }
 #endif
-      return __builtin_strlen(__s);
+      return ::sys::getlen(__s);
     }
 
     static _LIBCPP_CONSTEXPR_AFTER_CXX14

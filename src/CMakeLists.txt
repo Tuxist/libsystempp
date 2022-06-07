@@ -37,6 +37,7 @@ list(APPEND linuxSrcs
     "linux/iostream.cpp"
     "linux/ios.cpp"
     "linux/system_error.cpp"
+    "linux/new.cpp"
 )
 
 configure_file(
