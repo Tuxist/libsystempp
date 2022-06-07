@@ -35,9 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LC_NUMERIC
 #define LC_TIME
 
-#ifdef __cplusplus
 namespace sys {
-#endif
     struct lconv {
       char    *currency_symbol;
       char    *decimal_point;
@@ -64,7 +62,7 @@ namespace sys {
       char     p_sign_posn;
       char    *thousands_sep;
     };
-#ifdef __cplusplus
+
     class locale {
     public:
       locale(int, const char *);
@@ -74,4 +72,3 @@ namespace sys {
       locale       *uselocale(locale *l);
     };
 };
-#endif

@@ -18,6 +18,7 @@ set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} \
     -fPIC \
     -Wall \
+    -nostdlib \
     -nostdinc++\
     -isysroot${CMAKE_SOURCE_DIR}/src/include \
     -std=c++20 \
@@ -27,6 +28,7 @@ set(CMAKE_CXX_FLAGS
 set(CMAKE_C_FLAGS 
     "${CMAKE_C_FLAGS} \
     -std=c++20 \
+    -nostdlib \
     -Wall \
     -isysroot${CMAKE_SOURCE_DIR}/src/include"
 )

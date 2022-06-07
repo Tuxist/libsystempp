@@ -14,6 +14,7 @@ set(systemppSrcs
     "exception.cpp"
     "utils.cpp"
     "uuid.cpp"
+    "future.cpp"
 )
 
 #os dependencies
@@ -23,6 +24,7 @@ list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
     "linux/ctrlhandler.cpp"
     "linux/errno.cpp"
     "linux/exec.cpp"
@@ -33,6 +35,8 @@ list(APPEND linuxSrcs
     "linux/sleep.cpp"
     "linux/thread.cpp"
     "linux/iostream.cpp"
+    "linux/ios.cpp"
+    "linux/system_error.cpp"
 )
 
 configure_file(
@@ -78,21 +82,14 @@ set_property(TARGET systempp APPEND PROPERTY COMPATIBLE_INTERFACE_STRING httppp_
 set(LIBCXX_GENERATED_INCLUDE_DIR "${CMAKE_BINARY_DIR}/include/systempp/c++")
 set(LIBCXX_GENERATED_INCLUDE_TARGET_DIR ${LIBCXX_GENERATED_INCLUDE_DIR})
 
-if(NOT GLIB_SUPPORT)
-    install(TARGETS systempp cmd EXPORT systemppTargets
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
-    )
-else()
-    install(TARGETS systempp cmd EXPORT systemppTargets
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
-    )
-endif()
+
+install(TARGETS systempp cmd EXPORT systemppTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
 
 install(DIRECTORY include/systempp
         DESTINATION include
