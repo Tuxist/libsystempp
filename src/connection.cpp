@@ -35,7 +35,7 @@ const char* sys::ConnectionData::getData(){
   return _Data;
 }
 
-size_t sys::ConnectionData::getDataSize(){
+std::size_t sys::ConnectionData::getDataSize(){
   return _DataSize;
 }
 
@@ -43,7 +43,7 @@ sys::ConnectionData *sys::ConnectionData::nextConnectionData(){
   return _nextConnectionData;
 }
 
-sys::ConnectionData::ConnectionData(const char*data,size_t datasize)  {
+sys::ConnectionData::ConnectionData(const char*data,std::size_t datasize)  {
     SystemException excep;
     _Data = new char[datasize];
     sys::scopy(data,data+datasize,_Data);
@@ -70,7 +70,7 @@ sys::ClientSocket *sys::Connection::getClientSocket(){
   * Use it everyday with good health.
   */
 
-sys::ConnectionData *sys::Connection::addSendQueue(const char*data,size_t datasize){
+sys::ConnectionData *sys::Connection::addSendQueue(const char*data,std::size_t datasize){
     if(datasize<=0){
         SystemException exception;
         exception[SystemException::Error] << "addRecvQueue wrong datasize";
@@ -95,7 +95,7 @@ void sys::Connection::cleanSendData(){
    _SendDataSize=0;
 }
 
-sys::ConnectionData *sys::Connection::resizeSendQueue(size_t size){
+sys::ConnectionData *sys::Connection::resizeSendQueue(std::size_t size){
     try{
         return _resizeQueue(&_SendDataFirst,&_SendDataLast,&_SendDataSize,size);
     }catch(SystemException &e){
@@ -107,11 +107,11 @@ sys::ConnectionData* sys::Connection::getSendData(){
   return _SendDataFirst;
 }
 
-size_t sys::Connection::getSendSize(){
+std::size_t sys::Connection::getSendSize(){
   return _SendDataSize;
 }
 
-sys::ConnectionData *sys::Connection::addRecvQueue(const char *data,size_t datasize){
+sys::ConnectionData *sys::Connection::addRecvQueue(const char *data,std::size_t datasize){
     if(datasize<=0){
         SystemException exception;
         exception[SystemException::Error] << "addRecvQueue wrong datasize";
@@ -136,7 +136,7 @@ void sys::Connection::cleanRecvData(){
 }
 
 
-sys::ConnectionData *sys::Connection::resizeRecvQueue(size_t size){
+sys::ConnectionData *sys::Connection::resizeRecvQueue(std::size_t size){
     try{
         return _resizeQueue(&_ReadDataFirst,&_ReadDataLast,&_ReadDataSize,size);
     }catch(SystemException &e){
@@ -148,12 +148,12 @@ sys::ConnectionData *sys::Connection::getRecvData(){
   return _ReadDataFirst;
 }
 
-size_t sys::Connection::getRecvSize(){
+std::size_t sys::Connection::getRecvSize(){
   return _ReadDataSize;
 }
 
 sys::ConnectionData *sys::Connection::_resizeQueue(ConnectionData** firstdata, ConnectionData** lastdata,
-                                                               size_t *qsize, size_t size){
+                                                               std::size_t *qsize, std::size_t size){
     SystemException exception;
     if(!*firstdata || size > *qsize){
         exception[SystemException::Error] << "_resizeQueue wrong datasize or ConnectionData";
@@ -182,7 +182,7 @@ HAVEDATA:
         #ifdef DEBUG
         delsize+=size;
         #endif
-        for(size_t i=0; i<((*firstdata)->getDataSize()-size); ++i){
+        for(std::size_t i=0; i<((*firstdata)->getDataSize()-size); ++i){
             (*firstdata)->_Data[i]=(*firstdata)->_Data[size+i];
         }
         (*firstdata)->_DataSize-=size;
@@ -201,7 +201,7 @@ HAVEDATA:
                                                                
 int sys::Connection::copyValue(ConnectionData* startblock, int startpos, 
                           ConnectionData* endblock, int endpos, char** buffer){
-    size_t copysize=0,copypos=0;
+    std::size_t copysize=0,copypos=0;
     for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
         if(curdat==endblock){
         copysize+=endpos;
@@ -239,10 +239,10 @@ int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** fi
 }
                                        
 int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 
-                                       const char* keyword,size_t keylen){
-    size_t fpos=0,fcurpos=0;
+                                       const char* keyword,std::size_t keylen){
+    std::size_t fpos=0,fcurpos=0;
     for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
-        for(size_t pos=0; pos<curdat->getDataSize(); ++pos){
+        for(std::size_t pos=0; pos<curdat->getDataSize(); ++pos){
             if(keyword[fcurpos]==curdat->_Data[pos]){
                 if(fcurpos==0){
                     fpos=pos;

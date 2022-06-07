@@ -17,15 +17,21 @@ find_package(Clang REQUIRED)
 set(CMAKE_CXX_FLAGS 
     "${CMAKE_CXX_FLAGS} \
     -fPIC \
+    -Wall \
+    -nostdinc++\
+    -isysroot${CMAKE_SOURCE_DIR}/src/include \
     -std=c++20 \
-    -Wall"
+    -I${CMAKE_SOURCE_DIR}/src/include/c++/systempp"
 )
 
 set(CMAKE_C_FLAGS 
     "${CMAKE_C_FLAGS} \
-    -std=c11 \
-    -Wall"
+    -std=c++20 \
+    -Wall \
+    -isysroot${CMAKE_SOURCE_DIR}/src/include"
 )
+
+
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake/)
 
@@ -37,7 +43,6 @@ configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src/include/
-    ${CMAKE_SOURCE_DIR}/src/include/c++/systempp
     ${CLANG_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}
 )

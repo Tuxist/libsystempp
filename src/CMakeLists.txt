@@ -55,7 +55,7 @@ install(FILES
 
 add_library(systempp SHARED ${systemppSrcs} )
 
-target_link_libraries(systempp pthread)
+target_link_libraries(systempp)
 
 add_library(
     cmd STATIC libcmd/cmd.cpp

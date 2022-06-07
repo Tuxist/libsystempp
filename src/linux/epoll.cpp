@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 
-#include <iostream>
 #include <mutex>
 #include <thread>
 
@@ -289,7 +288,7 @@ MAINWORKERLOOP:
         sys::ThreadPool thpool;
         for (size_t i = 0; i < thrs; i++) {
             try{
-                thpool.addjob(new Thread(WorkerThread, (void*)_EAPI));
+                thpool.addjob((new Thread(WorkerThread, (void*)_EAPI)));
             }catch(SystemException &e){
                 throw e;
             }
@@ -335,7 +334,7 @@ MAINWORKERLOOP:
             } catch(SystemException &e) {
                 switch(e.getErrorType()) {
                     case SystemException::Critical:
-                        std::cerr<< e.what() << std::endl;
+//                         std::cerr<< e.what() << std::endl;
                         break;
                 }
             }

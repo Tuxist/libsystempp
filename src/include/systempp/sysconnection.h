@@ -35,14 +35,14 @@ namespace sys {
     class ConnectionData {
     public:
         const char*      getData();
-        size_t           getDataSize();
+        std::size_t      getDataSize();
         ConnectionData  *nextConnectionData();
     protected:
-        ConnectionData(const char*data, size_t datasize);
+        ConnectionData(const char*data, std::size_t datasize);
         ~ConnectionData();
     private:
-        char              *_Data;
-        size_t             _DataSize;
+        char             *_Data;
+        std::size_t       _DataSize;
         ConnectionData   *_nextConnectionData;
         friend class      Connection;
     };
@@ -62,29 +62,29 @@ namespace sys {
         int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
                                     const char* keyword);
         int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
-                                    const char* keyword,size_t keylen);
+                                    const char* keyword,std::size_t keylen);
         
-        ConnectionData *addSendQueue(const char *data,size_t datasize);
-        ConnectionData *resizeSendQueue(size_t size);
+        ConnectionData *addSendQueue(const char *data,std::size_t datasize);
+        ConnectionData *resizeSendQueue(std::size_t size);
         void            cleanSendData();
         ConnectionData *getSendData();
-        size_t          getSendSize();
+        std::size_t     getSendSize();
         
         /*Get Data funtions Recv Queue*/
-        ConnectionData *addRecvQueue(const char *data,size_t datasize);
-        ConnectionData *resizeRecvQueue(size_t size);
+        ConnectionData *addRecvQueue(const char *data,std::size_t datasize);
+        ConnectionData *resizeRecvQueue(std::size_t size);
         void            cleanRecvData();
         ConnectionData *getRecvData();
-        size_t          getRecvSize();
+        std::size_t     getRecvSize();
     protected:
         Connection();
         /*Incomming Data*/
-        size_t          _ReadDataSize;
+        std::size_t     _ReadDataSize;
         /*Outgoing Data*/
-        size_t          _SendDataSize;
+        std::size_t     _SendDataSize;
     private:
         ConnectionData *_resizeQueue(ConnectionData **firstdata, ConnectionData **lastdata,
-                                     size_t *qsize,size_t size);
+                                     std::size_t *qsize,std::size_t size);
         ClientSocket   *_ClientSocket;
         ServerSocket   *_ServerSocket;
         
