@@ -20,7 +20,7 @@
 #include <string.h>
 #include <system_error>
 
-#include "config_elast.h"
+#include "include/config_elast.h"
 
 #if defined(__ANDROID__)
 #include <android/api-level.h>

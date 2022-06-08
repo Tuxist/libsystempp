@@ -89,9 +89,9 @@ void *aligned_alloc(size_t alignment, size_t size);                       // C11
 #  pragma GCC system_header
 #endif
 
-_LIBCPP_BEGIN_NAMESPACE_STD
+namespace std {
 
-using ::size_t _LIBCPP_USING_IF_EXISTS;
+    using size_t _LIBCPP_USING_IF_EXISTS = unsigned long;
 using ::div_t _LIBCPP_USING_IF_EXISTS;
 using ::ldiv_t _LIBCPP_USING_IF_EXISTS;
 using ::lldiv_t _LIBCPP_USING_IF_EXISTS;
@@ -108,11 +108,13 @@ using ::strtoul _LIBCPP_USING_IF_EXISTS;
 using ::strtoull _LIBCPP_USING_IF_EXISTS;
 using ::rand _LIBCPP_USING_IF_EXISTS;
 using ::srand _LIBCPP_USING_IF_EXISTS;
-using ::calloc _LIBCPP_USING_IF_EXISTS;
-using ::free _LIBCPP_USING_IF_EXISTS;
-using ::malloc _LIBCPP_USING_IF_EXISTS;
-using ::realloc _LIBCPP_USING_IF_EXISTS;
-using ::abort _LIBCPP_USING_IF_EXISTS;
+
+    void* calloc(size_t nmemb, size_t size);
+    void  free(void* ptr);
+    void* malloc(size_t size);
+    void* realloc(void* ptr, size_t size);
+    void abort(void);
+
 using ::atexit _LIBCPP_USING_IF_EXISTS;
 using ::exit _LIBCPP_USING_IF_EXISTS;
 using ::_Exit _LIBCPP_USING_IF_EXISTS;
@@ -139,6 +141,6 @@ using ::quick_exit _LIBCPP_USING_IF_EXISTS;
 using ::aligned_alloc _LIBCPP_USING_IF_EXISTS;
 #endif
 
-_LIBCPP_END_NAMESPACE_STD
+};
 
 #endif // _LIBCPP_CSTDLIB

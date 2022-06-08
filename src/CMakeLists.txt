@@ -1,9 +1,9 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
-IF(BUILD_SHARED_LIBS)
-    add_definitions(-DBUILD_SHARED_LIB) 
-ENDIF()
+add_definitions(-DBUILD_SHARED_LIB) 
+add_definitions(-D_LIBCPP_DEBUG_LEVEL=2)
+add_definitions(-D_LIBCPP_BUILDING_LIBRARY)
 
 set(EVENT "EPOLL")
 
@@ -14,7 +14,6 @@ set(systemppSrcs
     "exception.cpp"
     "utils.cpp"
     "uuid.cpp"
-    "future.cpp"
 )
 
 #os dependencies
@@ -25,19 +24,54 @@ list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
+    "linux/algorithm.cpp"
+    "linux/any.cpp"
+    "linux/assert.cpp"
+    "linux/atomic.cpp"
+    "linux/barrier.cpp"
+    "linux/charconv.cpp"
+    "linux/chrono.cpp"
+    "linux/condition_variable.cpp"
+    "linux/condition_variable_destructor.cpp"
+    "linux/cstdio.cpp"
     "linux/ctrlhandler.cpp"
-    "linux/errno.cpp"
-    "linux/exec.cpp"
-    "linux/socket.cpp"
-    "linux/sysinfo.cpp"
+    "linux/debug.cpp"
     "linux/epoll.cpp"
-    "linux/time.cpp"
-    "linux/sleep.cpp"
-    "linux/thread.cpp"
-    "linux/iostream.cpp"
+    "linux/errno.cpp"
+    "linux/exception.cpp"
+    "linux/exec.cpp"
+    "linux/format.cpp"
+    "linux/functional.cpp"
+    "linux/future.cpp"
+    "linux/hash.cpp"
     "linux/ios.cpp"
-    "linux/system_error.cpp"
+    "linux/ios.instantiations.cpp"
+    "linux/iostream.cpp"
+    "linux/legacy_debug_handler.cpp"
+    "linux/legacy_pointer_safety.cpp"
+    "linux/locale.cpp"
+    "linux/mutex.cpp"
+    "linux/mutex_destructor.cpp"
     "linux/new.cpp"
+    "linux/optional.cpp"
+    "linux/random.cpp"
+    "linux/regex.cpp"
+    "linux/shared_mutex.cpp"
+    "linux/signal.cpp"
+    "linux/sleep.cpp"
+    "linux/socket.cpp"
+    "linux/stdexcept.cpp"
+    "linux/string.cpp"
+    "linux/strstream.cpp"
+    "linux/sysinfo.cpp"
+    "linux/sysprocess.cpp"
+    "linux/system_error.cpp"
+    "linux/thread.cpp"
+    "linux/time.cpp"
+    "linux/typeinfo.cpp"
+    "linux/valarray.cpp"
+    "linux/variant.cpp"
+    "linux/vector.cpp"
 )
 
 configure_file(
