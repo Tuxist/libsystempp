@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "systempp/syssleep.h"
+extern "C" {
+    
+    void * _Unwind_Resume(){
+        return nullptr;
+    }
+    
+    void *__gxx_personality_v0=0;
 
-#include "syscall.h"
-#include "sysbits.h"
-#include "time.h"
-
-sys::Sleep::Sleep(Time *time){
-    struct timespec *treq;
-    time->_toUnixtimeSpec((void**)&treq);
-    syscall4(__NR_clock_nanosleep,0,0,(long)treq,0);
-    delete treq;
-}
-
-sys::Sleep::Sleep(int seconds){
-    struct timespec treq;
-    treq.tv_sec=seconds;
-    treq.tv_nsec=0;
-    syscall4(__NR_clock_nanosleep,0,0,(long)&treq,0);  
-}
+};

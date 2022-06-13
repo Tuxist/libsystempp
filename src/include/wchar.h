@@ -1,17 +1,17 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-	* Redistributions of source code must retain the above copyright
-	  notice, this list of conditions and the following disclaimer.
-	* Redistributions in binary form must reproduce the above copyright
-	  notice, this list of conditions and the following disclaimer in the
-	  documentation and/or other materials provided with the distribution.
-	* Neither the name of the <organization> nor the
-	  names of its contributors may be used to endorse or promote products
-	  derived from this software without specific prior written permission.
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the <organization> nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -25,22 +25,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "systempp/syssleep.h"
+#pragma once
 
-#include "syscall.h"
-#include "sysbits.h"
-#include "time.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-sys::Sleep::Sleep(Time *time){
-    struct timespec *treq;
-    time->_toUnixtimeSpec((void**)&treq);
-    syscall4(__NR_clock_nanosleep,0,0,(long)treq,0);
-    delete treq;
-}
+typedef struct __mbstate_t { 
+    unsigned __opaque1, __opaque2;
+} mbstate_t;
 
-sys::Sleep::Sleep(int seconds){
-    struct timespec treq;
-    treq.tv_sec=seconds;
-    treq.tv_nsec=0;
-    syscall4(__NR_clock_nanosleep,0,0,(long)&treq,0);  
-}
+#ifdef __cplusplus
+};
+#endif

@@ -4,6 +4,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 add_definitions(-DBUILD_SHARED_LIB) 
 add_definitions(-D_LIBCPP_DEBUG_LEVEL=2)
 add_definitions(-D_LIBCPP_BUILDING_LIBRARY)
+add_definitions(-D_LIBCPP_NO_EXCEPTIONS)
 
 set(EVENT "EPOLL")
 
@@ -33,8 +34,8 @@ list(APPEND linuxSrcs
     "linux/chrono.cpp"
     "linux/condition_variable.cpp"
     "linux/condition_variable_destructor.cpp"
-    "linux/cstdio.cpp"
     "linux/ctrlhandler.cpp"
+    "linux/cxa_exception.cpp"
     "linux/debug.cpp"
     "linux/epoll.cpp"
     "linux/errno.cpp"
@@ -69,9 +70,13 @@ list(APPEND linuxSrcs
     "linux/thread.cpp"
     "linux/time.cpp"
     "linux/typeinfo.cpp"
+    "linux/unwind.cpp"
     "linux/valarray.cpp"
     "linux/variant.cpp"
     "linux/vector.cpp"
+    
+    "linux/ctype.cpp"
+    
 )
 
 configure_file(

@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,37 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
-#include <cstring>
-
-#include "config.h"
+#include "stddef.h"
 
 #pragma once
 
-namespace sys {
-   const char *scopy(const char* first, const char* last, char* des);
-   unsigned int getlen(const char *str);
-   void rscopy(const char* first, const char* last, char** des);
-   void reverse(char s[]);
-   int atoi (const char* nptr);
-   long long atoll(const char* nptr);
-   void itoa(int n, char s[]);
-   void ultoa(unsigned long n, char s[]);
-   void zero(void *s, unsigned n);
-   unsigned long atoul(char* str);
-   int ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize);
-   unsigned long append(char** src, const char* append);
-   unsigned long append(char** src, const char append);
-   std::size_t cleannewline(const char *src,std::size_t srcsize,char **dest);
-   int substr(const char *src,char **dest,std::size_t spos,std::size_t endpos);
-   int rfind(const char *src,std::size_t len,const char find);
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void* memcpy(void* __restrict__ s1, const void* __restrict__ s2, size_t n);
+void* memmove(void* s1, const void* s2, size_t n);
+char* strcpy (char* __restrict__ s1, const char* __restrict__ s2);
+char* strncpy(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
+char* strcat (char* __restrict__ s1, const char* __restrict__ s2);
+char* strncat(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
+int memcmp(const void* s1, const void* s2, size_t n);
+int strcmp (const char* s1, const char* s2);
+int strncmp(const char* s1, const char* s2, size_t n);
+int strcoll(const char* s1, const char* s2);
+size_t strxfrm(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
+const void* memchr(const void* s, int c, size_t n);
+const char* strchr(const char* s, int c);
+size_t strcspn(const char* s1, const char* s2);
+const char* strpbrk(const char* s1, const char* s2);
+const char* strrchr(const char* s, int c);
+size_t strspn(const char* s1, const char* s2);
+const char* strstr(const char* s1, const char* s2);
+char* strtok(char* __restrict__ s1, const char* __restrict__ s2);
+void* memset(void* s, int c, size_t n);
+char* strerror(int errnum);
+size_t strlen(const char* s);
+
+#ifdef __cplusplus
+}
+#endif

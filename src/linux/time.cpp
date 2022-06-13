@@ -87,6 +87,7 @@ sys::Timezone::Timezone(const char* name){
 sys::Time::Time(sys::Timezone* timezone){
     _Zone=timezone;
     _NSec=0;
+    _MSec=0;
     _Sec=0;
     _Min=0;
     _Hour=0;
@@ -181,8 +182,8 @@ int sys::Time::getYear(){
     return _Year;
 };
 
-void sys::Time::_fromUnixtime(void* ptimespec){
-    unsigned long long uxtime = ((struct timespec*)ptimespec)->tv_sec;
+void sys::Time::_fromUnixtimeSpec(struct timespec ptimespec){
+    unsigned long long uxtime = ptimespec.tv_sec;
     unsigned long int dayn = DAYS_SINCE_1970_01_01 + uxtime/SECONDS_PER_DAY;
     unsigned long int sec_since_night = uxtime%SECONDS_PER_DAY;
     unsigned long int temp;
@@ -207,11 +208,10 @@ void sys::Time::_fromUnixtime(void* ptimespec){
     _Hour = sec_since_night / 3600;
     _Min = sec_since_night % 3600 / 60;
     _Sec = sec_since_night % 60;
-    _NSec = ((struct timespec*)ptimespec)->tv_nsec;
+    _NSec = ptimespec.tv_nsec;
 }
 
-void sys::Time::_toUnixtime(void **ptimespec){
-    struct timespec *ts=new struct timespec;
+void sys::Time::_toUnixtimeSpec(struct timespec &ptimespec){
     const short start_days[12] =
     {0,31,59,90,120,151,181,212,243,273,304,334};
 
@@ -225,20 +225,67 @@ void sys::Time::_toUnixtime(void **ptimespec){
     if ( (_Mounth>2) && (_Year%4==0 && (_Year%100!=0 || _Year%400==0)) )
         since1970 += 1;
 
-    ts->tv_sec=_Sec + 60 * ( _Min + 60 * (_Hour + 24*since1970) );
-    ts->tv_nsec=_NSec;
-    *ptimespec=ts;
+    ptimespec.tv_sec=_Sec + 60 * ( _Min + 60 * (_Hour + 24*since1970) );
+    ptimespec.tv_nsec=_NSec;
 }
+
+void sys::Time::_fromUnixtimeVal(struct timeval ptimeval){
+    unsigned long long uxtime = ptimeval.tv_sec;
+    unsigned long int dayn = DAYS_SINCE_1970_01_01 + uxtime/SECONDS_PER_DAY;
+    unsigned long int sec_since_night = uxtime%SECONDS_PER_DAY;
+    unsigned long int temp;
+
+    temp = 4 * (dayn + DAYS_IN_100_YEARS + 1) / DAYS_IN_400_YEARS - 1;
+    _Year = 100 * temp;
+    dayn -= DAYS_IN_100_YEARS * temp + temp / 4;
+
+    temp = 4 * (dayn + DAYS_PER_YEAR + 1) / DAYS_PER_LEAP_YEAR - 1;
+    _Year += temp;
+    dayn -= DAYS_PER_YEAR * temp + temp / 4;
+
+    _Mounth = (5 * dayn + 2) / 153;
+    _Day = dayn - (_Mounth * 153 + 2) / 5 + 1;
+
+    _Mounth += 3;
+    if (_Mounth > 12){
+        _Mounth -= 12;
+        ++_Year;
+    }
+
+    _Hour = sec_since_night / 3600;
+    _Min = sec_since_night % 3600 / 60;
+    _Sec = sec_since_night % 60;
+    _NSec =(ptimeval.tv_usec*1000);
+}
+
+void sys::Time::_toUnixtimeVal(struct timeval &ptimeval){
+    const short start_days[12] =
+    {0,31,59,90,120,151,181,212,243,273,304,334};
+
+    int leapyears = ((_Year-1)-1968)/4
+                  - ((_Year-1)-1900)/100
+                  + ((_Year-1)-1600)/400;
+
+    long long since1970 = (_Year-1970)*365 + leapyears
+                           + start_days[_Mounth-1] + _Day-1;
+
+    if ( (_Mounth>2) && (_Year%4==0 && (_Year%100!=0 || _Year%400==0)) )
+        since1970 += 1;
+
+    ptimeval.tv_sec=_Sec + 60 * ( _Min + 60 * (_Hour + 24*since1970) );
+    ptimeval.tv_usec=(_NSec/1000);
+}
+
 
 void sys::Time::compare(Time comptime,Time &result){
     struct timespec ts,cts,rts;
-    _toUnixtime((void**)&ts);
-    comptime._toUnixtime((void**)&cts);
+    _toUnixtimeSpec(ts);
+    comptime._toUnixtimeSpec(cts);
     
     rts.tv_nsec=ts.tv_nsec-cts.tv_nsec;
     rts.tv_sec=ts.tv_sec-cts.tv_sec;
     
-    result._fromUnixtime((void*)&rts);
+    result._fromUnixtimeSpec(rts);
 };
 
 void sys::Time::getHWTime(){
@@ -246,14 +293,13 @@ void sys::Time::getHWTime(){
     syscall2(__NR_clock_gettime,0,(long)&ts);
     if(_Zone)
         ts.tv_sec+= (((struct timezone*)_Zone->_CTimezone)->tz_dsttime * 60);
-    _fromUnixtime(&ts);
+    _fromUnixtimeSpec(ts);
 }
 
 void sys::Time::setHWTime(){
-    struct timespec *ts;
-    _toUnixtime((void**)&ts);
+    struct timespec ts;
+    _toUnixtimeSpec(ts);
      if(_Zone)
-        ts->tv_sec-= (((struct timezone*)_Zone->_CTimezone)->tz_dsttime * 60);   
+        ts.tv_sec-= (((struct timezone*)_Zone->_CTimezone)->tz_dsttime * 60);   
     syscall2(__NR_clock_settime,0,(long)(long)&ts);
-    delete ts;
 }

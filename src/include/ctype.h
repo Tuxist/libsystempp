@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,27 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
-#include <cstring>
-
-#include "config.h"
-
 #pragma once
 
-namespace sys {
-   const char *scopy(const char* first, const char* last, char* des);
-   unsigned int getlen(const char *str);
-   void rscopy(const char* first, const char* last, char** des);
-   void reverse(char s[]);
-   int atoi (const char* nptr);
-   long long atoll(const char* nptr);
-   void itoa(int n, char s[]);
-   void ultoa(unsigned long n, char s[]);
-   void zero(void *s, unsigned n);
-   unsigned long atoul(char* str);
-   int ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize);
-   unsigned long append(char** src, const char* append);
-   unsigned long append(char** src, const char append);
-   std::size_t cleannewline(const char *src,std::size_t srcsize,char **dest);
-   int substr(const char *src,char **dest,std::size_t spos,std::size_t endpos);
-   int rfind(const char *src,std::size_t len,const char find);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    int isalnum( int c );
+    int isalpha( int c );
+    int isblank( int c );
+    int iscntrl( int c );
+    int isdigit( int c );
+    int isgraph( int c );
+    int islower( int c );
+    int isprint( int c );
+    int ispunct( int c );
+    int isspace ( int c );
+    int isupper ( int c );
+    int isxdigit ( int c );
+    
+    int tolower ( int c );
+    int toupper ( int c );
+#ifdef __cplusplus
 };
+#endif

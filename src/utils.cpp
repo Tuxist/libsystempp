@@ -29,6 +29,50 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "systempp/sysutils.h"
 
+int sys::atoi (const char* nptr){
+    int sign = 1, base = 0, i = 0;
+    while (nptr[i] == ' '){
+        i++;
+    }
+    if (nptr[i] == '-' || nptr[i] == '+'){
+        sign = 1 - 2 * (nptr[i++] == '-');
+    }
+    while (nptr[i] >= '0' && nptr[i] <= '9'){
+        if (base > +2147483647 / 10
+            || (base == +2147483647 / 10
+            && nptr[i] - '0' > 7)){
+            if (sign == 1)
+                return +2147483647;
+            else
+                return -2147483648;
+        }
+        base = 10 * base + (nptr[i++] - '0');
+    }
+    return base * sign;
+}
+
+long long sys::atoll(const char* nptr){
+    long sign = 1, base = 0, i = 0;
+    while (nptr[i] == ' '){
+        i++;
+    }
+    if (nptr[i] == '-' || nptr[i] == '+'){
+        sign = 1 - 2 * (nptr[i++] == '-');
+    }
+    while (nptr[i] >= '0' && nptr[i] <= '9'){
+        if (base > +9223372036854775807 / 10
+            || (base == +9223372036854775807 / 10
+            && nptr[i] - '0' > 7)){
+            if (sign == 1)
+                return +9223372036854775807;
+            else
+                return -9223372036854775807;
+        }
+        base = 10 * base + (nptr[i++] - '0');
+    }
+    return base * sign;    
+}
+
 const  char *sys::scopy(const char* first, const char* last, char* des){
     while (first != last) {
         *des++ = *first++;
@@ -93,28 +137,6 @@ void sys::zero(void *s, unsigned n){
     str = (char *)s;
     while (n--)
         str[n] = 0;       
-}
-
-int sys::atoi(char* str){
-    int sign = 1, base = 0, i = 0;
-    while (str[i] == ' '){
-        i++;
-    }
-    if (str[i] == '-' || str[i] == '+'){
-        sign = 1 - 2 * (str[i++] == '-');
-    }
-    while (str[i] >= '0' && str[i] <= '9'){
-        if (base > +2147483647 / 10
-            || (base == +2147483647 / 10
-            && str[i] - '0' > 7)){
-            if (sign == 1)
-                return +2147483647;
-            else
-                return -2147483648;
-        }
-        base = 10 * base + (str[i++] - '0');
-    }
-    return base * sign;
 }
 
 unsigned long sys::atoul(char* str){

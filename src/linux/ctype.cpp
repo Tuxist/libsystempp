@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
+Copyright (c) 2019, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,71 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#pragma once
+#include <ctype.h>
 
-namespace sys {
-    struct timespec {
-        long    tv_sec;/* seconds */
-        long    tv_nsec;/* nanoseconds */
-    };
+  
+int isalnum( int c ){
+    if(c>47 && c < 58)
+        return 1;
+    return 0;            
+};
+    
+int isalpha( int c ){
+    if(c>64 && c < 123)
+        return 1;
+    return 0;          
+};
+    
+int isblank( int c ){
+        
+};
+    
+int iscntrl( int c ){
+    
+};
+    
+int isdigit( int c ){
+        
+};
 
-    struct timeval {
-        long    tv_sec;/* seconds */
-        long    tv_usec;/* microseconds */
-    };
+int isgraph( int c ){
+        
+};
+
+int islower( int c ){
+    if(c>96 && c < 123)
+        return 1;
+    return 0;         
+};
+
+int isprint( int c ){
+        
+};
+
+int ispunct( int c ){
+        
+};
+
+int isspace ( int c ){
+    if(c==32)
+        return 1;
+    return 0;
+};
+
+int isupper ( int c ){
+    if(c>64 && c < 91)
+        return 1;
+    return 0;    
+};
+
+int isxdigit ( int c ){
+        
+};
+
+int tolower ( int c ){
+        
+};
+
+int toupper ( int c ){
+        
 };

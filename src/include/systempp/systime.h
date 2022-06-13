@@ -27,6 +27,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+typedef unsigned long time_t; 
+
+struct timespec {
+    time_t tv_sec;
+    long tv_nsec;
+};
+
+struct timeval {
+   time_t      tv_sec;
+   long int    tv_usec; 
+};
+
 namespace sys {
     class Timezone {
     public:
@@ -41,7 +53,7 @@ namespace sys {
         Time(Timezone *timezone=nullptr);
         void setNanoSeconds(unsigned int nanosec);
         unsigned int getNanoSeconds();
-        
+              
         void setSeconds(unsigned int sec);
         unsigned int  getSeconds();
         
@@ -66,13 +78,14 @@ namespace sys {
         void compare(Time comptime,Time &result);
         
         /*please use only systempp only plattform depend code*/
-        void _toUnixtime(void **ptimespec);
-        void _fromUnixtime(void *ptimespec);
-    private:
+        void _toUnixtimeSpec(struct timespec &ptimespec);
+        void _fromUnixtimeSpec(struct timespec ptimespec);
         
-
-        
+        void _toUnixtimeVal(struct timeval &ptimeval);
+        void _fromUnixtimeVal(struct timeval ptimeval);
+    private:     
         unsigned int   _NSec;
+        unsigned int   _MSec;
         unsigned int   _Sec;
         unsigned int   _Min;
         unsigned int   _Hour;

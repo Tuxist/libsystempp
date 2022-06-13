@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2019, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,47 +27,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdlib>
 
-#include <systempp/syssignal.h>
+extern "C" {
 
-#include "include/alloc.h"
-
-void* std::calloc(std::size_t nmemb, std::size_t size){
-    return Allocator::getInstance().sysalloc((nmemb*size));
-};
-
-void std::free(void* ptr){
-    Allocator::getInstance().sysfree(ptr);
-};
-
-void* std::malloc(std::size_t size){
-    return Allocator::getInstance().sysalloc(size);
-};
-
-void* std::realloc(void* ptr, std::size_t size){
-    return Allocator::getInstance().sysrealloc(ptr,size);
-};
-
-void std::abort(void){
-};
-
-extern "C"{
-    void* calloc(std::size_t nmemb, std::size_t size){
-       return std::calloc(nmemb,size); 
-    };
-    
-    void free(void* ptr){
-        std::free(ptr);
-    };
-    
-    void *malloc(std::size_t size){
-        return std::malloc(size);
-    };
-    
-    void *realloc(void* ptr, std::size_t size){
-        return std::realloc(ptr,size);
-    };
-    
-    void abort(void){
+    void* __cxa_begin_catch(void* unwind_arg) throw(){
         std::abort();
     };
+
+    void __cxa_end_catch() {
+    
+    };
+
+    void __cxa_free_exception(void *thrown_object) throw() {
+
+    }
 };
