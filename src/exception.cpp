@@ -25,8 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <cstddef>
-
 #include "systempp/sysutils.h"
 #include "systempp/sysexception.h"
 
@@ -68,7 +66,7 @@ int sys::SystemException::getErrorType(){
 }
 
 const char * sys::SystemException::what(){
-    std::size_t bufsize=0,written=0;
+    unsigned long bufsize=0,written=0;
     for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
         bufsize+=curmsg->_BufferSize;
     }

@@ -25,8 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <cstddef>
-
 #pragma once
 
 namespace sys {
@@ -35,14 +33,14 @@ namespace sys {
     class ConnectionData {
     public:
         const char*      getData();
-        std::size_t      getDataSize();
+        unsigned long    getDataSize();
         ConnectionData  *nextConnectionData();
     protected:
-        ConnectionData(const char*data, std::size_t datasize);
+        ConnectionData(const char*data, unsigned long datasize);
         ~ConnectionData();
     private:
         char             *_Data;
-        std::size_t       _DataSize;
+        unsigned long     _DataSize;
         ConnectionData   *_nextConnectionData;
         friend class      Connection;
     };
@@ -62,29 +60,29 @@ namespace sys {
         int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
                                     const char* keyword);
         int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
-                                    const char* keyword,std::size_t keylen);
+                                    const char* keyword,unsigned long keylen);
         
-        ConnectionData *addSendQueue(const char *data,std::size_t datasize);
-        ConnectionData *resizeSendQueue(std::size_t size);
+        ConnectionData *addSendQueue(const char *data,unsigned long datasize);
+        ConnectionData *resizeSendQueue(unsigned long size);
         void            cleanSendData();
         ConnectionData *getSendData();
-        std::size_t     getSendSize();
+        unsigned long   getSendSize();
         
         /*Get Data funtions Recv Queue*/
-        ConnectionData *addRecvQueue(const char *data,std::size_t datasize);
-        ConnectionData *resizeRecvQueue(std::size_t size);
+        ConnectionData *addRecvQueue(const char *data,unsigned long datasize);
+        ConnectionData *resizeRecvQueue(unsigned long size);
         void            cleanRecvData();
         ConnectionData *getRecvData();
-        std::size_t     getRecvSize();
+        unsigned long   getRecvSize();
     protected:
         Connection();
         /*Incomming Data*/
-        std::size_t     _ReadDataSize;
+        unsigned long     _ReadDataSize;
         /*Outgoing Data*/
-        std::size_t     _SendDataSize;
+        unsigned long     _SendDataSize;
     private:
         ConnectionData *_resizeQueue(ConnectionData **firstdata, ConnectionData **lastdata,
-                                     std::size_t *qsize,std::size_t size);
+                                     unsigned long *qsize,unsigned long size);
         ClientSocket   *_ClientSocket;
         ServerSocket   *_ServerSocket;
         

@@ -25,8 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
-
 #include "systempp/sysutils.h"
 
 int sys::atoi (const char* nptr){
@@ -91,7 +89,7 @@ unsigned int sys::getlen(const char *str) {
 }
 
 void sys::rscopy(const char* first, const char* last, char** des){
-    std::size_t rs=last-first;
+    unsigned long rs=last-first;
     *des=new char[rs+1];
     scopy(first,last,*des);
     *des[rs]='\0';
@@ -156,7 +154,7 @@ unsigned long sys::atoul(char* str){
     return base * sign;
 }
 
-int sys::ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize){
+int sys::ncompare(const char *src,unsigned long ssize,const char *comp,unsigned long csize){
     if(ssize>csize)
         return -1;
     for(int i=0; i<csize; ++i){
@@ -200,7 +198,7 @@ unsigned long sys::append(char** src, const char append){
     return nsize;
 }
 
-std::size_t sys::cleannewline(const char *src,std::size_t srcsize,char **dest){
+unsigned long sys::cleannewline(const char *src,unsigned long srcsize,char **dest){
     struct buffer {
         buffer(){
             nextbuffer=nullptr;
@@ -210,13 +208,13 @@ std::size_t sys::cleannewline(const char *src,std::size_t srcsize,char **dest){
             delete nextbuffer;
         }
         char   *text;
-        std::size_t  tsize;
+        unsigned long  tsize;
         buffer *nextbuffer;
     }*ftbuf=nullptr,*ltbuf=nullptr;
     
-    std::size_t spos=0;
+    unsigned long spos=0;
     
-    for(std::size_t i=0; i<srcsize; ++i){
+    for(unsigned long i=0; i<srcsize; ++i){
         if(src[i] == '\n' || src[i] == '\r'){
             if(ftbuf){
                 ltbuf->nextbuffer= new buffer;
@@ -232,7 +230,7 @@ std::size_t sys::cleannewline(const char *src,std::size_t srcsize,char **dest){
                 spos=(++i);
         }
     }
-    std::size_t ssize=0,written=0;
+    unsigned long ssize=0,written=0;
     for(buffer *cbuf=ftbuf; cbuf; cbuf=cbuf->nextbuffer)
         ssize+=cbuf->tsize;
     
@@ -248,8 +246,8 @@ std::size_t sys::cleannewline(const char *src,std::size_t srcsize,char **dest){
     return ssize;
 }
 
-int sys::substr(const char *src,char **dest,std::size_t spos,std::size_t endpos){
-    std::size_t srcsize=endpos-spos;
+int sys::substr(const char *src,char **dest,unsigned long spos,unsigned long endpos){
+    unsigned long srcsize=endpos-spos;
     char *buf = new char[srcsize+1];
     for(int i=spos,j=0; j<srcsize; ++i,++j){
         buf[j]=src[i];
@@ -259,7 +257,7 @@ int sys::substr(const char *src,char **dest,std::size_t spos,std::size_t endpos)
     return srcsize;
 }
 
-int sys::rfind(const char* src,std::size_t len,const char find){
+int sys::rfind(const char* src,unsigned long len,const char find){
     for(int i=len; i<=0; --i){
         if(src[i]==find)
             return i;

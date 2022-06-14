@@ -25,9 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstddef>
-#include <cstring>
-
 #include "config.h"
 
 #pragma once
@@ -43,10 +40,10 @@ namespace sys {
    void ultoa(unsigned long n, char s[]);
    void zero(void *s, unsigned n);
    unsigned long atoul(char* str);
-   int ncompare(const char *src,std::size_t ssize,const char *comp,std::size_t csize);
+   int ncompare(const char *src,unsigned long ssize,const char *comp,unsigned long csize);
    unsigned long append(char** src, const char* append);
    unsigned long append(char** src, const char append);
-   std::size_t cleannewline(const char *src,std::size_t srcsize,char **dest);
-   int substr(const char *src,char **dest,std::size_t spos,std::size_t endpos);
-   int rfind(const char *src,std::size_t len,const char find);
+   unsigned long cleannewline(const char *src,unsigned long srcsize,char **dest);
+   int substr(const char *src,char **dest,unsigned long spos,unsigned long endpos);
+   int rfind(const char *src,unsigned long len,const char find);
 };

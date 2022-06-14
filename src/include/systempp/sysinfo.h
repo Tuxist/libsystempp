@@ -28,8 +28,6 @@
 // #include <sys/sysinfo.h>
 // #include <sys/mount.h>
 
-#include <string>
-
 #define FSINFOMAXLEN 255
 
 #pragma once
@@ -44,7 +42,7 @@ namespace sys {
         int         getThreads();
         int         getActualThread();
     private:
-        std::string _Vendor;
+        sys::array  _Vendor;
         void       *_cpuinfo;
     };
     

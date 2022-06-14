@@ -25,8 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <string>
-
 #pragma once
 
 namespace sys {
@@ -73,6 +71,6 @@ namespace sys {
     private:
         int             _Socket;
         int             _Maxconnections;
-        std::string     _UxPath;
+        char           *_UxPath;
     };
 };
