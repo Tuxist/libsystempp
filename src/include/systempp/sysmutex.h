@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, Jan Koester jan.koester@gmx.net
+ * Copyright (c) 2021, Jan Koester jan.koester@gmx.net
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,49 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <systempp/sysarray.h>
-
-#include "config.h"
-
 #pragma once
 
 namespace sys {
-    class SystemException {
+    class mutex {
     public:
-        
-        SystemException();
-        SystemException(const SystemException &exp);
-        virtual ~SystemException();
-        
-        int getErrorType();
-        
-        const char* what();
-        
-        const SystemException& Exception() throw();
-        
-        enum Type {Note,Warning,Error,Critical};
-        
-        SystemException& asign(const char *src);
-        SystemException& asign(array<char> *src);
-        
-        SystemException& operator[](int errtype);
-        SystemException& operator<<(const char *src);
-        SystemException& operator<<(array<char> *src);
-        SystemException& operator<<(int src);
-    protected:
-        int      curCType;
-    private:
-        struct Message {
-            Message();
-            ~Message();
-            array<char>  _Buffer;
-            int          _CType;
-            Message     *_nextMessage;
-        };
-        
-        Message     *_firstMessage;
-        Message     *_lastMessage;
-        
-        array<char> *_printBuffer;
+        mutex();
+        ~mutex();
+        void lock();
+        void trylock();
+        void unlock();
+        bool islocked();
     };
-}
+};
+
+

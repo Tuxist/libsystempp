@@ -28,68 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <syscall.h>
 #include <sysbits.h>
 
-#include <exception>
-#include <new>
-#include <typeinfo>
-
-
 namespace std {
-    bool uncaught_exception() noexcept { 
-        return uncaught_exceptions() > 0; 
-    }
-
-    int uncaught_exceptions() noexcept{
-//     return __cxa_uncaught_exception() ? 1 : 0;
-    }
-    
-    exception_ptr::~exception_ptr() noexcept {
-//   __cxa_decrement_exception_refcount(__ptr_);
-    }
-
-    exception_ptr::exception_ptr(const exception_ptr& other) noexcept
-        : __ptr_(other.__ptr_){
-//     __cxa_increment_exception_refcount(__ptr_);
-    }
-
-    exception_ptr& exception_ptr::operator=(const exception_ptr& other) noexcept{
-        if (__ptr_ != other.__ptr_){
-//          __cxa_increment_exception_refcount(other.__ptr_);
-//          __cxa_decrement_exception_refcount(__ptr_);
-            __ptr_ = other.__ptr_;
-        }
-        return *this;
-    }
-
-    nested_exception::nested_exception() noexcept
-        : __ptr_(current_exception()){
-    }
-
-    nested_exception::~nested_exception() noexcept{
-    }
-
-    [[noreturn]] void nested_exception::rethrow_nested() const{
-        if (__ptr_ == nullptr)
-            terminate();
-        rethrow_exception(__ptr_);
-    }
-
-    exception_ptr current_exception() noexcept{
-        // be nicer if there was a constructor that took a ptr, then
-        // this whole function would be just:
-        //    return exception_ptr(__cxa_current_primary_exception());
-        exception_ptr ptr;
-//      ptr.__ptr_ = __cxa_current_primary_exception();
-        return ptr;
-}
-
-    [[noreturn]] void rethrow_exception(exception_ptr p){
-//      __cxa_rethrow_primary_exception(p.__ptr_);
-    // if p.__ptr_ is NULL, above returns so we terminate
-        terminate();
-    }
-
-    [[noreturn]] void terminate() noexcept{
+    [[noreturn]] __attribute__((visibility("default"))) void terminate() noexcept{
         syscall1(__NR_exit,-1);
     };
-}
-
+};

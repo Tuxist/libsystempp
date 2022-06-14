@@ -28,9 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 
-#include <mutex>
-#include <thread>
-
 #include "systempp/sysexception.h"
 #include "systempp/syseventapi.h"
 #include "systempp/sysutils.h"
@@ -38,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/syssleep.h"
 #include "systempp/sysconnection.h"
 #include "systempp/systhread.h"
+#include "systempp/sysmutex.h"
 
 #include <config.h>
 
@@ -54,16 +52,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BLOCKSIZE 16384
 
 typedef union epoll_data {
-    void    *ptr;
-    int      fd;
-    uint32_t u32;
-    uint64_t u64;
+    void              *ptr;
+    int                fd;
+    unsigned long int  u32;
+    unsigned long long u64;
 } epoll_data_t;
 
 
 struct epoll_event {
-    uint32_t         events; /* epoll events (bit mask) */
-    epoll_data_t     data; /* User data */
+    unsigned long int events; /* epoll events (bit mask) */
+    epoll_data_t      data; /* User data */
 };
 
 namespace sys {    
@@ -118,7 +116,7 @@ namespace sys {
         };
         
         int waitEventHandler(sys::Connection **curcon){
-            std::lock_guard<std::mutex> lock(_ELock);
+            _ELock.lock();
             
             if(_nfds<0){
                 _nfds=syscall4(__NR_epoll_wait,_epollFD,
@@ -128,12 +126,15 @@ namespace sys {
             if(_nfds>1){
                     SystemException exception;
                     exception[SystemException::Error] << "initEventHandler: epoll wait failure";
+                    _ELock.unlock();
                     throw exception;
             }
             
             --_nfds;
             
             *curcon=(Connection*)_Events[_nfds].data.ptr;
+            
+            _ELock.unlock();
             
             if(!*curcon)
                 return EventHandlerStatus::EVCON;
@@ -182,7 +183,7 @@ namespace sys {
         void WriteEventHandler(Connection **curcon){
             SystemException exception;
             try{
-                ssize_t sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
+                int sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
                                                        (void*)(*curcon)->getSendData()->getData(),
                                                        (*curcon)->getSendData()->getDataSize());
                 (*curcon)->resizeSendQueue(sended);
@@ -264,7 +265,7 @@ namespace sys {
         int                            _epollFD;
         struct epoll_event            *_Events;
         sys::ServerSocket             *_ServerSocket;
-        std::mutex                     _ELock;
+        sys::mutex                     _ELock;
     };
     
     bool Event::_Run=true;
@@ -282,11 +283,11 @@ namespace sys {
 
     void Event::runEventloop(){
         sys::CpuInfo cpuinfo;
-        size_t thrs = 1; //cpuinfo.getThreads();
+        unsigned long thrs = 1; //cpuinfo.getThreads();
         _EAPI->initEventHandler();
 MAINWORKERLOOP:
         sys::ThreadPool thpool;
-        for (size_t i = 0; i < thrs; i++) {
+        for (unsigned long i = 0; i < thrs; i++) {
             try{
                 thpool.addjob((new Thread(WorkerThread, (void*)_EAPI)));
             }catch(SystemException &e){

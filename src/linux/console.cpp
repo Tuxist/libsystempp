@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
+Copyright (c) 2021, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,58 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "stddef.h"
+#include <systempp/sysexception.h>
+#include <systempp/sysutils.h>
+#include <systempp/sysconsole.h>
 
-#pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-void* memcpy(void* __restrict__ s1, const void* __restrict__ s2, size_t n);
-void* memmove(void* s1, const void* s2, size_t n);
-char* strcpy (char* __restrict__ s1, const char* __restrict__ s2);
-char* strncpy(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
-char* strcat (char* __restrict__ s1, const char* __restrict__ s2);
-char* strncat(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
-int memcmp(const void* s1, const void* s2, size_t n);
-int strcmp (const char* s1, const char* s2);
-int strncmp(const char* s1, const char* s2, size_t n);
-int strcoll(const char* s1, const char* s2);
-size_t strxfrm(char* __restrict__ s1, const char* __restrict__ s2, size_t n);
-const void* memchr(const void* s, int c, size_t n);
-const char* strchr(const char* s, int c);
-size_t strcspn(const char* s1, const char* s2);
-const char* strpbrk(const char* s1, const char* s2);
-const char* strrchr(const char* s, int c);
-size_t strspn(const char* s1, const char* s2);
-const char* strstr(const char* s1, const char* s2);
-char* strtok(char* __restrict__ s1, const char* __restrict__ s2);
-void* memset(void* s, int c, size_t n);
-char* strerror(int errnum);
-size_t strlen(const char* s);
+const char *sys::_Console::endl="\n";
 
-#ifdef __cplusplus
+sys::_Console::_Console(){
 }
-#endif
+
+sys::_Console::_Console(file &fd){
+    _FD=fd;
+}
+
+sys::_Console::~_Console(){
+}
+
+sys::_Console &sys::_Console::operator<< (const char* out){
+    if(!out)
+        return *this;
+    _FD.write((void*)out,getlen(out));
+    return *this;    
+}
+
+sys::_Console &sys::_Console::operator<< (int out){
+    char buf[255];
+    itoa(out,buf);
+    _FD.write((void*)buf,getlen(buf));
+    return *this;
+}
+
+sys::_Console &sys::_Console::operator<< (unsigned long out){
+    char buf[255];
+    ultoa(out,buf);
+    _FD.write(buf,getlen(buf));
+    return *this;
+}
+
+sys::_Console &sys::_Console::operator<< (unsigned int out){
+    char buf[255];
+    ultoa(out,buf);
+    _FD.write(buf,getlen(buf));
+    return *this;
+}
+
+sys::_Console &sys::_Console::operator<< (char out){
+    _FD.write(&out,sizeof(char));
+    return *this;
+}
+
+sys::_Console & sys::_Console::operator<<(sys::_Console& console){
+    return console;
+}
+

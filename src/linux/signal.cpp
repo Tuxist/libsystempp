@@ -25,8 +25,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <linux/signalfd.h>
-
 #include <systempp/syssignal.h>
 
 #include <sysbits.h>

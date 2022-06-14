@@ -1,10 +1,11 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
-add_definitions(-DBUILD_SHARED_LIB) 
-add_definitions(-D_LIBCPP_DEBUG_LEVEL=2)
-add_definitions(-D_LIBCPP_BUILDING_LIBRARY)
-add_definitions(-D_LIBCPP_NO_EXCEPTIONS)
+
+
+if(BUILD_SHARED_LIBS)
+     add_definitions(-DBUILD_SHARED_LIB) 
+endif()
 
 set(EVENT "EPOLL")
 
@@ -25,7 +26,13 @@ list(APPEND linuxSrcs
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crti.S"
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crtn.S"
+    "linux/file.cpp"
+    "linux/console.cpp"
+    "linux/mutex.cpp"
     "linux/cxa_exception.cpp"
+    "linux/cxa_abi.cpp"
     "linux/errno.cpp"     
     "linux/exec.cpp"
     "linux/signal.cpp"  
@@ -33,13 +40,12 @@ list(APPEND linuxSrcs
     "linux/sysinfo.cpp"    
     "linux/thread.cpp" 
     "linux/unwind.cpp"
-    "linux/ctrlhandler.cpp"  
     "linux/epoll.cpp"    
-    "linux/exception.cpp"  
     "linux/sleep.cpp"   
-    "linux/strstream.cpp"  
     "linux/sysprocess.cpp"  
     "linux/time.cpp"
+    "linux/new.cpp"
+    "linux/terminate.cpp"
 )
 
 configure_file(
@@ -61,7 +67,7 @@ install(FILES
 )
 
 
-add_library(systempp SHARED ${systemppSrcs} )
+add_library(systempp STATIC ${systemppSrcs} )
 
 target_link_libraries(systempp)
 

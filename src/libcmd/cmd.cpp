@@ -25,8 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <iostream>
-
+#include "systempp/sysconsole.h"
 #include "systempp/syssocket.h"
 #include "systempp/sysutils.h"
 #include "systempp/sysexception.h"
@@ -58,7 +57,7 @@ const char *sys::Cmd::getValue() {
     return _Value;
 }
 
-size_t sys::Cmd::getValueSize_t() {
+unsigned long sys::Cmd::getValueSize_t() {
     return atoi(_Value);
 }
 
@@ -152,7 +151,7 @@ void sys::CmdController::registerCmd(const char *key, const char skey,bool requi
     
 }
 
-void sys::CmdController::registerCmd(const char *key, const char skey, bool required, size_t defaultvalue, const char *help) {
+void sys::CmdController::registerCmd(const char *key, const char skey, bool required, unsigned long defaultvalue, const char *help) {
     char buf[255];
     itoa(defaultvalue,buf);
     registerCmd(key,skey,required,buf,help);
@@ -175,8 +174,8 @@ void sys::CmdController::parseCmd(int argc, char** argv){
             break;
         }
         
-        size_t kendpos = getlen(argv[args]);
-        for (size_t cmdpos = 0; cmdpos < getlen(argv[args])+1; cmdpos++) {	
+        unsigned long kendpos = getlen(argv[args]);
+        for (unsigned long cmdpos = 0; cmdpos < getlen(argv[args])+1; cmdpos++) {	
             switch (argv[args][cmdpos]) {
                 case '=': {
                     kendpos = cmdpos;
@@ -238,10 +237,10 @@ bool sys::CmdController::checkRequired() {
 
 void sys::CmdController::printHelp() {
     for (Cmd *curdcmd = _firstCmd; curdcmd; curdcmd = curdcmd->nextCmd()) {
-        std::cout << "--" << curdcmd->getKey() 
+        Console[SYSOUT] << "--" << curdcmd->getKey() 
                                      << " -" << curdcmd->getShortkey()
                                      << " "  << curdcmd->getHelp() 
-                                     << std::endl;
+                                     << Console[SYSOUT].endl;
     }
 }
 

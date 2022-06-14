@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2022, Jan Koester jan.koester@gmx.net
+Copyright (c) 2021, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <systempp/sysfile.h>
+
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define SYSOUT 0
+#define SYSERR 1
 
-typedef struct __mbstate_t { 
-    unsigned __opaque1, __opaque2;
-} mbstate_t;
-
-#ifdef __cplusplus
+namespace sys {
+    static file STDOUT(1);
+    static file STDERR(2);
+    
+    class _Console {
+    public:
+        _Console();
+        _Console(file &fd);
+        ~_Console();
+        static const char *endl;
+        _Console &operator<<(const char *out);
+        _Console &operator<<(int out);
+        _Console &operator<<(unsigned int out);
+        _Console &operator<<(unsigned long out);
+        _Console &operator<<(char out);
+        _Console &operator<<(_Console &console);
+    private:
+        file _FD;
+    }static CONOUT(STDOUT), CONERR(STDERR);
+    
+    static _Console Console[2] = {
+        CONOUT,
+        CONERR
+    };
+    
 };
-#endif

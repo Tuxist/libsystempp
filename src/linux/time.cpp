@@ -32,8 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 #include "sysbits.h"
 
-#include "time.h"
-
 #define SECONDS_PER_DAY       86400ul /*  24* 60 * 60 */
 #define DAYS_PER_YEAR         365ul /* no leap year*/
 #define DAYS_PER_LEAP_YEAR    1461ul /*   4*365 +   1 */

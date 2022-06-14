@@ -57,7 +57,6 @@ public:
     void *alloc(unsigned long size);
     void *realloc(void* ptr,unsigned long size);    
     void  free(void* ptr);
-    void *memalign(size_t alignment,size_t size);
     
     Allocator(Allocator const&)       = delete;
     void operator=(Allocator const&)  = delete;

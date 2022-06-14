@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2018, Jan Koester jan.koester@gmx.net
+Copyright (c) 2019, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,57 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include "systempp/syssleep.h"
+#include <systempp/sysfile.h>
 
-#include "syscall.h"
 #include "sysbits.h"
+#include "syscall.h"
 
-sys::Sleep::Sleep(Time *time){
-    struct timespec treq;
-    time->_toUnixtimeSpec(treq);
-    syscall4(__NR_clock_nanosleep,0,0,(long)&treq,0);
+#define F_GETFD     1   /* get close_on_exec */
+#define F_SETFD     2   /* set/clear close_on_exec */
+#define F_GETFL     3   /* get file->f_flags */
+#define F_SETFL     4   /* set file->f_flags */
+
+sys::file::file(){
 }
 
-sys::Sleep::Sleep(int seconds){
-    struct timespec treq;
-    treq.tv_sec=seconds;
-    treq.tv_nsec=0;
-    syscall4(__NR_clock_nanosleep,0,0,(long)&treq,0);  
+sys::file::file(int fd){
+    _FD=fd;
 }
+
+sys::file::~file(){
+}
+
+sys::file & sys::file::operator=(sys::file value){
+    _FD=value._FD;
+    return *this;
+}
+
+
+sys::file & sys::file::operator=(int value){
+    _FD=value;
+    return *this;
+}
+
+void sys::file::open(const char *path, int opt){
+}
+
+int sys::file::read(void *buf, int bufsize){
+    return syscall3(__NR_read,(unsigned long)_FD,(unsigned long)buf,(long)bufsize);
+}
+
+int sys::file::write(void* buf, int bufsize){
+    return syscall3(__NR_write,_FD,(unsigned long)buf,bufsize);
+}
+
+int sys::file::setFcntl(int opt){
+    return (int)syscall3(__NR_fcntl, _FD, F_SETFL, opt);
+}
+
+int sys::file::getFcntl(){
+    return (int)syscall3(__NR_fcntl, _FD, F_GETFL, 0);
+}
+
+void sys::file::close(){
+    
+}
+

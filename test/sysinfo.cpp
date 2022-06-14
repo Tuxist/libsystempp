@@ -25,17 +25,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <iostream>
+#include <systempp/sysconsole.h>
 
 #include "systempp/sysinfo.h"
 
 int main(int argv, char *argc[])
 {
     sys::CpuInfo cpuinfo;
-    std::cout << "Vendor: " << cpuinfo.getVendor() << std::endl
-              << "Cores: "    << cpuinfo.getCores()  << std::endl
-              << "Threads: " << cpuinfo.getThreads() << std::endl
-              << "Running Thread: " << cpuinfo.getActualThread() << std::endl;
+    sys::Console[SYSOUT] << "Vendor: " << cpuinfo.getVendor() << sys::Console[SYSOUT].endl
+              << "Cores: "    << cpuinfo.getCores()  << sys::Console[SYSOUT].endl
+              << "Threads: " << cpuinfo.getThreads() << sys::Console[SYSOUT].endl
+              << "Running Thread: " << cpuinfo.getActualThread() << sys::Console[SYSOUT].endl;
     return 0;
 } 
 

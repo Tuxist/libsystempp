@@ -25,8 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <cstdint>
-
 #include "sysbits.h"
 #include "syscall.h"
 
@@ -49,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define O_BLOCK     00000000
 #define O_NONBLOCK  00004000
 
-typedef uint32_t in_addr_t;
+typedef unsigned long int in_addr_t;
 
 typedef unsigned short sa_family_t;
 typedef unsigned short in_port_t;
@@ -91,7 +89,7 @@ struct sockaddr_un {
 };
 
 struct in_addr {
-    uint32_t s_addr;  // load with inet_aton()
+    unsigned long int s_addr;  // load with inet_aton()
 };
 
 struct in6_addr {

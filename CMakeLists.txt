@@ -16,22 +16,18 @@ find_package(Clang REQUIRED)
 
 set(CMAKE_CXX_FLAGS 
     "${CMAKE_CXX_FLAGS} \
-    -fPIC \
     -Wall \
     -nostdlib \
-    -nostdinc \
-    -isysroot${CMAKE_SOURCE_DIR}/src/include \
-    -std=c++20 \
-    -I${CMAKE_SOURCE_DIR}/src/include/c++/systempp"
+    -isysroot${CMAKE_SOURCE_DIR}/src/include\
+    -fPIC"
 )
 
 set(CMAKE_C_FLAGS 
     "${CMAKE_C_FLAGS} \
-    -std=c++20 \
     -nostdlib \
-    -nostdinc \
     -Wall \
-    -isysroot${CMAKE_SOURCE_DIR}/src/include"
+    -isysroot${CMAKE_SOURCE_DIR}/src/include\
+    -fPIC"
 )
 
 

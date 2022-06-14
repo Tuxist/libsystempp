@@ -25,12 +25,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <iostream>
+#include <systempp/sysconsole.h>
 
 int main(int argv, char *argc[]){
-    std::cout << "test"  << std::endl;
+    sys::Console[SYSOUT] << "test"  << sys::Console[SYSOUT].endl;
     for(int i=0; i<argv; ++i){
-        std::cout << argc[i]  << std::endl;
+        sys::Console[SYSOUT] << argc[i]  << sys::Console[SYSOUT].endl;
     }
     return 0;
 } 

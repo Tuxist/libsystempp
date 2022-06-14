@@ -27,13 +27,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "systempp/systime.h"
 #include "systempp/syssleep.h"
-
-#include <iostream>
+#include "systempp/sysconsole.h"
 
 #define SLEEPTIME 999999999
 
 int main(int argv, char *argc[]){
-    std::cout << "Testing Sleep(Time *sleeptime)" << std::endl;
+    sys::Console[SYSOUT] << "Testing Sleep(Time *sleeptime)" << sys::Console[SYSOUT].endl;
     sys::Timezone tz("Europe/Berlin");
     sys::Time startt(&tz),endt(&tz),waitime;
     
@@ -47,31 +46,31 @@ int main(int argv, char *argc[]){
     endt.compare(startt,ctime);
     
     if(ctime.getNanoSeconds()!=SLEEPTIME){
-        std::cerr << "sleep time differs: " 
+        sys::Console[SYSERR] << "sleep time differs: " 
                   << ctime.getNanoSeconds()-SLEEPTIME
-                  << std::endl;
+                  << sys::Console[SYSOUT].endl;
     }
-    std::cout << "starttime: " << startt.getHour() << ":"
+    sys::Console[SYSOUT] << "starttime: " << startt.getHour() << ":"
                                << startt.getMinute() << ":" 
-                               << startt.getSeconds() << std::endl;
+                               << startt.getSeconds() << sys::Console[SYSOUT].endl;
     
-    std::cout << "endtime: " << endt.getHour() << ":"
+    sys::Console[SYSOUT] << "endtime: " << endt.getHour() << ":"
                              << endt.getMinute() << ":" 
-                             << endt.getSeconds() << std::endl;
+                             << endt.getSeconds() << sys::Console[SYSOUT].endl;
     
-    std::cout << "Testing Sleep(int seconds)" << std::endl;
+    sys::Console[SYSOUT] << "Testing Sleep(int seconds)" << sys::Console[SYSOUT].endl;
 
     
     startt.getHWTime();                      
     sys::Sleep(1);
     endt.getHWTime();
     
-    std::cout << "time: " << startt.getHour() << ":"
+    sys::Console[SYSOUT] << "time: " << startt.getHour() << ":"
                           << startt.getMinute() << ":" 
-                          << startt.getSeconds() << std::endl; 
+                          << startt.getSeconds() << sys::Console[SYSOUT].endl; 
 
-    std::cout << "endtime: " << endt.getHour() << ":"
+    sys::Console[SYSOUT] << "endtime: " << endt.getHour() << ":"
                              << endt.getMinute() << ":" 
-                             << endt.getSeconds() << std::endl;
+                             << endt.getSeconds() << sys::Console[SYSOUT].endl;
     return 0;
 } 

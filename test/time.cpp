@@ -26,20 +26,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "systempp/systime.h"
-#include <iostream>
+#include "systempp/sysconsole.h"
 
 int main(int argv, char *argc[]){
     sys::Timezone tz("Europe/Berlin");
     sys::Time testtime(&tz);
     testtime.getHWTime();
 
-    std::cout << "Date: " << testtime.getDay() << "."
+    sys::Console[SYSOUT]  << "Date: " << testtime.getDay() << "."
                           << testtime.getMounth() << "."
-                          << testtime.getYear() << std::endl;
+                          << testtime.getYear() << sys::Console[SYSOUT].endl;
 
-    std::cout << "time: " << testtime.getHour() << ":"
+    sys::Console[SYSOUT]  << "time: " << testtime.getHour() << ":"
                           << testtime.getMinute() << ":" 
-                          << testtime.getSeconds() << std::endl;
+                          << testtime.getSeconds() << sys::Console[SYSOUT].endl;
     testtime.setHWTime();
     
     return 0;

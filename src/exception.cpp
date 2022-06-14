@@ -29,13 +29,10 @@
 #include "systempp/sysexception.h"
 
 sys::SystemException::Message::Message(){
-    _Buffer=nullptr;
-    _BufferSize=0;
     _nextMessage=nullptr;
 }
 
 sys::SystemException::Message::~Message(){
-    delete[] _Buffer;
     delete   _nextMessage;
 }
 
@@ -50,14 +47,12 @@ sys::SystemException::SystemException(const SystemException &exp){
     curCType=exp.curCType;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
-    _printBuffer=nullptr;
     for(Message *curmsg=exp._firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-        *this << curmsg->_Buffer;
+        *this << &curmsg->_Buffer;
     }
 }
 
 sys::SystemException::~SystemException(){
-    delete[] _printBuffer;
     delete _firstMessage;
 }
 
@@ -66,19 +61,14 @@ int sys::SystemException::getErrorType(){
 }
 
 const char * sys::SystemException::what(){
-    unsigned long bufsize=0,written=0;
     for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-        bufsize+=curmsg->_BufferSize;
+        for(unsigned long i =0; i< curmsg->_Buffer.size(); ++i){
+            _printBuffer->push_back(curmsg->_Buffer[i]);
+            _printBuffer->push_back('\n');
+        };
     }
-    delete[] _printBuffer;
-    _printBuffer = new char[bufsize+1];
-    for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-        scopy(curmsg->_Buffer,curmsg->_Buffer+curmsg->_BufferSize,_printBuffer+written);
-        written+=curmsg->_BufferSize;
-    }
-    _printBuffer[bufsize]='\0';
     
-    return _printBuffer;    
+    return _printBuffer->c_str();    
 }
 
 
@@ -98,9 +88,22 @@ sys::SystemException& sys::SystemException::asign(const char *src){
         _lastMessage=_lastMessage->_nextMessage;
     }
     _lastMessage->_CType=curCType;
-    _lastMessage->_BufferSize=getlen(src);
-    _lastMessage->_Buffer=new char[_lastMessage->_BufferSize+1];
-    scopy(src,src+getlen(src)+1,_lastMessage->_Buffer);
+    _lastMessage->_Buffer=src;
+    return *this;   
+}
+
+sys::SystemException& sys::SystemException::asign(array<char> *src){
+    if(!src)
+        return *this;
+    if(!_firstMessage){
+        _firstMessage=new Message();
+        _lastMessage=_firstMessage;
+    }else{
+        _lastMessage->_nextMessage=new Message();
+        _lastMessage=_lastMessage->_nextMessage;
+    }
+    _lastMessage->_CType=curCType;
+    _lastMessage->_Buffer=*src;
     return *this;   
 }
 
@@ -110,6 +113,10 @@ sys::SystemException& sys::SystemException::operator[](int errtype){
 }
 
 sys::SystemException& sys::SystemException::operator<<(const char *src){
+    return asign(src);   
+};
+
+sys::SystemException& sys::SystemException::operator<<(array<char> *src){
     return asign(src);   
 };
 

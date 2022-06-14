@@ -25,22 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <cstddef>
-
 #pragma once
 
 namespace sys {
     class Cmd {
     public:
-        const char *getKey();
-        const char  getShortkey();
-        const char *getValue();
-        size_t      getValueSize_t();
-        int         getValueInt();
-        const char *getHelp();
-        bool        getFound();
-        bool        getRequired();
-        Cmd        *nextCmd();
+        const char    *getKey();
+        const char     getShortkey();
+        const char    *getValue();
+        unsigned long  getValueSize_t();
+        int            getValueInt();
+        const char    *getHelp();
+        bool           getFound();
+        bool           getRequired();
+        Cmd           *nextCmd();
     private:
         Cmd();
         ~Cmd();
@@ -63,7 +61,7 @@ namespace sys {
         }
 
         void registerCmd(const char *key,char skey,bool required,const char *defaultvalue,const char *help);
-        void registerCmd(const char *key,char skey,bool required,size_t defaultvalue, const char *help);
+        void registerCmd(const char *key,char skey,bool required,unsigned long defaultvalue, const char *help);
         void registerCmd(const char *key,char skey,bool required,int defaultvalue, const char *help);
         void printHelp();
         void parseCmd(int argc, char** argv);
