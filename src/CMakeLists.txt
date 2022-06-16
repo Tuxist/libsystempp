@@ -24,8 +24,8 @@ list(APPEND crtSrcs
 
 )
 
-add_library(crt1 OBJECT
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
+add_library(crt1 STATIC
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crtbegin.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crti.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crtn.S"
@@ -100,6 +100,7 @@ set(LIBCXX_GENERATED_INCLUDE_TARGET_DIR ${LIBCXX_GENERATED_INCLUDE_DIR})
 
 install(TARGETS systempp cmd crt1 EXPORT systemppTargets
     LIBRARY DESTINATION lib
+    OBJECTS DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     INCLUDES DESTINATION include

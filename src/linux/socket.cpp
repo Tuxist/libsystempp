@@ -25,6 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <string.h>
+
 #include "sysbits.h"
 #include "syscall.h"
 
@@ -198,14 +200,16 @@ sys::ServerSocket::ServerSocket(const char* addr, int port,int maxconnections,
     _Socket = (int)syscall3(__NR_socket,AF_INET,SOCK_STREAM,0);
     
     struct sockaddr_in address;
+    memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
     
+    
     int optval = 1;
     syscall5(__NR_setsockopt,_Socket, SOL_SOCKET, sockopts,(unsigned long) &optval,sizeof(optval));   
     
-    syscall3(__NR_bind,_Socket,(unsigned long)((struct sockaddr *)&address),sizeof(address));
+    syscall3(__NR_bind,_Socket,(unsigned long)((struct sockaddr_in *)&address),sizeof(address));
     
     if(_Socket <0){
         exception[SystemException::Critical] << "Could not bind serversocket";

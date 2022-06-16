@@ -25,6 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <systempp/sysalloc.h>
+
 extern "C" {    
     #define ATEXIT_MAX_FUNCS 128
 
@@ -99,7 +101,7 @@ extern "C" {
     }
     
     void *__cxa_allocate_exception(unsigned long thrown_size){
-        return nullptr;
+        return ::sys::allocator::getInstance().alloc(thrown_size);
     };
     
     __extension__ typedef int __guard __attribute__((mode(__DI__)));
@@ -125,5 +127,8 @@ extern "C" {
     void __cxa_end_catch() {
         
     }
+    
+    void __attribute__((weak)) __cxa_throw_bad_array_new_length() {
+    };
 };
 

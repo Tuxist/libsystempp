@@ -62,16 +62,20 @@ namespace sys {
             return *this;
         };
 
-        array operator=(const char *t){
+        void write(const char *t,unsigned long size){
             clear();
+            _bufsize=size;
+            _buf=new char[_bufsize];
+            scopy(t,t+size,_buf);
+        }
+        
+        array operator=(const char *t){
             unsigned long i;
             for(i = 0; i != '\0'; ++i);
-            _bufsize=i;
-            _buf=new char[_bufsize];
-            scopy(t,t+i,_buf);
+            write(t,i);
             return *this;
         };
-
+        
         char& operator[](int pos){
             return _buf[pos];
         };
