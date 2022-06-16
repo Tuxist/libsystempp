@@ -15,7 +15,8 @@ set(Upstream_VERSION 1.0.0)
 find_package(Clang REQUIRED)
 
 set(CMAKE_CXX_FLAGS 
-    "${CMAKE_CXX_FLAGS} \
+    "-fPIC\
+    ${CMAKE_CXX_FLAGS} \
     -Wall \
     -nostdlib \
     -nodefaultlibs \
@@ -23,7 +24,8 @@ set(CMAKE_CXX_FLAGS
 )
 
 set(CMAKE_C_FLAGS 
-    "${CMAKE_C_FLAGS} \
+    "-fPIC\
+    ${CMAKE_C_FLAGS} \
     -nostdlib \
     -nodefaultlibs\
     -Wall \
