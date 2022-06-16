@@ -40,7 +40,7 @@ extern "C" {
     atexit_func_entry_t __atexit_funcs[ATEXIT_MAX_FUNCS];
     uarch_t __atexit_func_count = 0;
     
-    extern void *__dso_handle __attribute__ ((__visibility__ ("hidden")));
+    extern void *__dso_handle __attribute__ ((__visibility__ ("hidden")))= &__dso_handle;
     
     int __cxa_atexit(void (*f)(void *), void *objptr, void *dso)
     {
@@ -108,19 +108,22 @@ extern "C" {
     
     void __cxa_guard_release (__guard *);
     
-    extern "C" void __cxa_guard_abort (__guard *);
+    void __cxa_guard_abort (__guard *);
  
-    extern "C" int __cxa_guard_acquire (__guard *g) {
+    int __cxa_guard_acquire (__guard *g) {
         return !*(char *)(g);
     }
  
-    extern "C" void __cxa_guard_release (__guard *g){
+    void __cxa_guard_release (__guard *g){
         *(char *)g = 1;
     }
  
-    extern "C" void __cxa_guard_abort (__guard *){
+    void __cxa_guard_abort (__guard *){
  
     }
     
+    void __cxa_end_catch() {
+        
+    }
 };
 

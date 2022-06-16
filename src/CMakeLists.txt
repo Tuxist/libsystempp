@@ -20,13 +20,20 @@ set(systemppSrcs
 #os dependencies
 message("Build with Linux Support")
 
-list(APPEND linuxSrcs
+list(APPEND crtSrcs
+
+)
+
+add_library(crt1 OBJECT
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/start.S"
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
-    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/dso_handle.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crti.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/crtn.S"
+)
+
+list(APPEND linuxSrcs
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
+    "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
     "linux/file.cpp"
     "linux/console.cpp"
     "linux/mutex.cpp"
@@ -66,7 +73,7 @@ install(FILES
 )
 
 
-add_library(systempp STATIC ${systemppSrcs} )
+add_library(systempp SHARED ${systemppSrcs} )
 
 target_link_libraries(systempp)
 

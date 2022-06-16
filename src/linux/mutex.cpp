@@ -8,6 +8,11 @@ sys::mutex::~mutex(){
     
 }
 
+void sys::mutex::lock(){
+    
+};
+
+
 void sys::mutex::trylock(){
     
 }

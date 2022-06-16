@@ -1,5 +1,9 @@
 namespace __cxxabiv1 {
-    struct __class_type_info {
+    class __class_type_info {
         virtual void foo() {}
     } ti;
+    
+    class __si_class_type_info {
+         virtual void foo() {}
+    } si;
 }
