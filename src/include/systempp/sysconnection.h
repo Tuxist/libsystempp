@@ -28,74 +28,73 @@
 #pragma once
 
 namespace sys {
-    class EventApi;
-    
-    class ConnectionData {
+    class eventapi;
+      
+    class con {
     public:
-        const char*      getData();
-        unsigned long    getDataSize();
-        ConnectionData  *nextConnectionData();
-    protected:
-        ConnectionData(const char*data, unsigned long datasize);
-        ~ConnectionData();
-    private:
-        char             *_Data;
-        unsigned long     _DataSize;
-        ConnectionData   *_nextConnectionData;
-        friend class      Connection;
-    };
+        class condata {
+        public:
+            const char*      getData();
+            unsigned long    getDataSize();
+            condata         *nextcondata();
+        protected:
+            condata(const char*data, unsigned long datasize);
+            ~condata();
+        private:
+            char           *_Data;
+            unsigned long   _DataSize;
+            condata        *_nextConnectionData;
+            friend class    con;
+        };
     
-    class Connection {
-    public:
-        Connection(ServerSocket *servsock,EventApi *event);
-        ~Connection();
+        con(ServerSocket *servsock,eventapi *event);
+        ~con();
         
         /*get client Socket from Connection*/
         ClientSocket   *getClientSocket();
         
         /*Cache helper functions*/
         
-        int             copyValue(ConnectionData* startblock, int startpos,
-                                  ConnectionData* endblock, int endpos, char** buffer);
-        int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
+        int             copyValue(condata* startblock, int startpos,
+                                  condata* endblock, int endpos, char** buffer);
+        int             searchValue(condata* startblock, condata** findblock,
                                     const char* keyword);
-        int             searchValue(ConnectionData* startblock, ConnectionData** findblock,
+        int             searchValue(condata* startblock, condata** findblock,
                                     const char* keyword,unsigned long keylen);
         
-        ConnectionData *addSendQueue(const char *data,unsigned long datasize);
-        ConnectionData *resizeSendQueue(unsigned long size);
-        void            cleanSendData();
-        ConnectionData *getSendData();
+        condata *addSendQueue(const char *data,unsigned long datasize);
+        condata *resizeSendQueue(unsigned long size);
+        void     cleanSendData();
+        condata *getSendData();
         unsigned long   getSendSize();
         
         /*Get Data funtions Recv Queue*/
-        ConnectionData *addRecvQueue(const char *data,unsigned long datasize);
-        ConnectionData *resizeRecvQueue(unsigned long size);
+        condata *addRecvQueue(const char *data,unsigned long datasize);
+        condata *resizeRecvQueue(unsigned long size);
         void            cleanRecvData();
-        ConnectionData *getRecvData();
+        condata *getRecvData();
         unsigned long   getRecvSize();
     protected:
-        Connection();
+        con();
         /*Incomming Data*/
         unsigned long     _ReadDataSize;
         /*Outgoing Data*/
         unsigned long     _SendDataSize;
     private:
-        ConnectionData *_resizeQueue(ConnectionData **firstdata, ConnectionData **lastdata,
+        condata *_resizeQueue(condata **firstdata, condata **lastdata,
                                      unsigned long *qsize,unsigned long size);
         ClientSocket   *_ClientSocket;
         ServerSocket   *_ServerSocket;
         
         /*Incomming Data*/
-        ConnectionData *_ReadDataFirst;
-        ConnectionData *_ReadDataLast;
+        condata *_ReadDataFirst;
+        condata *_ReadDataLast;
         
         /*Outgoing Data*/
-        ConnectionData *_SendDataFirst;
-        ConnectionData *_SendDataLast;
-        EventApi       *_EventApi;
+        condata  *_SendDataFirst;
+        condata  *_SendDataLast;
+        eventapi *_eventapi;
 
-        friend class ConnectionPool;
-        friend class Event;
+        friend class event;
     };
 };

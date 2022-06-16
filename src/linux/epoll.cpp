@@ -65,7 +65,7 @@ struct epoll_event {
 };
 
 namespace sys {    
-    class EPOLL : public EventApi{
+    class EPOLL : public eventapi{
     public:
         EPOLL(sys::ServerSocket* serversocket){
             _ServerSocket=serversocket;
@@ -115,7 +115,7 @@ namespace sys {
 
         };
         
-        int waitEventHandler(sys::Connection **curcon){
+        int waitEventHandler(sys::con **curcon){
             _ELock.lock();
             
             if(_nfds<0){
@@ -132,7 +132,7 @@ namespace sys {
             
             --_nfds;
             
-            *curcon=(Connection*)_Events[_nfds].data.ptr;
+            *curcon=(con*)_Events[_nfds].data.ptr;
             
             _ELock.unlock();
             
@@ -145,10 +145,10 @@ namespace sys {
             return EventHandlerStatus::EVIN;
         };
 
-        void ConnectEventHandler(sys::Connection **curcon){
+        void ConnectEventHandler(sys::con **curcon){
             SystemException exception;
             try {
-                Connection *newcon = new Connection(_ServerSocket,this);
+                con *newcon = new con(_ServerSocket,this);
                 struct epoll_event setevent;
                 setevent.events = EPOLLIN;
                 setevent.data.ptr = newcon;
@@ -167,7 +167,7 @@ namespace sys {
             }
         };
         
-        void ReadEventHandler(Connection **curcon){
+        void ReadEventHandler(con **curcon){
             SystemException except;
             char buf[BLOCKSIZE];
             try{
@@ -180,7 +180,7 @@ namespace sys {
             RequestEvent(*curcon);
         };
 
-        void WriteEventHandler(Connection **curcon){
+        void WriteEventHandler(con **curcon){
             SystemException exception;
             try{
                 int sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
@@ -197,9 +197,9 @@ namespace sys {
             ResponseEvent(*curcon);    
         };
         
-        void CloseEventHandler(sys::Connection **curcon){
+        void CloseEventHandler(sys::con **curcon){
             SystemException except;
-            Connection *conptr=*curcon;
+            con *conptr=*curcon;
             if(!conptr)
                 return;
             try {
@@ -223,24 +223,24 @@ namespace sys {
         };
         
         /*HTTP API Events*/
-        void RequestEvent(Connection *curcon){
+        void RequestEvent(con *curcon){
            return; 
         };
         
-        void ResponseEvent(Connection *curcon){
+        void ResponseEvent(con *curcon){
            return; 
         };
         
-        void ConnectEvent(Connection *curcon){
+        void ConnectEvent(con *curcon){
            return; 
         };
         
-        void DisconnectEvent(Connection *curcon){
+        void DisconnectEvent(con *curcon){
            return; 
         };
         
         /*Connection Ready to send Data*/
-        void sendReady(Connection *curcon,bool ready){
+        void sendReady(con *curcon,bool ready){
             if(ready){
                 _setEpollEvents(curcon,EPOLLIN | EPOLLOUT);
             }else{
@@ -249,7 +249,7 @@ namespace sys {
         };
         
     private:
-        void _setEpollEvents(Connection *curcon,int events){
+        void _setEpollEvents(con *curcon,int events){
             SystemException except;
             struct epoll_event setevent{ 0 };
             setevent.events = events;
@@ -268,20 +268,20 @@ namespace sys {
         sys::mutex                     _ELock;
     };
     
-    bool Event::_Run=true;
-    bool Event::_Restart=false;
+    bool event::_Run=true;
+    bool event::_Restart=false;
 
-    Event::Event(sys::ServerSocket* serversocket){
+    event::event(sys::ServerSocket* serversocket){
         _EAPI = new EPOLL(serversocket);
     }
 
-    Event::~Event(){
+    event::~event(){
     }
 
-    EventApi::~EventApi(){
+    eventapi::~eventapi(){
     }
 
-    void Event::runEventloop(){
+    void event::runEventloop(){
         sys::CpuInfo cpuinfo;
         unsigned long thrs = 1; //cpuinfo.getThreads();
         _EAPI->initEventHandler();
@@ -297,18 +297,18 @@ MAINWORKERLOOP:
         
         thpool.join();
         
-        if(sys::Event::_Restart){
-            sys::Event::_Restart=false;
+        if(sys::event::_Restart){
+            sys::event::_Restart=false;
             goto MAINWORKERLOOP;
         }
     }
 
-    void * sys::Event::WorkerThread(void* wrkevent){
-        EventApi *eventptr=((EventApi*)wrkevent);
+    void * sys::event::WorkerThread(void* wrkevent){
+        eventapi *eventptr=((eventapi*)wrkevent);
         SystemException excep;
-        while (sys::Event::_Run) {
+        while (sys::event::_Run) {
             try {
-                sys::Connection *i=nullptr;
+                sys::con *i=nullptr;
                 try {
                     switch(eventptr->waitEventHandler(&i)) {
                         case EPOLL::EVCON:

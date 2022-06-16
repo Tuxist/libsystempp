@@ -40,6 +40,8 @@ extern "C" {
     atexit_func_entry_t __atexit_funcs[ATEXIT_MAX_FUNCS];
     uarch_t __atexit_func_count = 0;
     
+    extern void *__dso_handle __attribute__ ((__visibility__ ("hidden")));
+    
     int __cxa_atexit(void (*f)(void *), void *objptr, void *dso)
     {
         if (__atexit_func_count >= ATEXIT_MAX_FUNCS) {return -1;};

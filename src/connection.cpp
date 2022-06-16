@@ -31,19 +31,19 @@
 #include "systempp/sysconnection.h"
 #include "systempp/syseventapi.h"
 
-const char* sys::ConnectionData::getData(){
+const char* sys::con::condata::getData(){
   return _Data;
 }
 
-unsigned long sys::ConnectionData::getDataSize(){
+unsigned long sys::con::condata::getDataSize(){
   return _DataSize;
 }
 
-sys::ConnectionData *sys::ConnectionData::nextConnectionData(){
+sys::con::condata *sys::con::condata::nextcondata(){
   return _nextConnectionData;
 }
 
-sys::ConnectionData::ConnectionData(const char*data,unsigned long datasize)  {
+sys::con::condata::condata(const char*data,unsigned long datasize)  {
     SystemException excep;
     _Data = new char[datasize];
     sys::scopy(data,data+datasize,_Data);
@@ -51,12 +51,12 @@ sys::ConnectionData::ConnectionData(const char*data,unsigned long datasize)  {
     _nextConnectionData=nullptr;
 }
 
-sys::ConnectionData::~ConnectionData() {
+sys::con::condata::~condata() {
     delete[] _Data;
     delete _nextConnectionData;
 }
 
-sys::ClientSocket *sys::Connection::getClientSocket(){
+sys::ClientSocket *sys::con::getClientSocket(){
   return _ClientSocket;
 }
 
@@ -70,32 +70,32 @@ sys::ClientSocket *sys::Connection::getClientSocket(){
   * Use it everyday with good health.
   */
 
-sys::ConnectionData *sys::Connection::addSendQueue(const char*data,unsigned long datasize){
+sys::con::condata *sys::con::addSendQueue(const char*data,unsigned long datasize){
     if(datasize<=0){
         SystemException exception;
         exception[SystemException::Error] << "addRecvQueue wrong datasize";
         throw exception;
     }
     if(!_SendDataFirst){
-        _SendDataFirst= new ConnectionData(data,datasize);
+        _SendDataFirst= new con::condata(data,datasize);
         _SendDataLast=_SendDataFirst;
     }else{
-        _SendDataLast->_nextConnectionData=new ConnectionData(data,datasize);
+        _SendDataLast->_nextConnectionData=new con::condata(data,datasize);
         _SendDataLast=_SendDataLast->_nextConnectionData;
     }
     _SendDataSize+=datasize;
-    _EventApi->sendReady(this,true);
+    _eventapi->sendReady(this,true);
     return _SendDataLast;
 }
 
-void sys::Connection::cleanSendData(){
+void sys::con::cleanSendData(){
    delete _SendDataFirst;
    _SendDataFirst=nullptr;
    _SendDataLast=nullptr;
    _SendDataSize=0;
 }
 
-sys::ConnectionData *sys::Connection::resizeSendQueue(unsigned long size){
+sys::con::condata *sys::con::resizeSendQueue(unsigned long size){
     try{
         return _resizeQueue(&_SendDataFirst,&_SendDataLast,&_SendDataSize,size);
     }catch(SystemException &e){
@@ -103,32 +103,32 @@ sys::ConnectionData *sys::Connection::resizeSendQueue(unsigned long size){
     }
 }
 
-sys::ConnectionData* sys::Connection::getSendData(){
+sys::con::condata* sys::con::getSendData(){
   return _SendDataFirst;
 }
 
-unsigned long sys::Connection::getSendSize(){
+unsigned long sys::con::getSendSize(){
   return _SendDataSize;
 }
 
-sys::ConnectionData *sys::Connection::addRecvQueue(const char *data,unsigned long datasize){
+sys::con::condata *sys::con::addRecvQueue(const char *data,unsigned long datasize){
     if(datasize<=0){
         SystemException exception;
         exception[SystemException::Error] << "addRecvQueue wrong datasize";
         throw exception;
     }
     if(!_ReadDataFirst){
-        _ReadDataFirst= new ConnectionData(data,datasize);
+        _ReadDataFirst= new con::condata(data,datasize);
         _ReadDataLast=_ReadDataFirst;
     }else{
-        _ReadDataLast->_nextConnectionData=new ConnectionData(data,datasize);
+        _ReadDataLast->_nextConnectionData=new con::condata(data,datasize);
         _ReadDataLast=_ReadDataLast->_nextConnectionData;
     }
     _ReadDataSize+=datasize;
     return _ReadDataLast;
 }
 
-void sys::Connection::cleanRecvData(){
+void sys::con::cleanRecvData(){
    delete _ReadDataFirst;
   _ReadDataFirst=nullptr;
   _ReadDataLast=nullptr;
@@ -136,7 +136,7 @@ void sys::Connection::cleanRecvData(){
 }
 
 
-sys::ConnectionData *sys::Connection::resizeRecvQueue(unsigned long size){
+sys::con::condata *sys::con::resizeRecvQueue(unsigned long size){
     try{
         return _resizeQueue(&_ReadDataFirst,&_ReadDataLast,&_ReadDataSize,size);
     }catch(SystemException &e){
@@ -144,15 +144,15 @@ sys::ConnectionData *sys::Connection::resizeRecvQueue(unsigned long size){
     }
 }
 
-sys::ConnectionData *sys::Connection::getRecvData(){
+sys::con::condata *sys::con::getRecvData(){
   return _ReadDataFirst;
 }
 
-unsigned long sys::Connection::getRecvSize(){
+unsigned long sys::con::getRecvSize(){
   return _ReadDataSize;
 }
 
-sys::ConnectionData *sys::Connection::_resizeQueue(ConnectionData** firstdata, ConnectionData** lastdata,
+sys::con::condata *sys::con::_resizeQueue(condata** firstdata, condata** lastdata,
                                                                unsigned long *qsize,unsigned long size){
     SystemException exception;
     if(!*firstdata || size > *qsize){
@@ -169,7 +169,7 @@ HAVEDATA:
         delsize+=(*firstdata)->getDataSize();;
         #endif
         size-=(*firstdata)->getDataSize();
-        ConnectionData *newdat=(*firstdata)->_nextConnectionData;
+        condata *newdat=(*firstdata)->_nextConnectionData;
         (*firstdata)->_nextConnectionData=nullptr;
         if(*firstdata==*lastdata)
             (*lastdata)=nullptr; 
@@ -199,10 +199,10 @@ HAVEDATA:
     return *firstdata;
 }
                                                                
-int sys::Connection::copyValue(ConnectionData* startblock, int startpos, 
-                          ConnectionData* endblock, int endpos, char** buffer){
+int sys::con::copyValue(con::condata* startblock, int startpos, 
+                          con::condata* endblock, int endpos, char** buffer){
     unsigned long copysize=0,copypos=0;
-    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
+    for(con::condata *curdat=startblock; curdat; curdat=curdat->nextcondata()){
         if(curdat==endblock){
         copysize+=endpos;
         break;
@@ -212,7 +212,7 @@ int sys::Connection::copyValue(ConnectionData* startblock, int startpos,
     copysize-=startpos;
     char *buf;
     buf = new char[(copysize+1)]; //one more for termination
-    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
+    for(con::condata *curdat=startblock; curdat; curdat=curdat->nextcondata()){
         if(curdat==startblock && curdat==endblock){
             sys::scopy(curdat->_Data+startpos,curdat->_Data+(endpos-startpos),buf+copypos);
         }else if(curdat==startblock){
@@ -233,15 +233,15 @@ int sys::Connection::copyValue(ConnectionData* startblock, int startpos,
     return copysize; //not include termination
 }
 
-int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 
+int sys::con::searchValue(con::condata* startblock, con::condata** findblock, 
                                        const char* keyword){
     return searchValue(startblock, findblock, keyword,sys::getlen(keyword));
 }
                                        
-int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** findblock, 
+int sys::con::searchValue(con::condata* startblock, con::condata** findblock, 
                                        const char* keyword,unsigned long keylen){
    unsigned long fpos=0,fcurpos=0;
-    for(ConnectionData *curdat=startblock; curdat; curdat=curdat->nextConnectionData()){
+    for(con::condata *curdat=startblock; curdat; curdat=curdat->nextcondata()){
         for(unsigned long pos=0; pos<curdat->getDataSize(); ++pos){
             if(keyword[fcurpos]==curdat->_Data[pos]){
                 if(fcurpos==0){
@@ -261,7 +261,7 @@ int sys::Connection::searchValue(ConnectionData* startblock, ConnectionData** fi
     return -1;
 }
 
-sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
+sys::con::con(sys::ServerSocket *servsock,eventapi *event){
     _ClientSocket=new sys::ClientSocket();
     _ServerSocket = servsock;
     _ReadDataFirst=nullptr;
@@ -270,10 +270,10 @@ sys::Connection::Connection(sys::ServerSocket *servsock,EventApi *event){
     _SendDataFirst=nullptr;
     _SendDataLast=nullptr;
     _SendDataSize=0;
-    _EventApi=event;
+    _eventapi=event;
 }
 
-sys::Connection::Connection(){
+sys::con::con(){
     _ClientSocket=new sys::ClientSocket();
     _ServerSocket = nullptr;
     _ReadDataFirst=nullptr;
@@ -282,10 +282,10 @@ sys::Connection::Connection(){
     _SendDataFirst=nullptr;
     _SendDataLast=nullptr;
     _SendDataSize=0;
-    _EventApi=nullptr;
+    _eventapi=nullptr;
 }
 
-sys::Connection::~Connection(){
+sys::con::~con(){
     delete _ClientSocket;
     delete _ReadDataFirst;
     delete _SendDataFirst;

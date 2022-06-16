@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SLEEPTIME 999999999
 
 int main(int argv, char *argc[]){
-    sys::Console[SYSOUT] << "Testing Sleep(Time *sleeptime)" << sys::Console[SYSOUT].endl;
+    sys::cout << "Testing Sleep(Time *sleeptime)" << sys::endl;
     sys::Timezone tz("Europe/Berlin");
     sys::Time startt(&tz),endt(&tz),waitime;
     
@@ -46,31 +46,31 @@ int main(int argv, char *argc[]){
     endt.compare(startt,ctime);
     
     if(ctime.getNanoSeconds()!=SLEEPTIME){
-        sys::Console[SYSERR] << "sleep time differs: " 
+        sys::cout << "sleep time differs: " 
                   << ctime.getNanoSeconds()-SLEEPTIME
-                  << sys::Console[SYSOUT].endl;
+                  << sys::endl;
     }
-    sys::Console[SYSOUT] << "starttime: " << startt.getHour() << ":"
+    sys::cout << "starttime: " << startt.getHour() << ":"
                                << startt.getMinute() << ":" 
-                               << startt.getSeconds() << sys::Console[SYSOUT].endl;
+                               << startt.getSeconds() << sys::endl;
     
-    sys::Console[SYSOUT] << "endtime: " << endt.getHour() << ":"
+    sys::cout << "endtime: " << endt.getHour() << ":"
                              << endt.getMinute() << ":" 
-                             << endt.getSeconds() << sys::Console[SYSOUT].endl;
+                             << endt.getSeconds() << sys::endl;
     
-    sys::Console[SYSOUT] << "Testing Sleep(int seconds)" << sys::Console[SYSOUT].endl;
+    sys::cout << "Testing Sleep(int seconds)" << sys::endl;
 
     
     startt.getHWTime();                      
     sys::Sleep(1);
     endt.getHWTime();
     
-    sys::Console[SYSOUT] << "time: " << startt.getHour() << ":"
+    sys::cout << "time: " << startt.getHour() << ":"
                           << startt.getMinute() << ":" 
-                          << startt.getSeconds() << sys::Console[SYSOUT].endl; 
+                          << startt.getSeconds() << sys::endl; 
 
-    sys::Console[SYSOUT] << "endtime: " << endt.getHour() << ":"
+    sys::cout << "endtime: " << endt.getHour() << ":"
                              << endt.getMinute() << ":" 
-                             << endt.getSeconds() << sys::Console[SYSOUT].endl;
+                             << endt.getSeconds() << sys::endl;
     return 0;
 } 

@@ -29,54 +29,90 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <systempp/sysutils.h>
 #include <systempp/sysconsole.h>
 
+#include "syscall.h"
+#include "sysbits.h"
 
+sys::_consoleout cout=sys::_consoleout(sys::STDOUT);
+sys::_consoleout cerr=sys::_consoleout(sys::STDERR);
 
-const char *sys::_Console::endl="\n";
-
-sys::_Console::_Console(){
+sys::_consoleout::_consoleout(){
 }
 
-sys::_Console::_Console(file &fd){
+sys::_consoleout::_consoleout(file &fd){
     _FD=fd;
 }
 
-sys::_Console::~_Console(){
+sys::_consoleout::~_consoleout(){
 }
 
-sys::_Console &sys::_Console::operator<< (const char* out){
+sys::_consoleout &sys::_consoleout::operator<< (const char* out){
     if(!out)
         return *this;
     _FD.write((void*)out,getlen(out));
     return *this;    
 }
 
-sys::_Console &sys::_Console::operator<< (int out){
+sys::_consoleout &sys::_consoleout::operator<< (int out){
     char buf[255];
     itoa(out,buf);
     _FD.write((void*)buf,getlen(buf));
     return *this;
 }
 
-sys::_Console &sys::_Console::operator<< (unsigned long out){
+sys::_consoleout &sys::_consoleout::operator<< (unsigned long out){
     char buf[255];
     ultoa(out,buf);
     _FD.write(buf,getlen(buf));
     return *this;
 }
 
-sys::_Console &sys::_Console::operator<< (unsigned int out){
+sys::_consoleout &sys::_consoleout::operator<< (unsigned int out){
     char buf[255];
     ultoa(out,buf);
     _FD.write(buf,getlen(buf));
     return *this;
 }
 
-sys::_Console &sys::_Console::operator<< (char out){
+sys::_consoleout &sys::_consoleout::operator<< (char out){
     _FD.write(&out,sizeof(char));
     return *this;
 }
 
-sys::_Console & sys::_Console::operator<<(sys::_Console& console){
+sys::_consoleout & sys::_consoleout::operator<<(sys::_consoleout& console){
     return console;
 }
 
+sys::_consolein::_consolein(){
+}
+
+sys::_consolein::_consolein(file &fd){
+    _FD=fd;
+}
+
+sys::_consolein::~_consolein(){
+}
+
+sys::_consolein &sys::_consolein::operator>> (const char* in){
+
+    return *this;    
+}
+
+sys::_consolein &sys::_consolein::operator>> (int in){
+    return *this;
+}
+
+sys::_consolein &sys::_consolein::operator>> (unsigned long in){
+    return *this;
+}
+
+sys::_consolein &sys::_consolein::operator>> (unsigned int in){
+    return *this;
+}
+
+sys::_consolein &sys::_consolein::operator>> (char in){
+    return *this;
+}
+
+sys::_consolein & sys::_consolein::operator>>(sys::_consolein& console){
+    return console;
+}

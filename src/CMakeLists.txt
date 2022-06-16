@@ -1,8 +1,6 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 
-
-
 if(BUILD_SHARED_LIBS)
      add_definitions(-DBUILD_SHARED_LIB) 
 endif()
@@ -16,6 +14,7 @@ set(systemppSrcs
     "exception.cpp"
     "utils.cpp"
     "uuid.cpp"
+    "string.cpp"
 )
 
 #os dependencies
@@ -33,6 +32,7 @@ list(APPEND linuxSrcs
     "linux/mutex.cpp"
     "linux/cxa_exception.cpp"
     "linux/cxa_abi.cpp"
+    "linux/typeinfo.cpp"
     "linux/errno.cpp"     
     "linux/exec.cpp"
     "linux/signal.cpp"  

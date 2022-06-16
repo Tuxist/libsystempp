@@ -29,32 +29,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#define SYSOUT 0
-#define SYSERR 1
-
 namespace sys {
-    static file STDOUT(1);
-    static file STDERR(2);
+    static file STDIN=sys::file(0);
+    static file STDOUT=sys::file(1);
+    static file STDERR=sys::file(2);
+
+    static const char *endl="\n";
     
-    class _Console {
+    class _consolein {
     public:
-        _Console();
-        _Console(file &fd);
-        ~_Console();
-        static const char *endl;
-        _Console &operator<<(const char *out);
-        _Console &operator<<(int out);
-        _Console &operator<<(unsigned int out);
-        _Console &operator<<(unsigned long out);
-        _Console &operator<<(char out);
-        _Console &operator<<(_Console &console);
+        _consolein();
+        _consolein(file &fd);
+        ~_consolein();
+        
+        _consolein &operator>>(const char *in);
+        _consolein &operator>>(int in);
+        _consolein &operator>>(unsigned int in);
+        _consolein &operator>>(unsigned long in);
+        _consolein &operator>>(char in);
+        _consolein &operator>>(_consolein &console);
     private:
         file _FD;
-    }static CONOUT(STDOUT), CONERR(STDERR);
+    } static cin;
     
-    static _Console Console[2] = {
-        CONOUT,
-        CONERR
-    };
+    class _consoleout {
+    public:
+        _consoleout();
+        _consoleout(file &fd);
+        ~_consoleout();
+        
+        _consoleout &operator<<(const char *out);
+        _consoleout &operator<<(int out);
+        _consoleout &operator<<(unsigned int out);
+        _consoleout &operator<<(unsigned long out);
+        _consoleout &operator<<(char out);
+        _consoleout &operator<<(_consoleout &console);
+    private:
+        file _FD;
+    } static cout, cerr;
     
 };

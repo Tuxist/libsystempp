@@ -52,54 +52,54 @@
 #define PROT_GROWSDOWN          0x01000000 /* mprotect flag: extend change to start of growsdown vma */
 #define PROT_GROWSUP            0x02000000 /* mprotect flag: extend change to end of growsup vma */
 
-Allocator& Allocator::getInstance(){
-   static  Allocator instance;
+allocator& allocator::getInstance(){
+   static  allocator instance;
    return instance;
 }
 
-Allocator::Heap *Allocator::findunsedHeap(unsigned long size){
-    for(Heap *curheap=_lastHeap; curheap; curheap=curheap->_prevHeap){
+allocator::heap *allocator::findunsedheap(unsigned long size){
+    for(heap *curheap=_lastheap; curheap; curheap=curheap->_prevheap){
         if(curheap->_Block->_Freed==true && size<curheap->_Block->_Size)
             return curheap;
     }
     return nullptr;
 }
     
-void *Allocator::alloc(unsigned long size){
-    unsigned long fsize=sizeof(Heap)+sizeof(BlockStore)+size;
-    Heap *heap=findunsedHeap(size);
+void *allocator::alloc(unsigned long size){
+    unsigned long fsize=sizeof(heap)+sizeof(blockstore)+size;
+    heap *heap=findunsedheap(size);
     if(!heap)
-        heap=(Heap*)syscall6(__NR_mmap, 0,sizeof(Heap)+size+sizeof(BlockStore), 
-                             PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-    zero(heap,sizeof(Heap));
-    size+=sizeof(BlockStore);
+        heap=(allocator::heap*)syscall6(__NR_mmap, 0,sizeof(heap)+size+sizeof(blockstore), 
+                                        PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+    zero(heap,sizeof(heap));
+    size+=sizeof(blockstore);
     heap->_Free=size;
     heap->_Count=_Count++;
     heap->_Total=fsize;
     if(heap->_Block)
-        heap->_Block->_nextBlock=(BlockStore*)((unsigned long)heap+sizeof(Heap));
+        heap->_Block->_nextBlock=(blockstore*)((unsigned long)heap+sizeof(heap));
     else
-        heap->_Block=(BlockStore*)((unsigned long)heap+sizeof(Heap));
+        heap->_Block=(blockstore*)((unsigned long)heap+sizeof(heap));
     heap->_Block->_Size=size;
     heap->_Block->_Freed=false;
     heap->_Block->_prevBlock=_curBlock;
-    if(!_firstHeap){
-        _firstHeap=heap;
-        _lastHeap=_firstHeap;
+    if(!_firstheap){
+        _firstheap=heap;
+        _lastheap=_firstheap;
     }else{
-        _lastHeap=_lastHeap->_nextHeap;
-        _lastHeap=heap;
+        _lastheap=_lastheap->_nextheap;
+        _lastheap=heap;
     }
-    return (void*)((unsigned long)heap->_Block+sizeof(BlockStore));
+    return (void*)((unsigned long)heap->_Block+sizeof(blockstore));
 }
     
-void *Allocator::realloc(void* ptr,unsigned long size){
+void *allocator::realloc(void* ptr,unsigned long size){
     unsigned long cursize=0;
     char *oldptr=nullptr;
-    for(BlockStore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
-        if((unsigned long)ptr==(unsigned long)curstore+sizeof(BlockStore)){
+    for(blockstore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
+        if((unsigned long)ptr==(unsigned long)curstore+sizeof(blockstore)){
             cursize+=curstore->_Size;
-            oldptr=(char*)curstore+sizeof(BlockStore);
+            oldptr=(char*)curstore+sizeof(blockstore);
         }
     }
         
@@ -116,12 +116,12 @@ void *Allocator::realloc(void* ptr,unsigned long size){
     return newptr;
 }
     
-void Allocator::free(void* ptr){
-    BlockStore *delBlock=nullptr;
+void allocator::free(void* ptr){
+    blockstore *delBlock=nullptr;
     unsigned long _TotalSize=0;
 
-    for(BlockStore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
-        if((unsigned long)ptr==(unsigned long)curstore+sizeof(BlockStore)){
+    for(blockstore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
+        if((unsigned long)ptr==(unsigned long)curstore+sizeof(blockstore)){
             curstore->_Freed=true;
             delBlock=curstore;
         }
@@ -129,52 +129,52 @@ void Allocator::free(void* ptr){
     }
         
     if(_TotalSize>MAXHEAPSIZE)
-        clearHeaps();
+        clearheaps();
 }
     
-Allocator::Allocator(){
+allocator::allocator(){
 };
 
-Allocator::~Allocator(){
+allocator::~allocator(){
 };
     
-void Allocator::zero(void *s, unsigned n){
+void allocator::zero(void *s, unsigned n){
     char *str;
     str = (char *)s;
     while (n--)
         str[n] = 0;
 }
     
-void Allocator::clearHeaps(){
-    for(Heap *curheap=_firstHeap; curheap; curheap=curheap->_nextHeap){
+void allocator::clearheaps(){
+    for(heap *curheap=_firstheap; curheap; curheap=curheap->_nextheap){
         if(curheap->_Block->_Freed==true){
-            curheap->_prevHeap->_nextHeap=curheap->_nextHeap;
-            curheap->_nextHeap->_prevHeap=curheap->_prevHeap;
+            curheap->_prevheap->_nextheap=curheap->_nextheap;
+            curheap->_nextheap->_prevheap=curheap->_prevheap;
             syscall2(__NR_munmap,(unsigned long)curheap,curheap->_Total);
         }
     }
 };
 
 void *operator new(unsigned long size){
-    return Allocator::getInstance().alloc(size);
+    return allocator::getInstance().alloc(size);
 }
 
 void *operator new[](unsigned long size){
-    return Allocator::getInstance().alloc(size);
+    return allocator::getInstance().alloc(size);
 }
 
 void operator delete (void* ptr) throw(){
-    Allocator::getInstance().free(ptr);
+    allocator::getInstance().free(ptr);
 }
 
 void operator delete[] (void* ptr) throw(){
-    Allocator::getInstance().free(ptr);
+    allocator::getInstance().free(ptr);
 }
 
 void operator delete(void* ptr,unsigned long amount){
-    Allocator::getInstance().free(ptr);
+    allocator::getInstance().free(ptr);
 }
 
 void operator delete[](void* ptr,unsigned long amount){
-    Allocator::getInstance().free(ptr);
+    allocator::getInstance().free(ptr);
 }

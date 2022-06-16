@@ -28,9 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <systempp/sysconsole.h>
 
 int main(int argv, char *argc[]){
-    sys::Console[SYSOUT] << "test"  << sys::Console[SYSOUT].endl;
+    sys::cout << "test"  << sys::endl;
     for(int i=0; i<argv; ++i){
-        sys::Console[SYSOUT] << argc[i]  << sys::Console[SYSOUT].endl;
+        sys::cout << argc[i]  << sys::endl;
     }
     return 0;
 } 

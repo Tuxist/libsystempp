@@ -27,47 +27,15 @@
 
 #pragma once
 
-class allocator {
-private:
-    class blockstore{
-    private:
-        blockstore(unsigned long size);
-        bool          _Freed;
-        unsigned long _Size;
-        blockstore   *_prevBlock;
-        blockstore   *_nextBlock;
-        friend class allocator;
-    };
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    typedef unsigned long nullptr_t;
+    typedef signed long ptrdiff_t;
+    typedef unsigned long size_t;
+    typedef unsigned long max_align_t;
     
-    class heap {
-        private:
-        heap();
-        ~heap();
-        unsigned long  _Total;
-        unsigned long  _Free;
-        unsigned long  _Count;
-        blockstore    *_Block;
-        heap          *_prevheap;
-        heap          *_nextheap;
-        friend class allocator;
-    };
-public:
-    static allocator& getInstance();
-    heap *findunsedheap(unsigned long size);    
-    void *alloc(unsigned long size);
-    void *realloc(void* ptr,unsigned long size);    
-    void  free(void* ptr);
-    
-    allocator(allocator const&)       = delete;
-    void operator=(allocator const&)  = delete;
-private:
-    allocator();
-    ~allocator();
-    void zero(void *s, unsigned n);
-    void clearheaps();
-    
-    heap          *_firstheap;
-    heap          *_lastheap;
-    blockstore    *_curBlock;
-    int            _Count;
-};
+#ifdef __cplusplus
+}
+#endif

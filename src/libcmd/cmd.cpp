@@ -237,10 +237,10 @@ bool sys::CmdController::checkRequired() {
 
 void sys::CmdController::printHelp() {
     for (Cmd *curdcmd = _firstCmd; curdcmd; curdcmd = curdcmd->nextCmd()) {
-        Console[SYSOUT] << "--" << curdcmd->getKey() 
+        cout << "--" << curdcmd->getKey() 
                                      << " -" << curdcmd->getShortkey()
                                      << " "  << curdcmd->getHelp() 
-                                     << Console[SYSOUT].endl;
+                                     << endl;
     }
 }
 

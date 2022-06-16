@@ -18,16 +18,16 @@ set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} \
     -Wall \
     -nostdlib \
-    -isysroot${CMAKE_SOURCE_DIR}/src/include\
-    -fPIC"
+    -nodefaultlibs \
+    -isysroot${CMAKE_SOURCE_DIR}/src/include"
 )
 
 set(CMAKE_C_FLAGS 
     "${CMAKE_C_FLAGS} \
     -nostdlib \
+    -nodefaultlibs\
     -Wall \
-    -isysroot${CMAKE_SOURCE_DIR}/src/include\
-    -fPIC"
+    -isysroot${CMAKE_SOURCE_DIR}/src/include"
 )
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2014, Jan Koester jan.koester@gmx.net
+Copyright (c) 2022, Jan Koester jan.koester@gmx.net
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,54 +25,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#include <systempp/syssocket.h>
-#include <systempp/sysexception.h>
-#include <systempp/sysconnection.h>
+#include <stddef.h>
 
-#include "config.h"
-
-#pragma once
-
-namespace sys {   
-    class eventapi {
-    public:
-        
-        enum EventHandlerStatus{EVIN=0,EVOUT=1,EVUP=2,EVERR=3,EVWAIT=4,EVCON=5};
-        
-        virtual ~eventapi();
-        virtual void initEventHandler()=0;        
-        virtual const char *getEventType()=0;
-               
-        /*EventHandler*/
-        virtual int waitEventHandler(con **cucron)=0;
-        virtual void ConnectEventHandler(con **curcon)=0;
-        virtual void ReadEventHandler(con **curcon)=0;
-        virtual void WriteEventHandler(con **curcon)=0;
-        virtual void CloseEventHandler(con **curcon)=0;
-        
-        /*HTTP API Events*/
-        virtual void RequestEvent(con *curcon)=0;
-        virtual void ResponseEvent(con *curcon)=0;
-        virtual void ConnectEvent(con *curcon)=0;
-        virtual void DisconnectEvent(con *curcon)=0;
-        
-        /*Connection Ready to send Data 
-         *DANGEROUS to burnout your cpu
-         *only use this if know what you do!*/
-        virtual void sendReady(con *curcon,bool ready)=0;
+extern "C" {
+    void memcpy(void *dest, const void * src, size_t n){
+        for (int i=0; i<n; i++)
+            ((char *)dest)[i] = ((char*)src)[i];
     };
-
-    class event {
-    public:
-        event(sys::ServerSocket *serversocket);
-        void runEventloop();
-        static void *WorkerThread(void *wrkevent);
-        
-        virtual ~event();
-        static bool _Run;
-        static bool _Restart;
-    private:
-        eventapi *_EAPI;
+    
+    void memmove(void *dest, void *src, size_t n){  
+        char *temp = new char[n];
+        for (int i=0; i<n; i++)
+            temp[i] = ((char*)src)[i];
+  
+        for (int i=0; i<n; i++)
+            ((char*)dest)[i] = temp[i];
+  
+        delete [] temp;
     };
-
+    
+    void * memset ( void * ptr, int value, size_t num ){
+        char *s =(char*) ptr;
+        while(num--)
+            *s++ = value;
+        return s;
+    };
 };

@@ -33,13 +33,13 @@ int main(int argv, char *argc[]){
     sys::Time testtime(&tz);
     testtime.getHWTime();
 
-    sys::Console[SYSOUT]  << "Date: " << testtime.getDay() << "."
+    sys::cout << "Date: " << testtime.getDay() << "."
                           << testtime.getMounth() << "."
-                          << testtime.getYear() << sys::Console[SYSOUT].endl;
+                          << testtime.getYear() << sys::endl;
 
-    sys::Console[SYSOUT]  << "time: " << testtime.getHour() << ":"
+    sys::cout << "time: " << testtime.getHour() << ":"
                           << testtime.getMinute() << ":" 
-                          << testtime.getSeconds() << sys::Console[SYSOUT].endl;
+                          << testtime.getSeconds() << sys::endl;
     testtime.setHWTime();
     
     return 0;
