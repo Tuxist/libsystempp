@@ -32,7 +32,6 @@ list(APPEND linuxSrcs
     "linux/mutex.cpp"
     "linux/cxa_exception.cpp"
     "linux/cxa_abi.cpp"
-    "linux/typeinfo.cpp"
     "linux/errno.cpp"     
     "linux/exec.cpp"
     "linux/signal.cpp"  
