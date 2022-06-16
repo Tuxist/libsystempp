@@ -98,7 +98,7 @@ set(LIBCXX_GENERATED_INCLUDE_DIR "${CMAKE_BINARY_DIR}/include/systempp/c++")
 set(LIBCXX_GENERATED_INCLUDE_TARGET_DIR ${LIBCXX_GENERATED_INCLUDE_DIR})
 
 
-install(TARGETS systempp cmd EXPORT systemppTargets
+install(TARGETS systempp cmd crt1 EXPORT systemppTargets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
