@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <systempp/sysconsole.h>
 #include <systempp/sysalloc.h>
 
 #include <config.h>
@@ -52,12 +53,12 @@
 #define PROT_GROWSDOWN          0x01000000 /* mprotect flag: extend change to start of growsdown vma */
 #define PROT_GROWSUP            0x02000000 /* mprotect flag: extend change to end of growsup vma */
 
-allocator& allocator::getInstance(){
+sys::allocator& sys::allocator::getInstance(){
    static  allocator instance;
    return instance;
 }
 
-allocator::heap *allocator::findunsedheap(unsigned long size){
+sys::allocator::heap *sys::allocator::findunsedheap(unsigned long size){
     for(heap *curheap=_lastheap; curheap; curheap=curheap->_prevheap){
         if(curheap->_Block->_Freed==true && size<curheap->_Block->_Size)
             return curheap;
@@ -65,35 +66,32 @@ allocator::heap *allocator::findunsedheap(unsigned long size){
     return nullptr;
 }
     
-void *allocator::alloc(unsigned long size){
+void *sys::allocator::alloc(unsigned long size){
     unsigned long fsize=sizeof(heap)+sizeof(blockstore)+size;
-    heap *heap=findunsedheap(size);
-    if(!heap)
-        heap=(allocator::heap*)syscall6(__NR_mmap, 0,sizeof(heap)+size+sizeof(blockstore), 
+    heap *myheap=findunsedheap(size);
+    if(!myheap)
+        myheap=(allocator::heap*)syscall6(__NR_mmap, 0,sizeof(heap)+size+sizeof(blockstore), 
                                         PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-    zero(heap,sizeof(heap));
+    zero(myheap,sizeof(heap));
     size+=sizeof(blockstore);
-    heap->_Free=size;
-    heap->_Count=_Count++;
-    heap->_Total=fsize;
-    if(heap->_Block)
-        heap->_Block->_nextBlock=(blockstore*)((unsigned long)heap+sizeof(heap));
-    else
-        heap->_Block=(blockstore*)((unsigned long)heap+sizeof(heap));
-    heap->_Block->_Size=size;
-    heap->_Block->_Freed=false;
-    heap->_Block->_prevBlock=_curBlock;
+    myheap->_Free=size;
+    myheap->_Count=_Count++;
+    myheap->_Total=fsize;
+    myheap->_Block=(blockstore*)((unsigned long)myheap+sizeof(heap));
+    myheap->_Block->_Size=size;
+    myheap->_Block->_Freed=false;
+    myheap->_Block->_prevBlock=_curBlock;
     if(!_firstheap){
-        _firstheap=heap;
+        _firstheap=myheap;
         _lastheap=_firstheap;
     }else{
         _lastheap=_lastheap->_nextheap;
-        _lastheap=heap;
+        _lastheap=myheap;
     }
-    return (void*)((unsigned long)heap->_Block+sizeof(blockstore));
+    return (void*)((unsigned long)myheap->_Block+sizeof(blockstore));
 }
     
-void *allocator::realloc(void* ptr,unsigned long size){
+void *sys::allocator::realloc(void* ptr,unsigned long size){
     unsigned long cursize=0;
     char *oldptr=nullptr;
     for(blockstore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
@@ -116,7 +114,7 @@ void *allocator::realloc(void* ptr,unsigned long size){
     return newptr;
 }
     
-void allocator::free(void* ptr){
+void sys::allocator::free(void* ptr){
     blockstore *delBlock=nullptr;
     unsigned long _TotalSize=0;
 
@@ -132,20 +130,22 @@ void allocator::free(void* ptr){
         clearheaps();
 }
     
-allocator::allocator(){
+sys::allocator::allocator(){
+    _lastheap=nullptr;
+    _firstheap=nullptr;
 };
 
-allocator::~allocator(){
+sys::allocator::~allocator(){
 };
     
-void allocator::zero(void *s, unsigned n){
+void sys::allocator::zero(void *s, unsigned n){
     char *str;
     str = (char *)s;
     while (n--)
         str[n] = 0;
 }
     
-void allocator::clearheaps(){
+void sys::allocator::clearheaps(){
     for(heap *curheap=_firstheap; curheap; curheap=curheap->_nextheap){
         if(curheap->_Block->_Freed==true){
             curheap->_prevheap->_nextheap=curheap->_nextheap;
@@ -156,25 +156,25 @@ void allocator::clearheaps(){
 };
 
 void *operator new(unsigned long size){
-    return allocator::getInstance().alloc(size);
+    return sys::allocator::getInstance().alloc(size);
 }
 
 void *operator new[](unsigned long size){
-    return allocator::getInstance().alloc(size);
+    return sys::allocator::getInstance().alloc(size);
 }
 
 void operator delete (void* ptr) throw(){
-    allocator::getInstance().free(ptr);
+    sys::allocator::getInstance().free(ptr);
 }
 
 void operator delete[] (void* ptr) throw(){
-    allocator::getInstance().free(ptr);
+    sys::allocator::getInstance().free(ptr);
 }
 
 void operator delete(void* ptr,unsigned long amount){
-    allocator::getInstance().free(ptr);
+    sys::allocator::getInstance().free(ptr);
 }
 
 void operator delete[](void* ptr,unsigned long amount){
-    allocator::getInstance().free(ptr);
+    sys::allocator::getInstance().free(ptr);
 }

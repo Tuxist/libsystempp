@@ -27,47 +27,50 @@
 
 #pragma once
 
-class allocator {
-private:
-    class blockstore{
+namespace sys {
+    
+    class allocator {
     private:
-        blockstore(unsigned long size);
-        bool          _Freed;
-        unsigned long _Size;
-        blockstore   *_prevBlock;
-        blockstore   *_nextBlock;
-        friend class allocator;
-    };
-    
-    class heap {
+        class blockstore{
         private:
-        heap();
-        ~heap();
-        unsigned long  _Total;
-        unsigned long  _Free;
-        unsigned long  _Count;
-        blockstore    *_Block;
-        heap          *_prevheap;
-        heap          *_nextheap;
-        friend class allocator;
+            blockstore(unsigned long size);
+            bool          _Freed;
+            unsigned long _Size;
+            blockstore   *_prevBlock;
+            blockstore   *_nextBlock;
+            friend class allocator;
+        };
+        
+        class heap {
+        private:
+            heap();
+            ~heap();
+            unsigned long  _Total;
+            unsigned long  _Free;
+            unsigned long  _Count;
+            blockstore    *_Block;
+            heap          *_prevheap;
+            heap          *_nextheap;
+            friend class allocator;
+        };
+    public:
+        static allocator& getInstance();
+        heap *findunsedheap(unsigned long size);    
+        void *alloc(unsigned long size);
+        void *realloc(void* ptr,unsigned long size);    
+        void  free(void* ptr);
+        
+        allocator(allocator const&)       = delete;
+        void operator=(allocator const&)  = delete;
+    private:
+        allocator();
+        ~allocator();
+        void zero(void *s, unsigned n);
+        void clearheaps();
+        
+        heap          *_firstheap;
+        heap          *_lastheap;
+        blockstore    *_curBlock;
+        int            _Count;
     };
-public:
-    static allocator& getInstance();
-    heap *findunsedheap(unsigned long size);    
-    void *alloc(unsigned long size);
-    void *realloc(void* ptr,unsigned long size);    
-    void  free(void* ptr);
-    
-    allocator(allocator const&)       = delete;
-    void operator=(allocator const&)  = delete;
-private:
-    allocator();
-    ~allocator();
-    void zero(void *s, unsigned n);
-    void clearheaps();
-    
-    heap          *_firstheap;
-    heap          *_lastheap;
-    blockstore    *_curBlock;
-    int            _Count;
 };
