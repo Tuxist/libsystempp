@@ -111,7 +111,6 @@ sys::Thread::Thread(void *function(void*),void *args){
 }
 
 sys::Thread::~Thread(){
-    delete _nextThread;
 }
 
 sys::Thread * sys::Thread::nextThread(){
