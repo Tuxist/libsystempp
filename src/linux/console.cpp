@@ -25,6 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <string.h>
+
 #include <systempp/sysexception.h>
 #include <systempp/sysutils.h>
 #include <systempp/sysconsole.h>
@@ -99,28 +101,27 @@ sys::_consolein::_consolein(file &fd){
 sys::_consolein::~_consolein(){
 }
 
-sys::_consolein &sys::_consolein::operator>> (const char* in){
-
-    return *this;    
-}
-
-sys::_consolein &sys::_consolein::operator>> (int in){
+sys::_consolein &sys::_consolein::operator>> (int &in){
     return *this;
 }
 
-sys::_consolein &sys::_consolein::operator>> (unsigned long in){
+sys::_consolein &sys::_consolein::operator>> (unsigned long &in){
     return *this;
 }
 
-sys::_consolein &sys::_consolein::operator>> (unsigned int in){
+sys::_consolein &sys::_consolein::operator>> (unsigned int &in){
     return *this;
 }
 
-sys::_consolein &sys::_consolein::operator>> (char in){
+sys::_consolein &sys::_consolein::operator>> (char &in){
     return *this;
 }
 
-sys::_consolein &sys::_consolein::operator>> (sys::array<char> in){
+sys::_consolein &sys::_consolein::operator>> (sys::array<char> &in){
+    char buf;
+    while(int f=_FD.read(&buf,1)<0){
+        in.push_back(buf);
+    };
     return *this;
 }
 

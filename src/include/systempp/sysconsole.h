@@ -43,12 +43,11 @@ namespace sys {
         _consolein(file &fd);
         ~_consolein();
         
-        _consolein &operator>>(const char *in);
-        _consolein &operator>>(int in);
-        _consolein &operator>>(unsigned int in);
-        _consolein &operator>>(unsigned long in);
-        _consolein &operator>>(char in);
-        _consolein &operator>>(sys::array<char> in);
+        _consolein &operator>>(int &in);
+        _consolein &operator>>(unsigned int &in);
+        _consolein &operator>>(unsigned long &in);
+        _consolein &operator>>(char &in);
+        _consolein &operator>>(sys::array<char> &in);
         _consolein &operator>>(_consolein &console);
     private:
         file _FD;
