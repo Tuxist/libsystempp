@@ -48,7 +48,7 @@ namespace sys {
         /*please only use in systempp plattform depended code*/
         void  *_CTimezone;
     private:
-        Timezone(const char* name,int dsttime,int minwest);
+        Timezone(const char* name,int minwest,int dsttime);
     };
     
     class Time {

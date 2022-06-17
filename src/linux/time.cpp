@@ -52,11 +52,11 @@ namespace sys {
                 _Name=name;
                 _Timezone.tz_minuteswest=minwest;
                 _Timezone.tz_dsttime=dstime;
+                return;
             }
             _Name=nullptr;
             _Timezone.tz_dsttime=0;
-            _Timezone.tz_minuteswest=0;
-            
+            _Timezone.tz_minuteswest=0;            
         };
         sys::array<char> _Name;
         timezone         _Timezone;
@@ -64,7 +64,7 @@ namespace sys {
     };
 };
 
-sys::Timezone::Timezone(const char* name, int dsttime, int minwest){
+sys::Timezone::Timezone(const char* name, int minwest, int dsttime){
     _CTimezone=new TimezoneTemplate(name,minwest,dsttime);
 }
 
@@ -77,7 +77,7 @@ const sys::Timezone sys::Timezone::Timezones[]= {
     sys::Timezone("Europe/Berlin",60,120),
     sys::Timezone(nullptr,0,0)
 };
-
+#include <systempp/sysconsole.h>
 sys::Timezone::Timezone(const char* name){
     _CTimezone=nullptr;
     int i=0;
