@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <stddef.h>
+
 #include <systempp/sysutils.h>
 
 #pragma once
@@ -106,6 +108,11 @@ namespace sys {
             _cstr[_bufsize]='\0';
             return _cstr;
         };
+        
+        size_t length(){
+            return _bufsize;
+        };
+        
     private:
         char            *_buf;
         unsigned long    _bufsize;
