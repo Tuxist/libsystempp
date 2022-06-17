@@ -88,6 +88,8 @@ namespace sys {
         bool operator==(const char *t){
             if(!_buf)
                 return false;
+            if(_bufsize!=strlen(t))
+                return false;
             if(strncmp(_buf,t,_bufsize)==0)
                 return true;
             return false;
