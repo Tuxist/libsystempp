@@ -48,7 +48,7 @@ sys::SystemException::SystemException(const SystemException &exp){
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     for(Message *curmsg=exp._firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-        *this << &curmsg->_Buffer;
+        *this << curmsg->_Buffer;
     }
 }
 
@@ -92,9 +92,7 @@ sys::SystemException& sys::SystemException::asign(const char *src){
     return *this;   
 }
 
-sys::SystemException& sys::SystemException::asign(array<char> *src){
-    if(!src)
-        return *this;
+sys::SystemException& sys::SystemException::asign(array<char> src){
     if(!_firstMessage){
         _firstMessage=new Message();
         _lastMessage=_firstMessage;
@@ -103,7 +101,7 @@ sys::SystemException& sys::SystemException::asign(array<char> *src){
         _lastMessage=_lastMessage->_nextMessage;
     }
     _lastMessage->_CType=curCType;
-    _lastMessage->_Buffer=*src;
+    _lastMessage->_Buffer=src;
     return *this;   
 }
 
@@ -116,7 +114,7 @@ sys::SystemException& sys::SystemException::operator<<(const char *src){
     return asign(src);   
 };
 
-sys::SystemException& sys::SystemException::operator<<(array<char> *src){
+sys::SystemException& sys::SystemException::operator<<(array<char> src){
     return asign(src);   
 };
 

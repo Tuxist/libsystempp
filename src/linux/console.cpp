@@ -119,9 +119,13 @@ sys::_consolein &sys::_consolein::operator>> (char &in){
 
 sys::_consolein &sys::_consolein::operator>> (sys::array<char> &in){
     char buf;
-    while(int f=_FD.read(&buf,1)<0){
+    int f=0;
+    do{
+        f=_FD.read(&buf,1);
+        if(buf=='\n')
+            break;
         in.push_back(buf);
-    };
+    }while(true);
     return *this;
 }
 

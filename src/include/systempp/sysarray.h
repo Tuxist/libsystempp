@@ -82,7 +82,7 @@ namespace sys {
         };
         
         bool operator==(const char *t){
-            if(sys::ncompare(t,sys::getlen(t),_buf,_bufsize)==0)
+            if(sys::ncompare(_buf,_bufsize,t,sys::getlen(t))==0)
                 return true;
             return false;
         }
@@ -105,8 +105,9 @@ namespace sys {
         };
         
         void clear(){
-            delete _buf;
+            delete[] _buf;
             _bufsize=0;
+            _buf=nullptr;
         };
         
         const char *c_str() const{

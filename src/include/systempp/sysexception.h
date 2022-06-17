@@ -48,11 +48,11 @@ namespace sys {
         enum Type {Note,Warning,Error,Critical};
         
         SystemException& asign(const char *src);
-        SystemException& asign(array<char> *src);
+        SystemException& asign(array<char> src);
         
         SystemException& operator[](int errtype);
         SystemException& operator<<(const char *src);
-        SystemException& operator<<(array<char> *src);
+        SystemException& operator<<(array<char> src);
         SystemException& operator<<(int src);
     protected:
         int      curCType;
