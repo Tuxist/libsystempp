@@ -45,9 +45,12 @@ namespace sys {
         array(){
             _buf=nullptr;
             _bufsize=0;
-            _cstr=nullptr;
         };
 
+        ~array(){
+            delete[] _buf;
+        }
+        
          array operator=(array t){
             clear();
             _buf=new char[t.size()];
@@ -78,6 +81,12 @@ namespace sys {
             return *this;
         };
         
+        bool operator==(const char *t){
+            if(sys::ncompare(t,sys::getlen(t),_buf,_bufsize)==0)
+                return true;
+            return false;
+        }
+        
         char& operator[](int pos){
             return _buf[pos];
         };
@@ -98,12 +107,10 @@ namespace sys {
         void clear(){
             delete _buf;
             _bufsize=0;
-            delete _cstr;
         };
         
-        const char *c_str(){
-            delete[] _cstr;
-            _cstr=new char[_bufsize+1];
+        const char *c_str() const{
+            char *_cstr=new char[_bufsize+1];
             scopy(_buf,_buf+_bufsize,_cstr);
             _cstr[_bufsize]='\0';
             return _cstr;
@@ -113,10 +120,17 @@ namespace sys {
             return _bufsize;
         };
         
+        sys::array<char> substr(size_t pos, size_t len) const{
+            sys::array<char> sustr;
+            for(size_t i=pos; i<len; ++i){
+                sustr.push_back(_buf[i]);
+            }
+            return sustr;
+        };
+        
     private:
         char            *_buf;
-        unsigned long    _bufsize;
-        char            *_cstr;    
+        unsigned long    _bufsize; 
     };
     
     

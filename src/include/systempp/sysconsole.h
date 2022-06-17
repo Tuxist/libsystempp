@@ -25,6 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <systempp/sysarray.h>
 #include <systempp/sysfile.h>
 
 #pragma once
@@ -47,6 +48,7 @@ namespace sys {
         _consolein &operator>>(unsigned int in);
         _consolein &operator>>(unsigned long in);
         _consolein &operator>>(char in);
+        _consolein &operator>>(sys::array<char> in);
         _consolein &operator>>(_consolein &console);
     private:
         file _FD;
@@ -63,6 +65,7 @@ namespace sys {
         _consoleout &operator<<(unsigned int out);
         _consoleout &operator<<(unsigned long out);
         _consoleout &operator<<(char out);
+        _consoleout &operator<<(sys::array<char> out);
         _consoleout &operator<<(_consoleout &console);
     private:
         file _FD;

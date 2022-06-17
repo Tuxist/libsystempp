@@ -73,6 +73,13 @@ sys::_consoleout &sys::_consoleout::operator<< (unsigned int out){
     return *this;
 }
 
+sys::_consoleout &sys::_consoleout::operator<< (sys::array<char> out){
+    const char *buf=out.c_str();
+    _FD.write((void*)buf,getlen(buf));
+    return *this;
+}
+
+
 sys::_consoleout &sys::_consoleout::operator<< (char out){
     _FD.write(&out,sizeof(char));
     return *this;
@@ -110,6 +117,10 @@ sys::_consolein &sys::_consolein::operator>> (unsigned int in){
 }
 
 sys::_consolein &sys::_consolein::operator>> (char in){
+    return *this;
+}
+
+sys::_consolein &sys::_consolein::operator>> (sys::array<char> in){
     return *this;
 }
 
