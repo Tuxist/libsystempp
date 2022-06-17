@@ -43,9 +43,12 @@ namespace sys {
     class Timezone {
     public:
         Timezone(const char* name=nullptr);
-        static const void *Timezones[];
+        ~Timezone() noexcept;
+        static const Timezone Timezones[];
         /*please only use in systempp plattform depended code*/
         void  *_CTimezone;
+    private:
+        Timezone(const char* name,int dsttime,int minwest);
     };
     
     class Time {

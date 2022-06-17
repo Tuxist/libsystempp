@@ -25,9 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <stddef.h>
-
-#include <systempp/sysutils.h>
+#include <string.h>
 
 #pragma once
 
@@ -54,7 +52,7 @@ namespace sys {
          array operator=(array t){
             clear();
             _buf=new char[t.size()];
-            scopy(t._buf,t._buf+_bufsize,_buf);
+            memcpy(_buf,t._buf,t._bufsize);
             _bufsize=t._bufsize;
             return *this;
         };
@@ -70,19 +68,27 @@ namespace sys {
         void write(const char *t,unsigned long size){
             clear();
             _bufsize=size;
+            if(_bufsize<1)
+                return;
             _buf=new char[_bufsize];
-            scopy(t,t+size,_buf);
+            memcpy(_buf,t,size);
         }
         
         array operator=(const char *t){
             unsigned long i;
-            for(i = 0; i != '\0'; ++i);
+            if(!t){
+                clear();
+                return *this;
+            }
+            for(i = 0; t[i] != '\0'; i++);
             write(t,i);
             return *this;
         };
         
         bool operator==(const char *t){
-            if(sys::ncompare(_buf,_bufsize,t,sys::getlen(t))==0)
+            if(!_buf)
+                return false;
+            if(strncmp(_buf,t,strlen(_buf))==0)
                 return true;
             return false;
         }
@@ -97,7 +103,7 @@ namespace sys {
         
         void push_back(char t){
             char *temp=new char[_bufsize+1];
-            scopy(_buf,_buf+_bufsize,temp);
+            memcpy(temp,_buf,_bufsize);
             temp[_bufsize]=t;
             delete[] _buf;
             _buf=temp;
@@ -112,7 +118,7 @@ namespace sys {
         
         const char *c_str() const{
             char *_cstr=new char[_bufsize+1];
-            scopy(_buf,_buf+_bufsize,_cstr);
+            memcpy(_cstr,_buf,_bufsize);
             _cstr[_bufsize]='\0';
             return _cstr;
         };
@@ -120,6 +126,12 @@ namespace sys {
         size_t length(){
             return _bufsize;
         };
+        
+        bool empty(){
+            if(!_buf)
+                return true;
+            return false;
+        }
         
         sys::array<char> substr(size_t pos, size_t len) const{
             sys::array<char> sustr;
@@ -130,8 +142,8 @@ namespace sys {
         };
         
     private:
-        char            *_buf;
-        unsigned long    _bufsize; 
+        char    *_buf;
+        size_t   _bufsize; 
     };
     
     

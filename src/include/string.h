@@ -35,6 +35,8 @@ extern "C" {
     void memcpy(void *dest, const void * src, size_t n);
     void memmove(void *dest, void *src, size_t n);
     void *memset ( void * ptr, int value, size_t num );
+    size_t strlen(const char *ptr);
+    int strncmp ( const char * str1, const char * str2, size_t num );
 #ifdef __cplusplus
 };
 #endif

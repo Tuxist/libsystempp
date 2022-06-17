@@ -50,4 +50,26 @@ extern "C" {
             *s++ = value;
         return s;
     };
+    
+    size_t strlen(const char *ptr){
+        if(!ptr)
+            return 0;
+        size_t len = 0;
+        while ((*ptr++) != '\0') {
+            ++len;
+        }
+        return len;
+    }    
+    
+    int strncmp ( const char * str1, const char * str2, size_t num ){
+        const unsigned char *us1 = (const unsigned char *) str1;
+        const unsigned char *us2 = (const unsigned char *) str2;
+
+        while (*us1 == *us2 && *us1 != num) {
+            us1++;
+            us2++;
+        }
+
+        return (*us1 > *us2) - (*us1 < *us2);
+    }
 };

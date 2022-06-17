@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <systempp/sysconsole.h>
+
 #include "systempp/sysutils.h"
 #include "systempp/sysexception.h"
 
@@ -40,7 +42,6 @@ sys::SystemException::SystemException(){
     curCType=Note;
     _firstMessage=nullptr;
     _lastMessage=nullptr;
-    _printBuffer=nullptr;
 };
 
 sys::SystemException::SystemException(const SystemException &exp){
@@ -48,7 +49,7 @@ sys::SystemException::SystemException(const SystemException &exp){
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     for(Message *curmsg=exp._firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-        *this << curmsg->_Buffer;
+        *this<<curmsg->_Buffer;
     }
 }
 
@@ -61,14 +62,15 @@ int sys::SystemException::getErrorType(){
 }
 
 const char * sys::SystemException::what(){
+    _printBuffer.clear();
     for(Message *curmsg=_firstMessage; curmsg; curmsg=curmsg->_nextMessage){
         for(unsigned long i =0; i< curmsg->_Buffer.size(); ++i){
-            _printBuffer->push_back(curmsg->_Buffer[i]);
-            _printBuffer->push_back('\n');
+            _printBuffer.push_back(curmsg->_Buffer[i]);
+            _printBuffer.push_back('\n');
         };
     }
     
-    return _printBuffer->c_str();    
+    return _printBuffer.c_str();    
 }
 
 

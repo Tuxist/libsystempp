@@ -68,6 +68,6 @@ namespace sys {
         Message     *_firstMessage;
         Message     *_lastMessage;
         
-        array<char> *_printBuffer;
+        array<char>  _printBuffer;
     };
 }

@@ -44,7 +44,7 @@ namespace sys {
         class heap {
         private:
             heap();
-            ~heap();
+            ~heap() noexcept;
             unsigned long  _Total;
             unsigned long  _Free;
             unsigned long  _Count;
