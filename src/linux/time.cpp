@@ -48,38 +48,48 @@ namespace sys {
     class TimezoneTemplate {
     private:
         TimezoneTemplate(const char *name,int minwest,int dstime){
-            int nlen=sys::getlen(name);
-            _Name=new char[nlen+1];
-            sys::scopy(name,name+nlen,_Name);
-            _Name[nlen]='\0';
-            
-            _Timezone.tz_minuteswest=minwest;
-            _Timezone.tz_dsttime=dstime;
+            if(name){
+                _Name=name;
+                _Timezone.tz_minuteswest=minwest;
+                _Timezone.tz_dsttime=dstime;
+            }
+            _Name=nullptr;
+            _Timezone.tz_dsttime=0;
+            _Timezone.tz_minuteswest=0;
             
         };
-        char    *_Name;
-        timezone _Timezone;
+        sys::array<char> _Name;
+        timezone         _Timezone;
         friend class Timezone;
     };
 };
 
-const void *sys::Timezone::Timezones[]= {
-     new sys::TimezoneTemplate("Europe/Berlin",60,120),
-     nullptr
+sys::Timezone::Timezone(const char* name, int dsttime, int minwest){
+    _CTimezone=new TimezoneTemplate(name,minwest,dsttime);
+}
+
+sys::Timezone::~Timezone() noexcept{
+    delete (TimezoneTemplate*)_CTimezone;
+}
+
+
+const sys::Timezone sys::Timezone::Timezones[]= {
+    sys::Timezone("Europe/Berlin",60,120),
+    sys::Timezone(nullptr,0,0)
 };
 
 sys::Timezone::Timezone(const char* name){
     _CTimezone=nullptr;
     int i=0;
-    TimezoneTemplate *tz=((TimezoneTemplate*)Timezone::Timezones[i]);
-    while(tz){
-        if(ncompare(tz->_Name,getlen(tz->_Name),name,getlen(name))==0){
+    TimezoneTemplate *tz;
+    do{
+        tz =(TimezoneTemplate*) Timezone::Timezones[i]._CTimezone;
+        if(tz && tz->_Name==name){
             _CTimezone=&tz->_Timezone;
             return;
         }
         ++i;
-        tz=((TimezoneTemplate*)Timezone::Timezones[i]);
-    };
+    }while(!tz->_Name.empty());
 }
 
 sys::Time::Time(sys::Timezone* timezone){
@@ -289,7 +299,7 @@ void sys::Time::compare(Time comptime,Time &result){
 void sys::Time::getHWTime(){
     struct timespec ts;
     syscall2(__NR_clock_gettime,0,(long)&ts);
-    if(_Zone)
+    if(_Zone->_CTimezone)
         ts.tv_sec+= (((struct timezone*)_Zone->_CTimezone)->tz_dsttime * 60);
     _fromUnixtimeSpec(ts);
 }
@@ -297,7 +307,7 @@ void sys::Time::getHWTime(){
 void sys::Time::setHWTime(){
     struct timespec ts;
     _toUnixtimeSpec(ts);
-     if(_Zone)
+     if(_Zone->_CTimezone)
         ts.tv_sec-= (((struct timezone*)_Zone->_CTimezone)->tz_dsttime * 60);   
     syscall2(__NR_clock_settime,0,(long)(long)&ts);
 }

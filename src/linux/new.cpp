@@ -53,6 +53,15 @@
 #define PROT_GROWSDOWN          0x01000000 /* mprotect flag: extend change to start of growsdown vma */
 #define PROT_GROWSUP            0x02000000 /* mprotect flag: extend change to end of growsup vma */
 
+sys::allocator::heap::heap(){
+    _nextheap=nullptr;
+}
+
+sys::allocator::heap::~heap() noexcept{
+    delete _nextheap;
+}
+
+
 sys::allocator& sys::allocator::getInstance(){
    static  allocator instance;
    return instance;
@@ -77,7 +86,7 @@ void *sys::allocator::alloc(unsigned long size){
     myheap->_Free=size;
     myheap->_Count=_Count++;
     myheap->_Total=fsize;
-    myheap->_Block=(blockstore*)((unsigned long)myheap+sizeof(heap));
+    myheap->_Block=(blockstore*)((unsigned long)myheap+(sizeof(heap)-1));
     myheap->_Block->_Size=size;
     myheap->_Block->_Freed=false;
     myheap->_Block->_prevBlock=_curBlock;
@@ -88,7 +97,7 @@ void *sys::allocator::alloc(unsigned long size){
         _lastheap=_lastheap->_nextheap;
         _lastheap=myheap;
     }
-    return (void*)((unsigned long)myheap->_Block+sizeof(blockstore));
+    return (void*)((unsigned long)myheap->_Block+(sizeof(blockstore)-1));
 }
     
 void *sys::allocator::realloc(void* ptr,unsigned long size){
@@ -115,18 +124,16 @@ void *sys::allocator::realloc(void* ptr,unsigned long size){
 }
     
 void sys::allocator::free(void* ptr){
-    blockstore *delBlock=nullptr;
     unsigned long _TotalSize=0;
 
     for(blockstore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
-        if((unsigned long)ptr==(unsigned long)curstore+sizeof(blockstore)){
+        if((unsigned long)ptr==(unsigned long)curstore+(sizeof(blockstore)-1)){
             curstore->_Freed=true;
-            delBlock=curstore;
         }
         _TotalSize+=curstore->_Size;
     }
         
-    if(_TotalSize>MAXHEAPSIZE)
+    if(_TotalSize<MAXHEAPSIZE)
         clearheaps();
 }
     
@@ -136,6 +143,7 @@ sys::allocator::allocator(){
 };
 
 sys::allocator::~allocator(){
+    delete _firstheap;
 };
     
 void sys::allocator::zero(void *s, unsigned n){
