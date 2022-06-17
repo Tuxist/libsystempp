@@ -77,7 +77,7 @@ const sys::Timezone sys::Timezone::Timezones[]= {
     sys::Timezone("Europe/Berlin",60,120),
     sys::Timezone(nullptr,0,0)
 };
-#include <systempp/sysconsole.h>
+
 sys::Timezone::Timezone(const char* name){
     _CTimezone=nullptr;
     int i=0;
