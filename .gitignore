@@ -1,3 +1,4 @@
 build/
+.vs
 .kdev4/libsystempp.kdev4
 libsystempp.kdev4
