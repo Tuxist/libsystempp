@@ -1,4 +1,5 @@
-build/
-.vs
+build/*
+.vs/*
+.out/*
 .kdev4/libsystempp.kdev4
 libsystempp.kdev4
