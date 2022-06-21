@@ -83,26 +83,26 @@ void *sys::allocator::alloc(unsigned long size){
 }
     
 void *sys::allocator::realloc(void* ptr,unsigned long size){
-//     unsigned long cursize=0;
-//     char *oldptr=nullptr;
-//     for(blockstore *curstore=_curBlock; curstore; curstore=curstore->_prevBlock){
-//         if((unsigned long)ptr==(unsigned long)curstore+sizeof(blockstore)-1){
-//             cursize+=curstore->_Size;
-//             oldptr=(char*)curstore+sizeof(blockstore);
-//         }
-//     }
-//         
-//     char *newptr=(char*)alloc(size);
-//         
-//     unsigned long copysize = cursize < size ? cursize : size;
-//         
-//     for(unsigned long i=0; i<copysize; ++i){
-//         newptr[i]=oldptr[i];
-//     }
-//         
-//     free(oldptr);
-//         
-//     return newptr;
+    unsigned long cursize=0;
+    char *oldptr=nullptr;
+    
+    for(heap *curstore=_lastheap; curstore; curstore=curstore->_prevheap){
+        if((unsigned long)ptr==(unsigned long)curstore->_block){
+            oldptr=curstore->_block;
+        }
+    }
+        
+    char *newptr=(char*)alloc(size);
+        
+    unsigned long copysize = cursize < size ? cursize : size;
+        
+    for(unsigned long i=0; i<copysize; ++i){
+        newptr[i]=oldptr[i];
+    }
+        
+    free(oldptr);
+        
+    return newptr;
 }
     
 void sys::allocator::free(void* ptr){
