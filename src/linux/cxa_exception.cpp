@@ -89,7 +89,7 @@ extern "C" {
     };
     
     void __cxa_free_exception(void *e){
-        
+        ::sys::allocator::getInstance().free(e);
     };
     
     void __cxa_pure_virtual(){

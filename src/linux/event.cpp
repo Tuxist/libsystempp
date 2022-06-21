@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/sysconnection.h"
 #include "systempp/systhread.h"
 #include "systempp/sysmutex.h"
+#include "systempp/sysconsole.h"
 
 #include <config.h>
 
@@ -183,6 +184,8 @@ namespace sys {
         void WriteEventHandler(con **curcon){
             SystemException exception;
             try{
+                if(!(*curcon)->getSendData())
+                    return;
                 int sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
                                                        (void*)(*curcon)->getSendData()->getData(),
                                                        (*curcon)->getSendData()->getDataSize());
@@ -335,7 +338,7 @@ MAINWORKERLOOP:
             } catch(SystemException &e) {
                 switch(e.getErrorType()) {
                     case SystemException::Critical:
-//                         std::cerr<< e.what() << std::endl;
+                        sys::cerr<< e.what() << sys::endl;
                         break;
                 }
             }
