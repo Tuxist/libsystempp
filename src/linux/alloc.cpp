@@ -61,7 +61,7 @@ sys::allocator& sys::allocator::getInstance(){
 void *sys::allocator::alloc(unsigned long size){
     unsigned long blksize=size+sizeof(heap);
     heap *block=(heap*)syscall6(__NR_mmap, 0,blksize, 
-                                        PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+                                PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
     zero(block,sizeof(heap));
     block->_size=size;
     block->_total=blksize;

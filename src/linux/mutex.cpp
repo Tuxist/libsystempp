@@ -24,29 +24,44 @@ sys::mutex::~mutex(){
 }
 
 void sys::mutex::lock(){
+    static unsigned long int exp=0;
+    static unsigned long int des=1;
     SystemException excep;
     long s;
-    do {
-        s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAIT,0,0,0,0);
-    }while(s<0);
+    if(__atomic_compare_exchange(((unsigned long int*)_mutex),&exp,&des,false,
+                                __ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST)){
+        do {
+            s = syscall6(__NR_futex,(unsigned long)_mutex,FUTEX_WAIT,0,0,0,0);
+        }while(s==-1);
+    }
 };
 
 
 bool sys::mutex::trylock(){
-    long s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAKE,1,0,0,0);
-    if(s==-1){
-        return false;
+    static unsigned long int exp=0;
+    static unsigned long int des=1;
+    if(__atomic_compare_exchange(((unsigned long int*)_mutex),&exp,&des,false,
+                                __ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST)){
+        long s = syscall6(__NR_futex,(unsigned long)_mutex,FUTEX_WAKE,1,0,0,0);
+        if(s==-1){
+            return false;
+        }
     }
     return true;
 }
 
 void sys::mutex::unlock(){
     SystemException excep;
-    long s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAKE,1,0,0,0);
-    if(s==-1){
-        excep[SystemException::Error] << "can't unlock mutex";
-        throw excep;
-    }    
+    static unsigned long int exp=1;
+    static unsigned long int des=0;
+    long s = syscall6(__NR_futex,(unsigned long)_mutex,FUTEX_WAKE,1,0,0,0);
+    if(__atomic_compare_exchange(((unsigned long int*)_mutex),&exp,&des,false,
+                                __ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST)){
+        if(s==-1){
+            excep[SystemException::Error] << "can't unlock mutex";
+            throw excep;
+        }
+    }
 }
 
 bool sys::mutex::islocked(){
