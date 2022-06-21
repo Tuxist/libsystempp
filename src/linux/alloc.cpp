@@ -73,7 +73,7 @@ void *sys::allocator::alloc(unsigned long size){
         block->_prevheap=nullptr;
     _lastheap=block;
     _memlock.unlock();
-    return _lastheap->_block;
+    return block->_block;
 }
     
 void *sys::allocator::realloc(void* ptr,unsigned long size){
@@ -84,6 +84,7 @@ void *sys::allocator::realloc(void* ptr,unsigned long size){
     for(heap *curstore=_lastheap; curstore; curstore=curstore->_prevheap){
         if((unsigned long)ptr==(unsigned long)curstore->_block){
             oldptr=curstore->_block;
+            cursize=curstore->_size;
         }
     }
     _memlock.unlock();
