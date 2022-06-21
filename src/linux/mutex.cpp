@@ -28,7 +28,7 @@ void sys::mutex::lock(){
     long s;
     do {
         s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAIT,0,0,0,0);
-    }while(s>0);
+    }while(s<0);
 };
 
 
