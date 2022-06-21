@@ -59,6 +59,7 @@ sys::allocator& sys::allocator::getInstance(){
 }
   
 void *sys::allocator::alloc(unsigned long size){
+    _memlock.lock();
     unsigned long blksize=size+sizeof(heap);
     heap *block=(heap*)syscall6(__NR_mmap, 0,blksize, 
                                         PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
@@ -71,19 +72,22 @@ void *sys::allocator::alloc(unsigned long size){
     else
         block->_prevheap=nullptr;
     _lastheap=block;
-    return block->_block;
+    _memlock.unlock();
+    return _lastheap->_block;
 }
     
 void *sys::allocator::realloc(void* ptr,unsigned long size){
     unsigned long cursize=0;
     char *oldptr=nullptr;
     
+    _memlock.lock();
     for(heap *curstore=_lastheap; curstore; curstore=curstore->_prevheap){
         if((unsigned long)ptr==(unsigned long)curstore->_block){
             oldptr=curstore->_block;
         }
     }
-        
+    _memlock.unlock();
+    
     char *newptr=(char*)alloc(size);
         
     unsigned long copysize = cursize < size ? cursize : size;
@@ -98,6 +102,7 @@ void *sys::allocator::realloc(void* ptr,unsigned long size){
 }
     
 void sys::allocator::free(void* ptr){
+    _memlock.lock();
     heap *nextheap=nullptr;
     for(heap *curheap=_lastheap; curheap; curheap=curheap->_prevheap){
         if(curheap->_block==ptr){
@@ -106,10 +111,12 @@ void sys::allocator::free(void* ptr){
             if(nextheap)
                 nextheap->_prevheap=curheap->_prevheap;
             syscall2(__NR_munmap,(unsigned long)curheap,curheap->_total);
+            _memlock.unlock();
             return;
         }
         nextheap=curheap;
     }
+    _memlock.unlock();
 }
     
 sys::allocator::allocator(){

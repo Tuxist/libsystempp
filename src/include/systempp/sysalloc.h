@@ -25,6 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
+#include <systempp/sysmutex.h>
+
 #pragma once
 
 namespace sys {
@@ -51,7 +53,7 @@ namespace sys {
         allocator();
         ~allocator();
         void zero(void *s, unsigned n);
-        
+        mutex       _memlock;
         heap       *_lastheap;
     };
 };

@@ -79,7 +79,6 @@ const sys::Timezone sys::Timezone::Timezones[]= {
 };
 
 sys::Timezone::Timezone(const char* name){
-    _CTimezone=nullptr;
     int i=0;
     TimezoneTemplate *tz;
     do{

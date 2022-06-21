@@ -60,16 +60,6 @@ namespace sys {
         int           sendData(ClientSocket *socket,void *data,unsigned long size,int flags);
         int           recvData(ClientSocket *socket,void *data,unsigned long size);
         int           recvData(ClientSocket *socket,void *data,unsigned long size,int flags);
-        #ifdef Windows
-        /*Needed for iocp in event*/
-        ssize_t       recvWSAData(ClientSocket *socket, WSABUF *data, DWORD size, LPDWORD flags,
-                                  LPDWORD numberofbytessend, LPWSAOVERLAPPED lpOverlapped,
-                                  LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine);
-        ssize_t       sendWSAData(ClientSocket *socket,WSABUF *data, DWORD size,DWORD flags, 
-                                  LPDWORD numberofbytessend,LPWSAOVERLAPPED lpOverlapped,
-                                  LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine);
-        #endif
-        
     private:
         int             _Socket;
         int             _Maxconnections;

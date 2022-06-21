@@ -70,8 +70,6 @@ namespace sys {
         void write(const char *t,unsigned long size){
             clear();
             _bufsize=size;
-            if(_bufsize<1)
-                return;
             _buf=new char[_bufsize+1];
             _buf[_bufsize]='\0';
             memcpy(_buf,t,size);

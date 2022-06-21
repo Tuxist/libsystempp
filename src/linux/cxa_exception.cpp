@@ -85,13 +85,12 @@ extern "C" {
     };
     
     void __cxa_begin_catch(void *c){
-    
     };
     
-    void __cxa_free_exception(void *e){
-        ::sys::allocator::getInstance().free(e);
-    };
-    
+    void __cxa_end_catch() {
+        
+    }
+      
     void __cxa_pure_virtual(){
         
     };
@@ -102,6 +101,10 @@ extern "C" {
     
     void *__cxa_allocate_exception(unsigned long thrown_size){
         return ::sys::allocator::getInstance().alloc(thrown_size);
+    };
+    
+    void __cxa_free_exception(void *e){
+        ::sys::allocator::getInstance().free(e);
     };
     
     __extension__ typedef int __guard __attribute__((mode(__DI__)));
@@ -122,10 +125,6 @@ extern "C" {
  
     void __cxa_guard_abort (__guard *){
  
-    }
-    
-    void __cxa_end_catch() {
-        
     }
     
     void __attribute__((weak)) __cxa_throw_bad_array_new_length() {
