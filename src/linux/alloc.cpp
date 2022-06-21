@@ -59,7 +59,6 @@ sys::allocator& sys::allocator::getInstance(){
 }
   
 void *sys::allocator::alloc(unsigned long size){
-    _memlock.lock();
     unsigned long blksize=size+sizeof(heap);
     heap *block=(heap*)syscall6(__NR_mmap, 0,blksize, 
                                         PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
@@ -67,6 +66,7 @@ void *sys::allocator::alloc(unsigned long size){
     block->_size=size;
     block->_total=blksize;
     block->_block=(char*)block+sizeof(heap);
+    _memlock.lock();
     if(_lastheap)
         block->_prevheap=_lastheap;
     else
