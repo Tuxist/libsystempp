@@ -292,7 +292,7 @@ int sys::ServerSocket::recvData(ClientSocket* socket, void* data, unsigned long 
                             (unsigned long)data,
                             size,
                             flags,
-                            (unsigned long)socket->_SocketPtr,
+                            (unsigned long&)socket->_SocketPtr,
                             (unsigned long)&socket->_SocketPtrSize
                          );
     if(recvsize<0){

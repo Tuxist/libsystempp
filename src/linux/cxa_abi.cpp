@@ -28,17 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace __cxxabiv1 {
     class __class_type_info {
     public:
-        explicit __class_type_info (const char *__n){ };
         virtual ~__class_type_info (){};
-        virtual	bool __is_pointer_p() const{return false;};
-        virtual bool __is_function_p() const{return false;};
-        virtual void __do_catch(__class_type_info const*, void**, unsigned int) const{};
-        virtual void __do_upcast(__class_type_info const*, void**) const{};
-        virtual void __do_upcast(__class_type_info const*, void const*, __class_type_info &__upcast_result) const{};
-        virtual void __do_dyncast(int, __class_type_info __sub_kind, __class_type_info const*, 
-                                  void const*, __class_type_info const*, void const*, 
-                                  __class_type_info &__dyncast_result) const{};
-    } ti(nullptr);
+        __class_type_info (){};
+    } ti;
     
     class __si_class_type_info {
     public:

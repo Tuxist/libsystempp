@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <systempp/sysalloc.h>
 
 extern "C" {    
-    #define ATEXIT_MAX_FUNCS 128
+    #define ATEXIT_MAX_FUNCS 1024
 
     typedef unsigned uarch_t;
     

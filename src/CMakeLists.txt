@@ -32,25 +32,25 @@ add_library(crt1 STATIC
 )
 
 list(APPEND linuxSrcs
+    "linux/alloc.cpp"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/clone.S"
     "linux/arch/${CMAKE_SYSTEM_PROCESSOR}/cpuid.cpp"
-    "linux/file.cpp"
     "linux/console.cpp"
-    "linux/mutex.cpp"
     "linux/cxa_exception.cpp"
     "linux/cxa_abi.cpp"
-    "linux/errno.cpp"     
+    "linux/errno.cpp"
+    "linux/event.cpp"
     "linux/exec.cpp"
+    "linux/file.cpp"
+    "linux/mutex.cpp"
     "linux/signal.cpp"  
     "linux/socket.cpp"   
     "linux/sysinfo.cpp"    
     "linux/thread.cpp" 
     "linux/unwind.cpp"
-    "linux/epoll.cpp"    
     "linux/sleep.cpp"   
     "linux/sysprocess.cpp"  
     "linux/time.cpp"
-    "linux/new.cpp"
     "linux/terminate.cpp"
 )
 

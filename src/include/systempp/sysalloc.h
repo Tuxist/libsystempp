@@ -30,32 +30,19 @@
 namespace sys {
     
     class allocator {
-    private:
-        class blockstore{
-        private:
-            blockstore(unsigned long size);
-            bool          _Freed;
-            unsigned long _Size;
-            blockstore   *_prevBlock;
-            blockstore   *_nextBlock;
-            friend class allocator;
-        };
-        
+    private:       
         class heap {
         private:
             heap();
             ~heap() noexcept;
-            unsigned long  _Total;
-            unsigned long  _Free;
-            unsigned long  _Count;
-            blockstore    *_Block;
+            unsigned long  _size;
+            unsigned long  _total;
+            char          *_block;
             heap          *_prevheap;
-            heap          *_nextheap;
             friend class allocator;
         };
     public:
         static allocator& getInstance();
-        heap *findunsedheap(unsigned long size);    
         void *alloc(unsigned long size);
         void *realloc(void* ptr,unsigned long size);    
         void  free(void* ptr);
@@ -66,11 +53,7 @@ namespace sys {
         allocator();
         ~allocator();
         void zero(void *s, unsigned n);
-        void clearheaps();
         
-        heap          *_firstheap;
-        heap          *_lastheap;
-        blockstore    *_curBlock;
-        int            _Count;
+        heap       *_lastheap;
     };
 };

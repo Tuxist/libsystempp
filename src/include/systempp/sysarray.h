@@ -51,7 +51,7 @@ namespace sys {
         
          array operator=(array t){
             clear();
-            _buf=new char[t.size()];
+            _buf=new char[t._bufsize];
             memcpy(_buf,t._buf,t._bufsize);
             _bufsize=t._bufsize;
             return *this;
