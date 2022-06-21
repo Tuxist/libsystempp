@@ -32,9 +32,7 @@ namespace sys {
     class allocator {
     private:       
         class heap {
-        private:
-            heap();
-            ~heap() noexcept;
+        public:
             unsigned long  _size;
             unsigned long  _total;
             char          *_block;

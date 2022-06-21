@@ -53,15 +53,6 @@
 #define PROT_GROWSDOWN          0x01000000 /* mprotect flag: extend change to start of growsdown vma */
 #define PROT_GROWSUP            0x02000000 /* mprotect flag: extend change to end of growsup vma */
 
-sys::allocator::heap::heap(){
-    _prevheap=nullptr;
-}
-
-sys::allocator::heap::~heap() noexcept{
-    delete _prevheap;
-}
-
-
 sys::allocator& sys::allocator::getInstance(){
    static  allocator instance;
    return instance;
@@ -75,10 +66,11 @@ void *sys::allocator::alloc(unsigned long size){
     block->_size=size;
     block->_total=blksize;
     block->_block=(char*)block+sizeof(heap);
-    if(_lastheap){
+    if(_lastheap)
         block->_prevheap=_lastheap;
-    }
-    _lastheap=block;    
+    else
+        block->_prevheap=nullptr;
+    _lastheap=block;
     return block->_block;
 }
     
@@ -111,9 +103,10 @@ void sys::allocator::free(void* ptr){
         if(curheap->_block==ptr){
             if(_lastheap==curheap)
                 _lastheap=curheap->_prevheap;
-            if(nextheap==curheap->_prevheap)
+            if(nextheap)
                 nextheap->_prevheap=curheap->_prevheap;
             syscall2(__NR_munmap,(unsigned long)curheap,curheap->_total);
+            return;
         }
         nextheap=curheap;
     }
@@ -124,7 +117,6 @@ sys::allocator::allocator(){
 };
 
 sys::allocator::~allocator(){
-    delete _lastheap;
 };
     
 void sys::allocator::zero(void *s, unsigned n){

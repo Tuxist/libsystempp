@@ -51,17 +51,19 @@ namespace sys {
         
          array operator=(array t){
             clear();
-            _buf=new char[t._bufsize];
+            _buf=new char[t._bufsize+1];
             memcpy(_buf,t._buf,t._bufsize);
             _bufsize=t._bufsize;
+            _buf[_bufsize]='\0';
             return *this;
         };
         
         array operator=(const char t){
             clear();
-            _buf=new char[1];
+            _buf=new char[2];
             _buf[0]=t;
             _bufsize=1;
+            _buf[_bufsize]='\0';
             return *this;
         };
 
@@ -70,7 +72,8 @@ namespace sys {
             _bufsize=size;
             if(_bufsize<1)
                 return;
-            _buf=new char[_bufsize];
+            _buf=new char[_bufsize+1];
+            _buf[_bufsize]='\0';
             memcpy(_buf,t,size);
         }
         
@@ -104,9 +107,10 @@ namespace sys {
         };
         
         void push_back(char t){
-            char *temp=new char[_bufsize+1];
+            char *temp=new char[_bufsize+2];
             memcpy(temp,_buf,_bufsize);
             temp[_bufsize]=t;
+            temp[_bufsize+1]='\0';
             delete[] _buf;
             _buf=temp;
             ++_bufsize;
@@ -118,11 +122,8 @@ namespace sys {
             _buf=nullptr;
         };
         
-        const char *c_str() const{
-            char *_cstr=new char[_bufsize+1];
-            memcpy(_cstr,_buf,_bufsize);
-            _cstr[_bufsize]='\0';
-            return _cstr;
+        constexpr const char *c_str() const noexcept{
+            return _buf;
         };
         
         size_t length(){
