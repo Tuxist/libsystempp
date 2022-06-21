@@ -25,16 +25,19 @@ sys::mutex::~mutex(){
 
 void sys::mutex::lock(){
     SystemException excep;
-    long s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAIT,0,0,0,0);
-    if(s==-1){
-        excep[SystemException::Error] << "can't lock mutex";
-        throw excep;
-    }
+    long s;
+    do {
+        s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAIT,0,0,0,0);
+    }while(s>0);
 };
 
 
-void sys::mutex::trylock(){
-    
+bool sys::mutex::trylock(){
+    long s = syscall6(__NR_futex,(unsigned long)((unsigned long int*)_mutex),FUTEX_WAKE,1,0,0,0);
+    if(s==-1){
+        return false;
+    }
+    return true;
 }
 
 void sys::mutex::unlock(){

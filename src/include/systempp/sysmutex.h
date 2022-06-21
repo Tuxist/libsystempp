@@ -33,7 +33,7 @@ namespace sys {
         mutex();
         ~mutex();
         void lock();
-        void trylock();
+        bool trylock();
         void unlock();
         bool islocked();
     private:
