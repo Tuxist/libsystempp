@@ -67,10 +67,7 @@ void *sys::allocator::alloc(unsigned long size){
     block->_total=blksize;
     block->_block=(char*)block+sizeof(heap);
     _memlock.lock();
-    if(_lastheap)
-        block->_prevheap=_lastheap;
-    else
-        block->_prevheap=nullptr;
+    block->_prevheap=_lastheap;
     _lastheap=block;
     _memlock.unlock();
     return block->_block;

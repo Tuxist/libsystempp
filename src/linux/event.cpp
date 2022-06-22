@@ -116,37 +116,36 @@ namespace sys {
 
         };
         
-        int waitEventHandler(sys::con **curcon){
+        int waitEventHandler(int &pos){
             _ELock.lock();
             
-            if(_nfds<0){
-                _nfds=syscall4(__NR_epoll_wait,_epollFD,
+            if(pos<1){
+                pos=syscall4(__NR_epoll_wait,_epollFD,
                                   (unsigned long)_Events,_ServerSocket->getMaxconnections(), -1);           
             }
             
-            if(_nfds>1){
-                    SystemException exception;
-                    exception[SystemException::Error] << "initEventHandler: epoll wait failure";
-                    _ELock.unlock();
-                    throw exception;
+            if(pos<1){
+                   SystemException exception;
+                   exception[SystemException::Error] << "initEventHandler: epoll wait failure";
+                   _ELock.unlock();
+                   throw exception;
             }
-            
-            --_nfds;
-            
-            *curcon=(con*)_Events[_nfds].data.ptr;
-            
+
+            --pos;
+                      
             _ELock.unlock();
             
-            if(!*curcon)
+            
+            if(!_Events[pos].data.ptr)
                 return EventHandlerStatus::EVCON;
             
-            if((*curcon)->getSendSize() > 0)
+            if(((con*)_Events[pos].data.ptr)->getSendSize() > 0)
                 return EventHandlerStatus::EVOUT;
             
             return EventHandlerStatus::EVIN;
         };
 
-        void ConnectEventHandler(sys::con **curcon){
+        void ConnectEventHandler(int pos){
             SystemException exception;
             try {
                 con *newcon = new con(_ServerSocket,this);
@@ -161,63 +160,61 @@ namespace sys {
                     throw exception;
                 }
                 ConnectEvent(newcon);
-                *curcon=newcon;
             }catch (sys::SystemException& e) {
                 exception[SystemException::Error] << e.what();
                 throw exception;
             }
         };
         
-        void ReadEventHandler(con **curcon){
+        void ReadEventHandler(int pos){
             SystemException except;
             char buf[BLOCKSIZE];
             try{
-                int rcvsize=_ServerSocket->recvData((*curcon)->getClientSocket(),&buf,BLOCKSIZE);
-                (*curcon)->addRecvQueue(buf,rcvsize);
+                int rcvsize=_ServerSocket->recvData(((con*)_Events[pos].data.ptr)->getClientSocket(),&buf,BLOCKSIZE);
+                ((con*)_Events[pos].data.ptr)->addRecvQueue(buf,rcvsize);
             }catch(sys::SystemException &e){
                 except[SystemException::Critical] << e.what();
                 throw except;
             }
-            RequestEvent(*curcon);
+            RequestEvent(((con*)_Events[pos].data.ptr));
         };
 
-        void WriteEventHandler(con **curcon){
+        void WriteEventHandler(int pos){
             SystemException exception;
             try{
-                if(!(*curcon)->getSendData())
-                    return;
-                int sended=_ServerSocket->sendData((*curcon)->getClientSocket(),
-                                                       (void*)(*curcon)->getSendData()->getData(),
-                                                       (*curcon)->getSendData()->getDataSize());
-                (*curcon)->resizeSendQueue(sended);
-                if(!(*curcon)->getSendData())
-                    _setEpollEvents(*curcon,EPOLLIN);
+                int sended=_ServerSocket->sendData(((con*)_Events[pos].data.ptr)->getClientSocket(),
+                                                       (void*)((con*)_Events[pos].data.ptr)->getSendData()->getData(),
+                                                       ((con*)_Events[pos].data.ptr)->getSendData()->getDataSize());
+                ((con*)_Events[pos].data.ptr)->resizeSendQueue(sended);
+                if(!((con*)_Events[pos].data.ptr)->getSendData())
+                    _setEpollEvents(((con*)_Events[pos].data.ptr),EPOLLIN);
                 
             }catch(sys::SystemException &e){
                 exception[SystemException::Critical] << e.what();
                 throw exception;
             }
-            ResponseEvent(*curcon);    
+            ResponseEvent(((con*)_Events[pos].data.ptr));    
         };
         
-        void CloseEventHandler(sys::con **curcon){
+        void CloseEventHandler(int pos){
             SystemException except;
-            con *conptr=*curcon;
-            if(!conptr)
-                return;
             try {
                 
+                con *delcon = (con*)_Events[pos].data.ptr;   
+                
                 int ect=syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_DEL,
-                        conptr->getClientSocket()->getSocket(),0);
+                                 delcon->getClientSocket()->getSocket(),0);
                 
                 if(ect<0) {
                     except[SystemException::Error] << "CloseEvent can't delete Connection from epoll";
                     throw except;
                 }
                 
-                DisconnectEvent(conptr);
-                delete conptr;
-                curcon=nullptr;
+                DisconnectEvent(delcon);
+                
+                delete delcon;
+                
+                _Events[pos].data.ptr=nullptr;
                 
                 except[SystemException::Note] << "CloseEventHandler: Connection shutdown!";
             } catch(SystemException &e) {
@@ -311,17 +308,17 @@ MAINWORKERLOOP:
         SystemException excep;
         while (sys::event::_Run) {
             try {
-                sys::con *i=nullptr;
+                int i=0;
                 try {
-                    switch(eventptr->waitEventHandler(&i)) {
+                    switch(eventptr->waitEventHandler(i)) {
                         case EPOLL::EVCON:
-                            eventptr->ConnectEventHandler(&i);
+                            eventptr->ConnectEventHandler(i);
                             break;
                         case EPOLL::EVIN:
-                            eventptr->ReadEventHandler(&i);
+                            eventptr->ReadEventHandler(i);
                             break;
                         case EPOLL::EVOUT:
-                            eventptr->WriteEventHandler(&i);
+                            eventptr->WriteEventHandler(i);
                             break;
                         case EPOLL::EVWAIT:
                             break;
@@ -330,7 +327,7 @@ MAINWORKERLOOP:
                             throw excep;
                     }
                 } catch(SystemException &e) {
-                    eventptr->CloseEventHandler(&i);
+                    eventptr->CloseEventHandler(i);
                     if(e.getErrorType()==SystemException::Critical) {
                         throw e;
                     }

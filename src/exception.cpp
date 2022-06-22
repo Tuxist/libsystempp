@@ -49,7 +49,7 @@ sys::SystemException::SystemException(const SystemException &exp){
     _firstMessage=nullptr;
     _lastMessage=nullptr;
     for(Message *curmsg=exp._firstMessage; curmsg; curmsg=curmsg->_nextMessage){
-         *this<<curmsg->_Buffer;
+         *this<<"test";//curmsg->_Buffer;
     }
 }
 
@@ -80,8 +80,6 @@ const sys::SystemException & sys::SystemException::Exception() throw(){
 
 
 sys::SystemException& sys::SystemException::asign(const char *src){
-    if(!src)
-        return *this;
     if(!_firstMessage){
         _firstMessage=new Message();
         _lastMessage=_firstMessage;

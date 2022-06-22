@@ -51,6 +51,8 @@ namespace sys {
         
          array operator=(array t){
             clear();
+            if(t.empty())
+                return *this;
             _buf=new char[t._bufsize+1];
             memcpy(_buf,t._buf,t._bufsize);
             _bufsize=t._bufsize;
@@ -82,7 +84,8 @@ namespace sys {
                 return *this;
             }
             for(i = 0; t[i] != '\0'; i++);
-            write(t,i);
+            if(i>0)
+                write(t,i);
             return *this;
         };
         

@@ -54,6 +54,15 @@ extern "C" {
         return 0;
     };
     
+     void __libc_freeres(void){
+        static long int already_called;
+        static long exp = 1;
+        static long des = 0;
+        if (!__atomic_compare_exchange(&already_called,&exp,&des,false,__ATOMIC_ACQ_REL,__ATOMIC_ACQ_REL)){
+            void *const *p;
+        } 
+    }
+    
     void __cxa_finalize(void *f)
     {
         uarch_t i = __atexit_func_count;

@@ -35,7 +35,6 @@ namespace sys {
         void lock();
         bool trylock();
         void unlock();
-        bool islocked();
     private:
         void *_mutex;
     };

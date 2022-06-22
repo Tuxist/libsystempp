@@ -79,16 +79,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CLONE_IO                0x80000000 /* Clone io context */
 
 
-#define STACKSIZE (4096 * 1024)
+#define STACKSIZE (4096 * 4096)
+
+struct user_desc {
+	unsigned int  entry_number;
+	unsigned int  base_addr;
+	unsigned int  limit;
+	unsigned int  seg_32bit:1;
+	unsigned int  contents:2;
+	unsigned int  read_exec_only:1;
+	unsigned int  limit_in_pages:1;
+	unsigned int  seg_not_present:1;
+	unsigned int  useable:1;
+#ifdef __x86_64__
+	unsigned int  lm:1;
+#endif
+};
 
 extern "C" {
     int __clone(void*(*fn)(void*),void*stack,int flags,void*arg,...);
 }
 
-
 sys::Thread::Thread(void *function(void*),void *args){
-    _nextThread = nullptr;
-    
     _Stack = (char*)syscall6(__NR_mmap,0,STACKSIZE, PROT_READ | PROT_WRITE,
                                     MAP_PRIVATE| MAP_ANONYMOUS | MAP_GROWSDOWN, -1, 0);
     
@@ -107,6 +119,7 @@ sys::Thread::Thread(void *function(void*),void *args){
         SystemException excep;
         throw excep[SystemException::Error] << "Can't start thread clone failed!";
     }
+
     
 }
 

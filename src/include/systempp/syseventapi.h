@@ -44,11 +44,11 @@ namespace sys {
         virtual const char *getEventType()=0;
                
         /*EventHandler*/
-        virtual int waitEventHandler(con **cucron)=0;
-        virtual void ConnectEventHandler(con **curcon)=0;
-        virtual void ReadEventHandler(con **curcon)=0;
-        virtual void WriteEventHandler(con **curcon)=0;
-        virtual void CloseEventHandler(con **curcon)=0;
+        virtual int waitEventHandler(int &pos)=0;
+        virtual void ConnectEventHandler(int pos)=0;
+        virtual void ReadEventHandler(int pos)=0;
+        virtual void WriteEventHandler(int pos)=0;
+        virtual void CloseEventHandler(int pos)=0;
         
         /*HTTP API Events*/
         virtual void RequestEvent(con *curcon)=0;

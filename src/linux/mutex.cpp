@@ -26,7 +26,6 @@ sys::mutex::~mutex(){
 void sys::mutex::lock(){
     static unsigned long int exp=0;
     static unsigned long int des=1;
-    SystemException excep;
     long s;
     if(__atomic_compare_exchange(((unsigned long int*)_mutex),&exp,&des,false,
                                 __ATOMIC_SEQ_CST,__ATOMIC_SEQ_CST)){
@@ -63,8 +62,3 @@ void sys::mutex::unlock(){
         }
     }
 }
-
-bool sys::mutex::islocked(){
-    return true;
-}
-
