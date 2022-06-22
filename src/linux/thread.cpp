@@ -113,9 +113,11 @@ sys::Thread::Thread(void *function(void*),void *args){
                                         | CLONE_THREAD | CLONE_SYSVSEM | CLONE_SETTLS
                                         | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID | CLONE_DETACHED;
     
-    _ParentPid = __clone(function,_Stack+STACKSIZE,clone_flags,args,&_ThreadPid,this,&_ThreadPid);
+    int tls=0;
+                                            
+    int ret = __clone(function,_Stack+STACKSIZE,clone_flags,args,&_ParentPid,&tls,&_ThreadPid);
     
-    if(_ParentPid < 0){
+    if(ret < 0){
         SystemException excep;
         throw excep[SystemException::Error] << "Can't start thread clone failed!";
     }
@@ -132,13 +134,13 @@ sys::Thread * sys::Thread::nextThread(){
 
 
 void sys::Thread::join(){
-    while(_ParentPid==_ThreadPid){
+    while(_ParentPid!=_ThreadPid){
          Sleep(1);
     };    
 }
 
 bool sys::Thread::joinable(){
-    if(_ParentPid==_ThreadPid)
+    if(_ParentPid!=_ThreadPid)
         return false;
     return true;
 }
