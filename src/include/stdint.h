@@ -32,7 +32,8 @@ extern "C" {
 #endif
 
     typedef unsigned long uintptr_t;
-    
+    typedef unsigned short uint16_t;
+    typedef unsigned long int uint32_t;
 #ifdef __cplusplus
 }
 #endif
