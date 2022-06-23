@@ -27,6 +27,9 @@
 
 #pragma once
 
+
+#define _POSIX_SOURCE 
+
 #ifdef __cplusplus
 extern "C" {
 #endif

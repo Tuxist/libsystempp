@@ -38,6 +38,7 @@ extern "C" {
 
     int pipe(int [2]);
     pid_t fork(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -15,6 +15,7 @@ set(systemppSrcs
     "utils.cpp"
     "uuid.cpp"
     "string.cpp"
+    "math.cpp"
 )
 
 #os dependencies
