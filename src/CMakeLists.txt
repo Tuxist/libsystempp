@@ -124,6 +124,7 @@ install(FILES
             include/wchar.h
             include/stdio.h
             include/stdlib.h
+            include/stdint.h
         DESTINATION include
         COMPONENT Devel
 )
