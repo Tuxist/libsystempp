@@ -30,6 +30,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+    typedef struct{
+        unsigned __opaque1, __opaque2;
+    } mbstate_t;
+    
     wchar_t *wmemchr(const wchar_t *s, wchar_t c, size_t n);
     int      wmemcmp(const wchar_t *l, const wchar_t *r, size_t n);
     size_t   wcslen(const wchar_t *s);
