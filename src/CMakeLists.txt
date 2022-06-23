@@ -121,6 +121,7 @@ install(FILES
             include/pthread.h
             include/errno.h
             include/wchar.h
+            include/stdio.h
         DESTINATION include
         COMPONENT Devel
 )
