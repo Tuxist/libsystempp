@@ -125,6 +125,7 @@ install(FILES
             include/stdio.h
             include/stdlib.h
             include/stdint.h
+            include/math.h
         DESTINATION include
         COMPONENT Devel
 )
