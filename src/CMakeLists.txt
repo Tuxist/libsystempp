@@ -122,6 +122,7 @@ install(FILES
             include/errno.h
             include/wchar.h
             include/stdio.h
+            include/stdlib.h
         DESTINATION include
         COMPONENT Devel
 )
