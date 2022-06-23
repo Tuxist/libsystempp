@@ -25,19 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <time.h>
+
 #pragma once
 
-typedef unsigned long time_t; 
-
-struct timespec {
-    time_t tv_sec;
-    long tv_nsec;
-};
-
-struct timeval {
-   time_t      tv_sec;
-   long int    tv_usec; 
-};
 
 namespace sys {
     class Timezone {

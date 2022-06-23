@@ -62,6 +62,10 @@ void *sys::allocator::alloc(unsigned long size){
     unsigned long blksize=size+sizeof(heap);
     heap *block=(heap*)syscall6(__NR_mmap, 0,blksize, 
                                 PROT_READ | PROT_WRITE,MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+    
+    if((unsigned long)block==-1)
+        return nullptr;
+    
     zero(block,sizeof(heap));
     block->_size=size;
     block->_total=blksize;
@@ -88,9 +92,7 @@ void *sys::allocator::realloc(void* ptr,unsigned long size){
     
     char *newptr=(char*)alloc(size);
         
-    unsigned long copysize = cursize < size ? cursize : size;
-        
-    for(unsigned long i=0; i<copysize; ++i){
+    for(unsigned long i=0; i<cursize; ++i){
         newptr[i]=oldptr[i];
     }
         
@@ -122,6 +124,9 @@ sys::allocator::allocator(){
 };
 
 sys::allocator::~allocator(){
+    for(heap *curheap=_lastheap; curheap; curheap=curheap->_prevheap){
+        free(curheap);
+    }
 };
     
 void sys::allocator::zero(void *s, unsigned n){

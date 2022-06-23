@@ -48,15 +48,9 @@ namespace sys {
     class TimezoneTemplate {
     private:
         TimezoneTemplate(const char *name,int minwest,int dstime){
-            if(name){
-                _Name=name;
-                _Timezone.tz_minuteswest=minwest;
-                _Timezone.tz_dsttime=dstime;
-                return;
-            }
-            _Name=nullptr;
-            _Timezone.tz_dsttime=0;
-            _Timezone.tz_minuteswest=0;            
+            _Name=name;
+            _Timezone.tz_minuteswest=minwest;
+            _Timezone.tz_dsttime=dstime;  
         };
         sys::array<char> _Name;
         timezone         _Timezone;

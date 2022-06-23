@@ -25,37 +25,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <systempp/sysmutex.h>
+#include <stddef.h>
 
 #pragma once
 
-namespace sys {
-    
-    class allocator {
-    private:       
-        class heap {
-        public:
-            char          *_block;
-        private:
-            ~heap();
-            unsigned long  _size;
-            unsigned long  _total;
-            heap          *_prevheap;
-            friend class allocator;
-        };
-    public:
-        static allocator& getInstance();
-        void *alloc(unsigned long size);
-        void *realloc(void* ptr,unsigned long size);    
-        void  free(void* ptr);
-        
-        allocator(allocator const&)       = delete;
-        void operator=(allocator const&)  = delete;
-    private:
-        allocator();
-        ~allocator();
-        void zero(void *s, unsigned n);
-        mutex       _memlock;
-        heap       *_lastheap;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef unsigned long time_t; 
+
+    struct timespec {
+        time_t tv_sec;
+        long tv_nsec;
     };
-};
+
+    struct timeval {
+        time_t      tv_sec;
+        long int    tv_usec; 
+    };
+    
+#ifdef __cplusplus
+}
+#endif

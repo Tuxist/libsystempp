@@ -134,8 +134,7 @@ namespace sys {
             --pos;
                       
             _ELock.unlock();
-            
-            
+             
             if(!_Events[pos].data.ptr)
                 return EventHandlerStatus::EVCON;
             
@@ -149,11 +148,13 @@ namespace sys {
             SystemException exception;
             try {
                 con *newcon = new con(_ServerSocket,this);
-                struct epoll_event setevent;
-                setevent.events = EPOLLIN;
-                setevent.data.ptr = newcon;
                 _ServerSocket->acceptEvent(newcon->getClientSocket());
                 newcon->getClientSocket()->setnonblocking();
+                
+                struct epoll_event setevent{0};
+                setevent.events = EPOLLIN;
+                setevent.data.ptr = newcon;
+                
                 if (syscall4(__NR_epoll_ctl,_epollFD,EPOLL_CTL_ADD,
                     (unsigned long)newcon->getClientSocket()->getSocket(),(unsigned long)&setevent) < 0) {
                     exception[SystemException::Error] << "ConnectEventHandler: can't add socket to epoll";
@@ -181,6 +182,7 @@ namespace sys {
 
         void WriteEventHandler(int pos){
             SystemException exception;
+            
             try{
                 int sended=_ServerSocket->sendData(((con*)_Events[pos].data.ptr)->getClientSocket(),
                                                        (void*)((con*)_Events[pos].data.ptr)->getSendData()->getData(),
@@ -198,6 +200,7 @@ namespace sys {
         
         void CloseEventHandler(int pos){
             SystemException except;
+
             try {
                 
                 con *delcon = (con*)_Events[pos].data.ptr;   

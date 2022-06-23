@@ -62,16 +62,10 @@ extern "C" {
     }    
     
     int strncmp ( const char * str1, const char * str2, size_t num ){
-        while ( num && *str1 && ( *str1 == *str2 ) ){
-            ++str1;
-            ++str2;
-            --num;
-        }
-        if ( num == 0 ){
+        const char *l=str1, *r=str2;
+        if (!num--) 
             return 0;
-        }
-        else{
-            return ( *(unsigned char *)str1 - *(unsigned char *)str2 );
-        }
+        for (; *l && *r && num && *l == *r ; l++, r++, num--);
+        return *l - *r;
     }
 };

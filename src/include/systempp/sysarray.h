@@ -46,7 +46,7 @@ namespace sys {
         };
 
         ~array(){
-            delete[] _buf;
+             delete[] _buf;
         }
         
          array operator=(array t){
@@ -90,7 +90,9 @@ namespace sys {
         };
         
         bool operator==(const char *t){
-            if(!_buf)
+            if(!_buf && !t)
+                return true;
+            if(!_buf || !t)
                 return false;
             if(_bufsize!=strlen(t))
                 return false;
