@@ -120,6 +120,7 @@ install(FILES
             include/atomic.h
             include/pthread.h
             include/errno.h
+            include/wchar.h
         DESTINATION include
         COMPONENT Devel
 )
