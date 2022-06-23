@@ -116,6 +116,10 @@ install(FILES
             include/stddef.h
             include/string.h
             include/time.h
+            include/features.h
+            include/atomic.h
+            include/pthread.h
+            include/errno.h
         DESTINATION include
         COMPONENT Devel
 )
