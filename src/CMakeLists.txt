@@ -107,7 +107,15 @@ install(TARGETS systempp cmd crt1 EXPORT systemppTargets
 )
 
 
-install(DIRECTORY include
+install(DIRECTORY include/systempp
+        DESTINATION include
+        COMPONENT Devel
+)
+
+install(FILES 
+            include/stddef.h
+            include/string.h
+            include/time.h
         DESTINATION include
         COMPONENT Devel
 )
