@@ -52,6 +52,7 @@ list(APPEND linuxSrcs
     "linux/sysprocess.cpp"  
     "linux/time.cpp"
     "linux/terminate.cpp"
+    "linux/unistd.cpp"
     "linux/wchar.cpp"
 )
 
