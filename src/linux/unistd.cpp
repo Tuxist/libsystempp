@@ -30,6 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sysbits.h"
 #include "syscall.h"
 
-int pipe(int fd[2]){
-    return syscall1(__NR_pipe, (unsigned long)&fd);
+extern "C" {
+    int pipe(int fd[2]){
+        return syscall1(__NR_pipe, (unsigned long)&fd);
+    }
+    
+    pid_t fork(void){
+        return syscall0(__NR_fork);
+    }
 }

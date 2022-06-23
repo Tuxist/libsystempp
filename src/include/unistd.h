@@ -33,7 +33,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    typedef int pid_t;
+
     int pipe(int [2]);
+    pid_t fork(void);
 #ifdef __cplusplus
 }
 #endif
