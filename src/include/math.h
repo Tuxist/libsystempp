@@ -91,6 +91,11 @@ extern "C" {
     long double frexpl(long double x, int *e);
     long double logl(long double x);
     long double acoshl(long double x);
+    /*tommorow implement*/
+    long double acosl(long double);
+    float asinf(float);
+    long double asinl(long double);
+    
     
 #ifdef __cplusplus
 }
