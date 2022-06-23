@@ -2,7 +2,7 @@ set(CMAKE_C_COMPILER "clang")
 set(CMAKE_CXX_COMPILER "clang++")
 set(LD_LLD lld)
 
-project(libsystempp CXX ASM )
+project(libsystempp C CXX ASM )
 cmake_minimum_required(VERSION 2.6)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
