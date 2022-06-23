@@ -107,7 +107,7 @@ install(TARGETS systempp cmd crt1 EXPORT systemppTargets
 )
 
 
-install(DIRECTORY include/systempp
+install(DIRECTORY include
         DESTINATION include
         COMPONENT Devel
 )
