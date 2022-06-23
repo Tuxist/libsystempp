@@ -27,8 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 
+#include "sysbits.h"
 #include "syscall.h"
 
 int pipe(int fd[2]){
-    return syscall1(SYS_pipe, fd);
+    return syscall1(__NR_pipe, fd);
 }
