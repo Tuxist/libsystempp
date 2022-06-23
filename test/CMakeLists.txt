@@ -13,3 +13,6 @@ target_link_libraries(time systempp crt1)
 
 add_executable (sleep sleep.cpp)
 target_link_libraries(sleep systempp crt1)
+
+add_executable (testc test.c)
+target_link_libraries(testc systempp crt1)
