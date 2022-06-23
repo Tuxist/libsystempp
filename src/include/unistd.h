@@ -25,27 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#include <stddef.h>
-
 #pragma once
+
+#define _SC_PIPE        145
+#define _PC_PIPE_BUF    5
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-    typedef struct{
-        unsigned __opaque1, __opaque2;
-    } mbstate_t;
-    
-    wchar_t *wmemchr(const wchar_t *s, wchar_t c, size_t n);
-    int      wmemcmp(const wchar_t *l, const wchar_t *r, size_t n);
-    size_t   wcslen(const wchar_t *s);
-    size_t   wcsnlen(const wchar_t *s, size_t n);
-    wchar_t *wcschr(const wchar_t *s, wchar_t c);
-    wchar_t *wcsrchr(const wchar_t *s, wchar_t c);
-    wchar_t *wcsstr(const wchar_t *h, const wchar_t *n);
-    size_t   wcscspn(const wchar_t *s, const wchar_t *c);
-    wchar_t *wcspbrk(const wchar_t *s, const wchar_t *b);
+    int pipe(int [2]);
 #ifdef __cplusplus
 }
 #endif
