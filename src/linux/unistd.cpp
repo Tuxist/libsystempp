@@ -31,5 +31,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "syscall.h"
 
 int pipe(int fd[2]){
-    return syscall1(__NR_pipe, fd);
+    return syscall1(__NR_pipe, (unsigned long)&fd);
 }
