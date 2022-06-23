@@ -42,7 +42,9 @@ extern "C" {
     int strncmp ( const char * str1, const char * str2, size_t num );
     char *strchr(const char *s, int c);
     char *strrchr(const char *s, int c);
-    char * strstr ( const char * str1, const char *str2); 
+    char * strstr ( const char * str1, const char *str2);
+    size_t strcspn(const char *s, const char *c);
+    char *strpbrk(const char *s, const char *b);
 #ifdef __cplusplus
 };
 #endif
