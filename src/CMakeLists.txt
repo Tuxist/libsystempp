@@ -52,6 +52,7 @@ list(APPEND linuxSrcs
     "linux/sysprocess.cpp"  
     "linux/time.cpp"
     "linux/terminate.cpp"
+    "linux/wchar.cpp"
 )
 
 configure_file(
