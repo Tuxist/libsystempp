@@ -10,21 +10,28 @@
 - thread class
 - mutex class
 - Socket class
+- cxa implementation
+- basic sysinfo class
 
 ## On Work
 - confdb
-- implementation of libcxx headers
+- implementation of libc
 
 ## Todo:
+- cleanup unittests and write doc 
+- first alpha release
+- add ldap/krb5 support
 - Syscalls (Arm)
 - Syscalls (x86)
-- cxa implementation
-- sysinfo class
+
 - signal class
 - typeinfo class
 
 ## Download:
-https://github.com/Tuxist/libhsystempp
+https://tuxist.de/git/jan.koester/systempp
+
+## mirror
+https://github.com/Tuxist/libsystempp
 
 ### Requirements
 - kernel 4.19 (lowest that i have testing)
