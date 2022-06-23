@@ -1,6 +1,8 @@
 #include <systempp/sysmutex.h>
 #include <systempp/sysexception.h>
 
+#include <pthread.h>
+
 #include "sysbits.h"
 #include "syscall.h"
 
@@ -62,3 +64,63 @@ void sys::mutex::unlock(){
         }
     }
 }
+
+extern "C" {
+   int pthread_mutexattr_init(pthread_mutexattr_t *matr){
+       matr=nullptr;
+       return 0;
+   }
+
+   int pthread_mutexattr_destroy(pthread_mutexattr_t *matr){
+       delete matr;
+       return 0;
+   }
+   
+   int pthread_mutex_init(pthread_mutex_t *__restrict__ mutex,
+                            const pthread_mutexattr_t *__restrict__ matr){
+       try{
+            *mutex = new sys::mutex;
+            return 0;
+       }catch(...){
+            return -1;
+       }
+   }
+   
+   int pthread_mutex_destroy(pthread_mutex_t *mutex){
+       try{
+            delete (sys::mutex*) *mutex;
+            return 0;
+       }catch(...){
+            return -1;
+       }
+   }
+   
+   int pthread_mutex_lock(pthread_mutex_t *mutex){
+       try{
+            ((sys::mutex*)*mutex)->lock();
+            return 0;
+       }catch(...){
+            return -1;
+       }       
+   }
+   
+   int pthread_mutex_trylock(pthread_mutex_t *mutex){
+       try{
+            if(((sys::mutex*)*mutex)->trylock())
+                return 0;
+            else
+                return -1;
+       }catch(...){
+            return -1;
+       }             
+   }
+
+   int pthread_mutex_unlock(pthread_mutex_t *mutex){
+       try{
+            ((sys::mutex*)*mutex)->unlock();
+            return 0;
+       }catch(...){
+            return -1;
+       }             
+   }
+};

@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "systempp/syssleep.h"
 #include "systempp/sysexception.h"
 
+#include <pthread.h>
+
 #define MAP_GROWSDOWN           0x0100     /* stack-like segment */
 
 #define MAP_SHARED              0x01       /* Share changes */
@@ -191,3 +193,34 @@ void sys::ThreadPool::join(){
         Sleep(1);
     }
 }
+
+extern "C" {
+   int pthread_attr_init(pthread_attr_t *){
+        return 0; 
+   };
+   
+   int pthread_attr_destroy(pthread_attr_t *){
+        return 0;
+   }
+   
+   int pthread_join(pthread_t thread, void **){
+       try{
+            ((sys::Thread*)thread)->join();
+            return 0;
+       }catch(...){
+           return -1;
+       }
+   }
+   
+   int pthread_create(pthread_t* __restrict__ thread,
+                          const pthread_attr_t* __restrict__ attr,
+                          void *(*start_routine)(void *),
+                          void* __restrict__ arg){
+       try{
+           *thread = new sys::Thread(start_routine,arg);
+           return 0;
+       }catch(...){
+            return -1;
+       }
+   }
+};
